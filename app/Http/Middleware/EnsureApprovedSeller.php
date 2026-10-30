@@ -11,7 +11,7 @@ class EnsureApprovedSeller
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::user();
+        $user = Auth::guard('seller')->user() ?? Auth::user();
 
         if (!$user || !$user->isSeller()) {
             return redirect()->route('pelanggan.seller.status')

@@ -55,7 +55,15 @@
                             </td>
                             <td>{{ $row->pesanan && $row->pesanan->user ? $row->pesanan->user->Nama : '-' }}</td>
                             <td class="fw-bold text-danger">Rp {{ number_format($row->pesanan ? $row->pesanan->TotalHarga : 0, 0, ',', '.') }}</td>
-                            <td><span class="badge bg-secondary">{{ $row->Metode }}</span></td>
+                                                        <td>
+                                <span class="badge bg-secondary">{{ $row->Metode }}</span>
+                                @if($row->PaymentType)
+                                    <div class="small text-muted font-monospace mt-1" style="font-size: 0.75rem;">Midtrans: {{ $row->PaymentType }}</div>
+                                @endif
+                                @if($row->TransactionID)
+                                    <div class="small text-muted font-monospace" style="font-size: 0.7rem;">TX: {{ Str::limit($row->TransactionID, 14) }}</div>
+                                @endif
+                            </td>
                             <td>
                                 @if($row->StatusPembayaran == 'Valid')
                                     <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Valid</span>

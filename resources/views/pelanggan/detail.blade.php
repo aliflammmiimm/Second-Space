@@ -16,14 +16,14 @@
             
             <!-- GAMBAR PRODUK -->
             <div class="col-md-5">
-                <div class="position-relative rounded-4 overflow-hidden shadow-sm" style="background: #f8fafc;">
+                <div class="position-relative rounded-4 overflow-hidden shadow-sm" style="background: #f4f9fa; border: 1px solid rgba(0, 92, 102, 0.12);">
                     <img src="{{ $produk->gambar_url }}" alt="{{ $produk->NamaProduk }}" class="w-100" 
                          style="max-height: 480px; object-fit: cover; object-position: center;"
                          onerror="this.onerror=null; this.src='{{ asset('upload/default.jpg') }}';">
                     
                     @if($produk->Status !== 'Tersedia')
-                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex align-items-center justify-content-center">
-                            <span class="badge bg-danger fs-5 px-3 py-2">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0, 27, 39, 0.85);">
+                            <span class="badge fs-5 px-3 py-2" style="background: #001B27; color: #00B8BE; border: 1px solid #00B8BE;">
                                 {{ $produk->Status === 'Dipesan' ? 'SEDANG DIPESAN' : 'SUDAH TERJUAL' }}
                             </span>
                         </div>
@@ -34,35 +34,35 @@
             <!-- DETAIL INFO -->
             <div class="col-md-7">
                 <div class="ps-md-3">
-                    <div class="d-flex gap-2 mb-2">
-                        <span class="badge bg-dark">{{ $produk->jenisProduk ? $produk->jenisProduk->NamaJenis : 'SecondSpace' }}</span>
-                        <span class="badge bg-secondary">Kondisi: {{ \App\Models\Produk::KONDISI[$produk->Kondisi] ?? $produk->Kondisi }}</span>
+                    <div class="d-flex gap-2 mb-2 flex-wrap">
+                        <span class="badge" style="background: #001B27; color: #fff;">{{ $produk->jenisProduk ? $produk->jenisProduk->NamaJenis : 'SecondSpace' }}</span>
+                        <span class="badge bg-light text-secondary border">Kondisi: {{ \App\Models\Produk::KONDISI[$produk->Kondisi] ?? $produk->Kondisi }}</span>
                         @if($produk->Status == 'Tersedia')
-                            <span class="badge bg-success bg-opacity-10 text-success border border-success">
-                                <i class="bi bi-check-circle me-1"></i> Tersedia
+                            <span class="badge" style="background: rgba(0, 184, 190, 0.15); color: #005C66; border: 1px solid rgba(0, 184, 190, 0.4);">
+                                <i class="bi bi-check-circle me-1"></i> Tersedia (1 Pcs)
                             </span>
                         @endif
                     </div>
 
-                    <h2 class="fw-bold mb-2">{{ $produk->NamaProduk }}</h2>
+                    <h2 class="fw-bold mb-2" style="color: #001B27;">{{ $produk->NamaProduk }}</h2>
                     <p class="text-muted mb-3">Seller: <strong>{{ $produk->seller?->Nama ?? '-' }}</strong></p>
 
-                    <div class="d-flex align-items-baseline gap-3 mb-4">
-                        <span class="fs-2 fw-bolder text-danger">Rp {{ number_format($produk->Harga, 0, ',', '.') }}</span>
-                        <span class="badge bg-light text-muted border px-3 py-2 rounded-pill small">
-                            <i class="bi bi-gem me-1 text-danger"></i> Item Thrift Eksklusif (1 Unit)
+                    <div class="d-flex align-items-baseline gap-3 mb-4 flex-wrap">
+                        <span class="fs-2 fw-bolder" style="color: #005C66;">Rp {{ number_format($produk->Harga, 0, ',', '.') }}</span>
+                        <span class="badge px-3 py-2 rounded-pill small" style="background: rgba(0, 184, 190, 0.12); color: #005C66; border: 1px solid rgba(0, 184, 190, 0.35);">
+                            <i class="bi bi-gem me-1" style="color: #00B8BE;"></i> Item Thrift Eksklusif (1 Unit)
                         </span>
                     </div>
 
                     <!-- DESKRIPSI PRODUK -->
-                    <div class="p-3 rounded-3 bg-light mb-4 border">
-                        <h6 class="fw-bold mb-2 text-dark"><i class="bi bi-card-text text-danger me-1"></i> Deskripsi & Kondisi Barang:</h6>
+                    <div class="p-3 rounded-3 mb-4" style="background: #f4f9fa; border: 1px solid rgba(0, 92, 102, 0.15);">
+                        <h6 class="fw-bold mb-2" style="color: #001B27;"><i class="bi bi-card-text me-1" style="color: #00B8BE;"></i> Deskripsi & Kondisi Barang:</h6>
                         <p class="text-muted mb-0" style="line-height: 1.7; white-space: pre-line;">{{ $produk->Deskripsi ?? 'Kondisi barang thrift / pre-loved pilihan terkurasi, bersih dan siap pakai.' }}</p>
                     </div>
 
                     <!-- JAMINAN KUALITAS -->
-                    <div class="p-3 rounded-3 bg-white border mb-4 shadow-sm">
-                        <h6 class="fw-bold mb-2 small text-uppercase text-muted"><i class="bi bi-shield-check text-success me-1"></i> Jaminan Belanja di SecondSpace:</h6>
+                    <div class="p-3 rounded-3 bg-white border mb-4 shadow-sm" style="border-color: rgba(0, 92, 102, 0.15) !important;">
+                        <h6 class="fw-bold mb-2 small text-uppercase" style="color: #005C66;"><i class="bi bi-shield-check text-success me-1"></i> Jaminan Belanja di SecondSpace:</h6>
                         <ul class="mb-0 text-muted small ps-3">
                             <li>Barang dijual oleh seller yang telah disetujui Admin SecondSpace.</li>
                             <li>Tersedia pembayaran aman via Transfer Bank & Cash on Delivery (COD).</li>
@@ -113,16 +113,16 @@
     <!-- PRODUK SERUPA -->
     @if($relatedProducts->isNotEmpty())
         <div class="mt-5">
-            <h4 class="fw-bold mb-3">Produk Lain di Kategori yang Sama</h4>
+            <h4 class="fw-bold mb-3" style="color: #001B27;">Produk Lain di Kategori yang Sama</h4>
             <div class="row g-3">
                 @foreach($relatedProducts as $rel)
                     <div class="col-md-3 col-6">
                         <div class="card custom-card border-0 p-2 h-100 shadow-sm">
                             <img src="{{ $rel->gambar_url }}" class="rounded-3" style="height: 180px; object-fit: cover;" onerror="this.onerror=null; this.src='{{ asset('upload/default.jpg') }}';">
                             <div class="p-2">
-                                <div class="small fw-bold text-truncate">{{ $rel->NamaProduk }}</div>
-                                <div class="text-danger fw-bold">Rp {{ number_format($rel->Harga, 0, ',', '.') }}</div>
-                                <a href="{{ route('pelanggan.produk.detail', $rel->ProdukID) }}" class="btn btn-outline-dark btn-sm rounded-pill w-100 mt-2">
+                                <div class="small fw-bold text-truncate" style="color: #001B27;">{{ $rel->NamaProduk }}</div>
+                                <div class="fw-bold mt-1" style="color: #005C66;">Rp {{ number_format($rel->Harga, 0, ',', '.') }}</div>
+                                <a href="{{ route('pelanggan.produk.detail', $rel->ProdukID) }}" class="btn btn-dark btn-sm rounded-pill w-100 mt-2">
                                     Lihat
                                 </a>
                             </div>

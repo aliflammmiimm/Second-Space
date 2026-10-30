@@ -8,8 +8,8 @@
     <!-- HERO HEADER -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-speedometer2 text-danger me-2"></i> Panel Dashboard Admin</h2>
-            <p class="text-muted mb-0">Selamat datang kembali, <strong>{{ Auth::user()->Nama }}</strong>! Ringkasan operasional SecondSpace.</p>
+            <h2 class="fw-bold mb-1" style="color: #001B27;"><i class="bi bi-speedometer2 me-2" style="color: #00B8BE;"></i> Panel Dashboard Admin</h2>
+            <p class="text-muted mb-0">Selamat datang kembali, <strong>{{ Auth::guard('admin')->user()->Nama ?? (Auth::user()->Nama ?? 'Administrator') }}</strong>! Ringkasan operasional SecondSpace.</p>
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('admin.seller.index') }}" class="btn btn-danger rounded-pill fw-semibold shadow-sm px-3">
@@ -24,79 +24,82 @@
     <!-- STATISTIC CARDS -->
     <div class="row g-3 mb-4">
         <div class="col-md-3 col-sm-6">
-            <div class="card custom-card border-0 p-4 h-100 bg-primary bg-opacity-10 border-start border-primary border-4">
+            <div class="card custom-card border-0 p-4 h-100 border-start border-4" style="border-left-color: #00B8BE !important; background: rgba(0, 184, 190, 0.08);">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="text-muted small fw-bold text-uppercase">Produk Tersedia</div>
-                        <h3 class="fw-bolder mb-0 text-primary mt-1">{{ number_format($totalProdukTersedia) }}</h3>
+                        <div class="small fw-bold text-uppercase" style="color: #53707c;">Produk Tersedia</div>
+                        <h3 class="fw-bolder mb-0 mt-1" style="color: #005C66;">{{ number_format($totalProdukTersedia) }}</h3>
                     </div>
-                    <div class="fs-1 text-primary opacity-50"><i class="bi bi-check-circle-fill"></i></div>
+                    <div class="fs-1 opacity-75" style="color: #00B8BE;"><i class="bi bi-check-circle-fill"></i></div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
-            <div class="card custom-card border-0 p-4 h-100 bg-success bg-opacity-10 border-start border-success border-4">
+            <div class="card custom-card border-0 p-4 h-100 border-start border-4" style="border-left-color: #005C66 !important; background: rgba(0, 92, 102, 0.08);">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="text-muted small fw-bold text-uppercase">Total Produk</div>
-                        <h3 class="fw-bolder mb-0 text-success mt-1">{{ number_format($totalProduk) }}</h3>
+                        <div class="small fw-bold text-uppercase" style="color: #53707c;">Total Produk</div>
+                        <h3 class="fw-bolder mb-0 mt-1" style="color: #005C66;">{{ number_format($totalProduk) }}</h3>
                     </div>
-                    <div class="fs-1 text-success opacity-50"><i class="bi bi-tags"></i></div>
+                    <div class="fs-1 opacity-75" style="color: #005C66;"><i class="bi bi-tags"></i></div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
-            <div class="card custom-card border-0 p-4 h-100 bg-warning bg-opacity-10 border-start border-warning border-4">
+            <div class="card custom-card border-0 p-4 h-100 border-start border-4" style="border-left-color: #001B27 !important; background: rgba(0, 27, 39, 0.06);">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="text-muted small fw-bold text-uppercase">Pesanan Aktif</div>
-                        <h3 class="fw-bolder mb-0 text-warning mt-1">{{ number_format($totalPesananAktif) }}</h3>
+                        <div class="small fw-bold text-uppercase" style="color: #53707c;">Pesanan Aktif</div>
+                        <h3 class="fw-bolder mb-0 mt-1" style="color: #001B27;">{{ number_format($totalPesananAktif) }}</h3>
                     </div>
-                    <div class="fs-1 text-warning opacity-50"><i class="bi bi-hourglass-split"></i></div>
+                    <div class="fs-1 opacity-75" style="color: #001B27;"><i class="bi bi-hourglass-split"></i></div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
-            <div class="card custom-card border-0 p-4 h-100 bg-dark bg-opacity-10 border-start border-dark border-4">
+            <div class="card custom-card border-0 p-4 h-100 border-start border-4" style="border-left-color: #00B8BE !important; background: rgba(0, 184, 190, 0.08);">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="text-muted small fw-bold text-uppercase">Produk Terjual</div>
-                        <h3 class="fw-bolder mb-0 text-dark mt-1">{{ number_format($totalTerjual) }}</h3>
+                        <div class="small fw-bold text-uppercase" style="color: #53707c;">Produk Terjual</div>
+                        <h3 class="fw-bolder mb-0 mt-1" style="color: #005C66;">{{ number_format($totalTerjual) }}</h3>
                     </div>
-                    <div class="fs-1 text-dark opacity-50"><i class="bi bi-bag-check"></i></div>
+                    <div class="fs-1 opacity-75" style="color: #00B8BE;"><i class="bi bi-bag-check"></i></div>
                 </div>
             </div>
         </div>
     </div>
-        <div class="row g-3 mb-4">
+
+    <!-- SECONDARY STAT CARDS -->
+    <div class="row g-3 mb-4">
         <div class="col-md-3 col-6">
             <div class="card custom-card border-0 p-3 h-100">
-                <div class="text-muted small fw-bold text-uppercase"><i class="bi bi-person me-1"></i> Buyer</div>
-                <div class="fs-3 fw-bold">{{ number_format($totalBuyer) }}</div>
+                <div class="text-muted small fw-bold text-uppercase"><i class="bi bi-person me-1" style="color: #00B8BE;"></i> Buyer</div>
+                <div class="fs-3 fw-bold" style="color: #001B27;">{{ number_format($totalBuyer) }}</div>
             </div>
         </div>
         <div class="col-md-3 col-6">
             <div class="card custom-card border-0 p-3 h-100">
-                <div class="text-muted small fw-bold text-uppercase"><i class="bi bi-shop me-1"></i> Seller Disetujui</div>
-                <div class="fs-3 fw-bold">{{ number_format($totalSeller) }}</div>
+                <div class="text-muted small fw-bold text-uppercase"><i class="bi bi-shop me-1" style="color: #005C66;"></i> Seller Disetujui</div>
+                <div class="fs-3 fw-bold" style="color: #001B27;">{{ number_format($totalSeller) }}</div>
             </div>
         </div>
         <div class="col-md-3 col-6">
             <div class="card custom-card border-0 p-3 h-100">
-                <div class="text-muted small fw-bold text-uppercase"><i class="bi bi-hourglass-split me-1"></i> Pengajuan Pending</div>
-                <div class="fs-3 fw-bold">{{ number_format($pengajuanPending) }}</div>
+                <div class="text-muted small fw-bold text-uppercase"><i class="bi bi-hourglass-split me-1" style="color: #00B8BE;"></i> Pengajuan Pending</div>
+                <div class="fs-3 fw-bold" style="color: #001B27;">{{ number_format($pengajuanPending) }}</div>
             </div>
         </div>
         <div class="col-md-3 col-6">
             <div class="card custom-card border-0 p-3 h-100">
-                <div class="text-muted small fw-bold text-uppercase"><i class="bi bi-receipt me-1"></i> Total Pesanan</div>
-                <div class="fs-3 fw-bold">{{ number_format($totalPesanan) }}</div>
+                <div class="text-muted small fw-bold text-uppercase"><i class="bi bi-receipt me-1" style="color: #005C66;"></i> Total Pesanan</div>
+                <div class="fs-3 fw-bold" style="color: #001B27;">{{ number_format($totalPesanan) }}</div>
             </div>
         </div>
     </div>
+
     <!-- QUICK NAV BUTTONS -->
     <div class="card custom-card border-0 p-3 mb-4">
         <div class="d-flex gap-2 flex-wrap">
@@ -135,15 +138,9 @@
         <div class="col-lg-8">
             <div class="card custom-card border-0 p-4 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold mb-0"><i class="bi bi-receipt me-1"></i> Pesanan Masuk Terbaru</h5>
-                    <a href="{{ route('admin.pesanan.index') }}" class="small text-decoration-none fw-semibold">Semua Pesanan &rarr;</a>
+                    <h5 class="fw-bold mb-0" style="color: #001B27;"><i class="bi bi-receipt me-1" style="color: #00B8BE;"></i> Pesanan Masuk Terbaru</h5>
+                    <a href="{{ route('admin.pesanan.index') }}" class="small text-decoration-none fw-semibold" style="color: #005C66;">Semua Pesanan &rarr;</a>
                 </div>
-        <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm p-3">
-                 <div class="text-muted small">Pendapatan Komisi Website ({{ config('santara.komisi_persen') }}%)</div>
-                     <div class="fw-bold fs-5 text-success">Rp {{ number_format($totalKomisi, 0, ',', '.') }}</div>
-                </div>
-            </div>
 
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
@@ -163,7 +160,7 @@
                                     <td class="fw-bold">#{{ $ro->PesananID }}</td>
                                     <td>{{ $ro->user ? $ro->user->Nama : 'Tamu' }}</td>
                                     <td>{{ $ro->TanggalPesanan ? $ro->TanggalPesanan->format('d/m H:i') : '-' }}</td>
-                                    <td class="fw-bold">Rp {{ number_format($ro->TotalHarga, 0, ',', '.') }}</td>
+                                    <td class="fw-bold" style="color: #005C66;">Rp {{ number_format($ro->TotalHarga, 0, ',', '.') }}</td>
                                     <td>
                                         <span class="badge {{ $ro->StatusPesanan == 'Selesai' ? 'bg-success' : 'bg-warning text-dark' }}">
                                             {{ $ro->StatusPesanan }}
@@ -183,6 +180,17 @@
                         </tbody>
                     </table>
                 </div>
+
+                                <div class="mt-3 p-3 rounded-3 d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: #f4f9fa; border: 1px solid rgba(0, 92, 102, 0.12);">
+                    <div>
+                        <div class="text-muted small fw-bold">Komisi Terealisasi (Pesanan Selesai)</div>
+                        <div class="fw-bold fs-5" style="color: #005C66;">Rp {{ number_format($totalKomisi, 0, ',', '.') }}</div>
+                    </div>
+                    <div class="text-md-end border-start ps-md-3">
+                        <div class="text-muted small fw-bold">Komisi Berjalan (Pesanan Aktif)</div>
+                        <div class="fw-bold fs-6 text-warning">Rp {{ number_format($komisiAktif ?? 0, 0, ',', '.') }}</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -190,22 +198,22 @@
         <div class="col-lg-4">
             <div class="card custom-card border-0 p-4 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-box-seam me-1"></i> Produk Terbaru</h5>
-                    <a href="{{ route('admin.produk.index') }}" class="small text-decoration-none fw-semibold">Lihat Semua &rarr;</a>
+                    <h5 class="fw-bold mb-0" style="color: #001B27;"><i class="bi bi-box-seam me-1" style="color: #00B8BE;"></i> Produk Terbaru</h5>
+                    <a href="{{ route('admin.produk.index') }}" class="small text-decoration-none fw-semibold" style="color: #005C66;">Lihat Semua &rarr;</a>
                 </div>
                 <p class="text-muted small">Item thrift & pre-loved yang baru diinput:</p>
 
                 <div class="d-flex flex-column gap-3">
                     @forelse($latestProducts as $item)
-                        <div class="d-flex gap-3 align-items-center p-2 rounded-3 bg-light">
+                        <div class="d-flex gap-3 align-items-center p-2 rounded-3" style="background: #f4f9fa; border: 1px solid rgba(0, 92, 102, 0.08);">
                             <img src="{{ $item->gambar_url }}" class="rounded-2" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.onerror=null; this.src='{{ asset('upload/default.jpg') }}';">
                             <div class="flex-grow-1">
-                                <div class="fw-bold small text-truncate" style="max-width: 140px;">{{ $item->NamaProduk }}</div>
+                                <div class="fw-bold small text-truncate" style="max-width: 140px; color: #001B27;">{{ $item->NamaProduk }}</div>
                                 <div class="d-flex gap-1 align-items-center mt-1">
-                                    <span class="badge {{ $item->Status == 'Tersedia' ? 'bg-success' : 'bg-secondary' }}" style="font-size: 0.7rem;">
+                                    <span class="badge" style="background: {{ $item->Status == 'Tersedia' ? 'rgba(0, 184, 190, 0.2)' : 'rgba(0, 27, 39, 0.1)' }}; color: {{ $item->Status == 'Tersedia' ? '#005C66' : '#53707c' }}; font-size: 0.7rem;">
                                         {{ $item->Status }}
                                     </span>
-                                    <span class="small text-muted fw-bold">Rp {{ number_format($item->Harga, 0, ',', '.') }}</span>
+                                    <span class="small fw-bold" style="color: #005C66;">Rp {{ number_format($item->Harga, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                             <a href="{{ route('admin.produk.index') }}" class="btn btn-sm btn-outline-dark">

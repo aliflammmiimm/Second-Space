@@ -20,10 +20,16 @@ class PencairanController extends Controller
 
         $riwayat = $user->pencairan()->latest('PencairanID')->paginate(10);
 
+                // Dana dari pesanan aktif yang belum berstatus Selesai
+        $danaTertahan = (int) $user->itemPesanan()
+            ->whereHas('pesanan', fn ($q) => $q->whereNotIn('StatusPesanan', ['Selesai', 'Dibatalkan', 'Kedaluwarsa']))
+            ->sum('PendapatanSeller');
+
         return view('seller.pencairan.index', [
             'user' => $user,
             'totalPendapatan' => $user->totalPendapatan(),
             'saldo' => $user->saldoTersedia(),
+            'danaTertahan' => $danaTertahan,
             'minimal' => self::MINIMAL,
             'riwayat' => $riwayat,
         ]);

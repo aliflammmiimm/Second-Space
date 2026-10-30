@@ -24,9 +24,14 @@ class DashboardController extends Controller
         $totalBuyer = $totalPelanggan - $totalSeller;
         $pengajuanPending = PengajuanSeller::where('Status', 'pending')->count();
 
-        // Pendapatan website = total komisi dari pesanan yang sudah Selesai
+                // Pendapatan website = total komisi dari pesanan yang sudah Selesai
         $totalKomisi = \App\Models\PesananDetail::whereHas(
             'pesanan', fn ($q) => $q->where('StatusPesanan', 'Selesai')
+        )->sum('Komisi');
+
+        // Komisi dari pesanan aktif yang sedang berjalan (escrow)
+        $komisiAktif = \App\Models\PesananDetail::whereHas(
+            'pesanan', fn ($q) => $q->whereNotIn('StatusPesanan', ['Selesai', 'Dibatalkan', 'Kedaluwarsa'])
         )->sum('Komisi');
 
         $recentOrders = Pesanan::with(['user', 'pembayaran', 'pengiriman'])
@@ -49,6 +54,7 @@ class DashboardController extends Controller
             'totalSeller',
             'pengajuanPending',
             'totalKomisi',
+            'komisiAktif',
             'recentOrders',
             'latestProducts'
         ));

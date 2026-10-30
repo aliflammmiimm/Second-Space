@@ -57,8 +57,9 @@ class CheckoutController extends Controller
 
         $total = $items->sum('Harga');
         $langsung = (bool) $id;
+        $produk = $langsung ? $items->first() : null;
 
-        return view('pelanggan.checkout', compact('items', 'total', 'langsung'));
+        return view('pelanggan.checkout', compact('items', 'total', 'langsung', 'produk'));
     }
 
     public function process(Request $request)
@@ -152,11 +153,19 @@ class CheckoutController extends Controller
             return redirect()->route('pelanggan.keranjang')->with('error', $e->getMessage());
         }
 
-        $pesan = $metode === 'Transfer'
-            ? "Pesanan #{$pesanan->PesananID} dibuat. Selesaikan pembayaran sebelum "
-                . $pesanan->BatasBayar->format('d M Y H:i') . '.'
-            : "Pesanan #{$pesanan->PesananID} berhasil dibuat. Bayar tunai saat barang tiba.";
+                if ($metode === 'Transfer') {
+            // Dapatkan Snap Token Midtrans untuk pembayaran transfer
+            $snapToken = \App\Services\MidtransService::createSnapToken($pesanan);
+            if ($snapToken) {
+                $pesanan->pembayaran()->update(['SnapToken' => $snapToken]);
+            }
 
-        return redirect()->route('pelanggan.pesanan')->with('success', $pesan);
+            return redirect()->route('pelanggan.pesanan.detail', $pesanan->PesananID)
+                ->with('success', "Pesanan #{$pesanan->PesananID} berhasil dibuat. Silakan selesaikan pembayaran.")
+                ->with('auto_pay', true);
+        }
+
+        return redirect()->route('pelanggan.pesanan.detail', $pesanan->PesananID)
+            ->with('success', "Pesanan #{$pesanan->PesananID} berhasil dibuat. Bayar tunai saat barang tiba.");
     }
 }

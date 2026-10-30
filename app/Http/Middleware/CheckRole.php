@@ -17,13 +17,23 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!Auth::check()) {
+        $user = null;
+        if ($request->is('admin*')) {
+            $user = Auth::guard('admin')->user();
+        } elseif ($request->is('seller*')) {
+            $user = Auth::guard('seller')->user();
+        } else {
+            $user = Auth::guard('web')->user() ?? Auth::user();
+        }
+
+        if (!$user) {
+            if ($request->is('admin*')) {
+                return redirect()->route('admin.login')->with('error', 'Silakan login sebagai administrator terlebih dahulu.');
+            }
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        $user = Auth::user();
         $userRole = strtolower($user->Role ?? '');
-
         $allowedRoles = array_map('strtolower', $roles);
 
         if (!in_array($userRole, $allowedRoles, true)) {

@@ -33,12 +33,27 @@ class PesananController extends Controller
     }
 
     /** Detail pesanan; pesanan milik orang lain otomatis 404 (anti IDOR) */
-    public function detail($id)
+        public function detail($id)
     {
         $pesanan = Pesanan::with(['detail.produk.jenisProduk', 'detail.seller:UserID,Nama', 'pembayaran', 'pengiriman'])
             ->where('UserID', Auth::id())
             ->where('PesananID', $id)
             ->firstOrFail();
+
+        // Pastikan Snap Token Midtrans tersedia jika pesanan transfer masih menunggu bayar
+        if ($pesanan->MetodePembayaran === 'Transfer' && 
+            $pesanan->pembayaran && 
+            $pesanan->pembayaran->StatusPembayaran === 'Menunggu' && 
+            in_array($pesanan->StatusPesanan, ['Menunggu Pembayaran', 'Diproses'])) {
+            
+            if (!$pesanan->pembayaran->SnapToken) {
+                $token = \App\Services\MidtransService::createSnapToken($pesanan);
+                if ($token) {
+                    $pesanan->pembayaran->SnapToken = $token;
+                    $pesanan->pembayaran->save();
+                }
+            }
+        }
 
         return view('pelanggan.pesanan_detail', compact('pesanan'));
     }

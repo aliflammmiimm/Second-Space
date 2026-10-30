@@ -18,7 +18,7 @@
         left: 20px;
         right: 20px;
         height: 3px;
-        background: #e2e8f0;
+        background: rgba(0, 92, 102, 0.2);
         z-index: 1;
     }
 
@@ -37,36 +37,36 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: #f1f5f9;
-        color: #94a3b8;
+        background: #f4f9fa;
+        color: #53707c;
         font-size: 0.95rem;
         margin-bottom: 6px;
-        border: 2px solid #e2e8f0;
+        border: 2px solid rgba(0, 92, 102, 0.2);
         transition: all 0.3s ease;
     }
 
     .step-item.active .step-icon {
-        background: #e10600;
-        color: #fff;
-        border-color: #e10600;
-        box-shadow: 0 0 0 4px rgba(225, 6, 0, 0.2);
+        background: #00B8BE;
+        color: #001B27;
+        border-color: #00B8BE;
+        box-shadow: 0 0 0 4px rgba(0, 184, 190, 0.25);
     }
 
     .step-item.completed .step-icon {
-        background: #0f172a;
+        background: #005C66;
         color: #fff;
-        border-color: #0f172a;
+        border-color: #005C66;
     }
 
     .step-label {
         font-size: 0.78rem;
         font-weight: 600;
-        color: #64748b;
+        color: #53707c;
         display: block;
     }
 
     .step-item.active .step-label {
-        color: #e10600;
+        color: #005C66;
         font-weight: 700;
     }
 </style>
@@ -78,7 +78,7 @@
     <!-- HEADER & TABS -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-clock-history text-danger me-2"></i> Status Pesanan Aktif Saya</h2>
+            <h2 class="fw-bold mb-1" style="color: #001B27;"><i class="bi bi-clock-history me-2" style="color: #00B8BE;"></i> Status Pesanan Aktif Saya</h2>
             <p class="text-muted mb-0">Pantau proses pengemasan dan pelacakan pengiriman paket Anda secara real-time</p>
         </div>
 
@@ -115,9 +115,9 @@
                     @if($status == 'Diproses')
                         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="bi bi-hourglass-split me-1"></i> Sedang Diproses</span>
                     @elseif($status == 'Dikemas')
-                        <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="bi bi-box-seam me-1"></i> Sedang Dikemas</span>
+                        <span class="badge px-3 py-2 rounded-pill" style="background: #005C66; color: #fff;"><i class="bi bi-box-seam me-1"></i> Sedang Dikemas</span>
                     @elseif($status == 'Dikirim')
-                        <span class="badge bg-info text-dark px-3 py-2 rounded-pill"><i class="bi bi-truck me-1"></i> Dalam Pengiriman</span>
+                        <span class="badge px-3 py-2 rounded-pill" style="background: #00B8BE; color: #001B27;"><i class="bi bi-truck me-1"></i> Dalam Pengiriman</span>
                     @elseif($status == 'Sampai Tujuan')
                         <span class="badge bg-success px-3 py-2 rounded-pill"><i class="bi bi-geo-alt me-1"></i> Telah Sampai Tujuan</span>
                     @endif
@@ -151,17 +151,17 @@
                 <div class="col-lg-7">
                     <h6 class="fw-bold mb-3 text-muted small text-uppercase">Daftar Produk yang Dipesan:</h6>
                     @foreach($ps->detail as $item)
-                        <div class="d-flex gap-3 align-items-center mb-3 p-2 rounded-3 bg-light">
+                        <div class="d-flex gap-3 align-items-center mb-3 p-2 rounded-3" style="background: #f4f9fa; border: 1px solid rgba(0, 92, 102, 0.1);">
                             <img src="{{ $item->produk ? $item->produk->gambar_url : asset('upload/default.jpg') }}" 
                                  class="rounded-3" style="width: 65px; height: 65px; object-fit: cover;"
                                  onerror="this.onerror=null; this.src='{{ asset('upload/default.jpg') }}';">
                             <div class="flex-grow-1">
-                                <h6 class="mb-1 fw-bold">{{ $item->produk ? $item->produk->NamaProduk : 'Produk' }}</h6>
+                                <h6 class="mb-1 fw-bold" style="color: #001B27;">{{ $item->produk ? $item->produk->NamaProduk : 'Produk' }}</h6>
                                 <div class="small text-muted">
                                     Kategori: {{ $item->produk && $item->produk->jenisProduk ? $item->produk->jenisProduk->NamaJenis : '-' }} &bull; 
                                     Size: {{ $item->produk ? $item->produk->Ukuran : '-' }}
                                 </div>
-                                <div class="fw-bold text-danger">{{ $item->Jumlah }} &times; Rp {{ number_format($item->HargaSatuan, 0, ',', '.') }}</div>
+                                <div class="fw-bold" style="color: #005C66;">{{ $item->Jumlah }} &times; Rp {{ number_format($item->HargaSatuan, 0, ',', '.') }}</div>
                             </div>
                         </div>
                     @endforeach
@@ -183,20 +183,36 @@
                         </div>
 
                         @if($ps->pengiriman && $ps->pengiriman->NoResi)
-                            <div class="p-3 bg-light rounded-3 mb-3 border">
+                            <div class="p-3 rounded-3 mb-3 border" style="background: #f4f9fa; border-color: rgba(0, 92, 102, 0.15) !important;">
                                 <span class="small text-muted d-block">Nomor Resi Pengiriman:</span>
-                                <strong class="fs-6 font-monospace text-dark">{{ $ps->pengiriman->NoResi }}</strong>
+                                <strong class="fs-6 font-monospace" style="color: #001B27;">{{ $ps->pengiriman->NoResi }}</strong>
                             </div>
                         @endif
 
-                        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                                <div class="d-flex justify-content-between align-items-center pt-3 border-top gap-2 flex-wrap">
                             <div>
                                 <small class="text-muted d-block">Total Tagihan</small>
-                                <span class="fs-4 fw-bolder text-danger">Rp {{ number_format($ps->TotalHarga, 0, ',', '.') }}</span>
+                                <span class="fs-4 fw-bolder" style="color: #005C66;">Rp {{ number_format($ps->TotalHarga, 0, ',', '.') }}</span>
                             </div>
-                            <a href="{{ route('pelanggan.pesanan.detail', $ps->PesananID) }}" class="btn btn-dark rounded-pill px-4">
-                                Detail Invoice &rarr;
-                            </a>
+                            <div class="d-flex gap-2 align-items-center">
+                                                                @if($ps->StatusPesanan === 'Menunggu Pembayaran')
+                                    <a href="{{ route('pelanggan.pesanan.detail', $ps->PesananID) }}" class="btn btn-danger rounded-pill px-3 py-2 fw-bold shadow-sm">
+                                        <i class="bi bi-wallet2 me-1"></i> Bayar Sekarang
+                                    </a>
+                                @endif
+                                @if(in_array($ps->StatusPesanan, ['Dikirim', 'Sampai Tujuan']))
+                                    <form action="{{ route('pelanggan.pesanan.terima', $ps->PesananID) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin barang sudah diterima dengan baik? Dana akan diteruskan ke penjual.')" class="m-0">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn btn-success rounded-pill px-3 py-2 fw-bold shadow-sm">
+                                            <i class="bi bi-check-circle me-1"></i> Terima Barang
+                                        </button>
+                                    </form>
+                                @endif
+                                <a href="{{ route('pelanggan.pesanan.detail', $ps->PesananID) }}" class="btn btn-dark rounded-pill px-4">
+                                    Detail Invoice &rarr;
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -206,25 +222,16 @@
         <div class="card custom-card border-0 text-center py-5 shadow-sm">
             <div class="py-4">
                 <i class="bi bi-clipboard-check fs-1 text-muted"></i>
-                <h4 class="mt-3 fw-bold">Tidak Ada Pesanan Aktif</h4>
+                <h4 class="mt-3 fw-bold" style="color: #001B27;">Tidak Ada Pesanan Aktif</h4>
                 <p class="text-muted" style="max-width: 480px; margin: auto;">
-                    Saat ini Anda tidak memiliki pesanan yang sedang diproses. Semua pesanan Anda sebelumnya sudah tuntas atau Anda belum membuat pesanan baru.
+                    Saat ini Anda tidak memiliki transaksi yang sedang berjalan.
                 </p>
-                <div class="d-flex justify-content-center gap-2 mt-4">
-                    <a href="{{ route('pelanggan.katalog') }}" class="btn btn-danger rounded-pill px-4 py-2 fw-semibold">
-                        <i class="bi bi-bag-plus me-1"></i> Mulai Belanja di SecondSpace
-                    </a>
-                    <a href="{{ route('pelanggan.pesanan') }}" class="btn btn-outline-secondary rounded-pill px-4 py-2">
-                        <i class="bi bi-archive me-1"></i> Lihat Riwayat Pesanan
-                    </a>
-                </div>
+                <a href="{{ route('pelanggan.katalog') }}" class="btn btn-danger rounded-pill px-4 mt-3">
+                    <i class="bi bi-bag-plus me-1"></i> Mulai Belanja Sekarang
+                </a>
             </div>
         </div>
     @endforelse
-
-    <div class="d-flex justify-content-center mt-4">
-        {{ $pesananAktif->links() }}
-    </div>
 
 </div>
 @endsection

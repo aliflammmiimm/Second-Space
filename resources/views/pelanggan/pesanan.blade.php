@@ -7,14 +7,14 @@
     
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-archive text-danger me-2"></i> Riwayat Semua Pesanan</h2>
+            <h2 class="fw-bold mb-1" style="color: #001B27;"><i class="bi bi-archive me-2" style="color: #00B8BE;"></i> Riwayat Semua Pesanan</h2>
             <p class="text-muted mb-0">Arsip seluruh transaksi dan histori belanja Anda di SecondSpace</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('pelanggan.pesanan_aktif') }}" class="btn btn-outline-danger rounded-pill px-3 shadow-sm">
-                <i class="bi bi-clock-history me-1"></i> Lihat Pesanan Aktif
+            <a href="{{ route('pelanggan.pesanan_aktif') }}" class="btn btn-outline-dark rounded-pill px-3 shadow-sm">
+                <i class="bi bi-clock-history me-1" style="color: #00B8BE;"></i> Lihat Pesanan Aktif
             </a>
-            <a href="{{ route('pelanggan.katalog') }}" class="btn btn-outline-dark rounded-pill px-3">
+            <a href="{{ route('pelanggan.katalog') }}" class="btn btn-outline-secondary rounded-pill px-3">
                 <i class="bi bi-cart-plus me-1"></i> Belanja Lagi
             </a>
         </div>
@@ -24,20 +24,20 @@
         <div class="card custom-card border-0 mb-4 p-4 shadow-sm">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pb-3 mb-3 border-bottom">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="fw-bold fs-5">Pesanan #{{ $p->PesananID }}</span>
+                    <span class="fw-bold fs-5" style="color: #001B27;">Pesanan #{{ $p->PesananID }}</span>
                     <span class="text-muted small">&bull; {{ $p->TanggalPesanan ? $p->TanggalPesanan->format('d M Y, H:i') : '-' }}</span>
                 </div>
                 <div>
                     @if($p->StatusPesanan == 'Diproses')
                         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="bi bi-hourglass-split me-1"></i> Diproses</span>
                     @elseif($p->StatusPesanan == 'Dikemas')
-                        <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="bi bi-box-seam me-1"></i> Dikemas</span>
+                        <span class="badge px-3 py-2 rounded-pill" style="background: #005C66; color: #fff;"><i class="bi bi-box-seam me-1"></i> Dikemas</span>
                     @elseif($p->StatusPesanan == 'Dikirim')
-                        <span class="badge bg-info text-dark px-3 py-2 rounded-pill"><i class="bi bi-truck me-1"></i> Sedang Dikirim</span>
+                        <span class="badge px-3 py-2 rounded-pill" style="background: #00B8BE; color: #001B27;"><i class="bi bi-truck me-1"></i> Sedang Dikirim</span>
                     @elseif($p->StatusPesanan == 'Sampai Tujuan')
                         <span class="badge bg-success px-3 py-2 rounded-pill"><i class="bi bi-geo-alt me-1"></i> Sampai Tujuan</span>
                     @elseif($p->StatusPesanan == 'Selesai')
-                        <span class="badge bg-dark px-3 py-2 rounded-pill"><i class="bi bi-check2-all me-1"></i> Selesai</span>
+                        <span class="badge px-3 py-2 rounded-pill" style="background: #001B27; color: #00B8BE;"><i class="bi bi-check2-all me-1"></i> Selesai</span>
                     @endif
                 </div>
             </div>
@@ -51,7 +51,7 @@
                                  class="rounded-3" style="width: 60px; height: 60px; object-fit: cover;"
                                  onerror="this.onerror=null; this.src='{{ asset('upload/default.jpg') }}';">
                             <div>
-                                <h6 class="mb-0 fw-bold">{{ $item->produk ? $item->produk->NamaProduk : 'Produk' }}</h6>
+                                <h6 class="mb-0 fw-bold" style="color: #001B27;">{{ $item->produk ? $item->produk->NamaProduk : 'Produk' }}</h6>
                                 <div class="small text-muted">{{ $item->Jumlah }} item &times; Rp {{ number_format($item->HargaSatuan, 0, ',', '.') }}</div>
                             </div>
                         </div>
@@ -76,7 +76,7 @@
                         <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
                             <div>
                                 <small class="text-muted d-block">Total Pembayaran</small>
-                                <span class="fs-5 fw-bold text-danger">Rp {{ number_format($p->TotalHarga, 0, ',', '.') }}</span>
+                                <span class="fs-5 fw-bold" style="color: #005C66;">Rp {{ number_format($p->TotalHarga, 0, ',', '.') }}</span>
                             </div>
                             <a href="{{ route('pelanggan.pesanan.detail', $p->PesananID) }}" class="btn btn-outline-dark btn-sm rounded-pill px-3">
                                 Rincian <i class="bi bi-chevron-right ms-1"></i>
@@ -97,10 +97,6 @@
             </div>
         </div>
     @endforelse
-
-    <div class="d-flex justify-content-center mt-4">
-        {{ $pesanan->links() }}
-    </div>
 
 </div>
 @endsection

@@ -17,6 +17,12 @@ class Pembayaran extends Model
         'PesananID',
         'Metode',
         'StatusPembayaran',
+        'SnapToken',
+        'TransactionID',
+        'PaymentType',
+        'PaymentDetails',
+        'BuktiBayar',
+        'DiunggahPada',
     ];
 
     public function pesanan()

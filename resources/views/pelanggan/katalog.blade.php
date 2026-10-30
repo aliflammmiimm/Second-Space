@@ -8,52 +8,53 @@
         background: #ffffff;
         border-radius: 16px;
         padding: 18px 24px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 4px 20px rgba(0, 27, 39, 0.03);
+        border: 1px solid rgba(0, 92, 102, 0.12);
     }
 
     .category-pill {
         display: inline-block;
         padding: 8px 18px;
         border-radius: 50px;
-        background: #f1f5f9;
-        color: #475569;
+        background: #eaf6f7;
+        color: #005C66;
         text-decoration: none;
         font-size: 0.9rem;
         font-weight: 600;
         transition: all 0.2s ease;
-        border: 1px solid transparent;
+        border: 1px solid rgba(0, 92, 102, 0.15);
     }
 
     .category-pill:hover, .category-pill.active {
-        background: #0f172a;
-        color: #ffffff;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+        background: #001B27;
+        color: #00B8BE;
+        border-color: #005C66;
+        box-shadow: 0 4px 12px rgba(0, 27, 39, 0.25);
     }
 
     .product-box {
         background: #ffffff;
         border-radius: 16px;
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 92, 102, 0.12);
         overflow: hidden;
         transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
         height: 100%;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        box-shadow: 0 4px 15px rgba(0, 27, 39, 0.03);
     }
 
     .product-box:hover {
         transform: translateY(-6px);
-        box-shadow: 0 16px 35px rgba(0, 0, 0, 0.08);
-        border-color: rgba(225, 6, 0, 0.4);
+        box-shadow: 0 16px 35px rgba(0, 27, 39, 0.08);
+        border-color: rgba(0, 184, 190, 0.5);
     }
 
     .product-thumb-wrapper {
         position: relative;
         width: 100%;
         height: 250px;
-        background: #f1f5f9;
+        background: #f4f9fa;
         overflow: hidden;
     }
 
@@ -72,7 +73,7 @@
     .product-title {
         font-weight: 700;
         font-size: 1.05rem;
-        color: #1e293b;
+        color: #001B27;
         margin-bottom: 6px;
         line-height: 1.4;
         min-height: 44px;
@@ -83,7 +84,7 @@
     }
 
     .product-desc {
-        color: #64748b;
+        color: #53707c;
         font-size: 0.85rem;
         line-height: 1.4;
         display: -webkit-box;
@@ -96,7 +97,7 @@
     .product-price {
         font-weight: 800;
         font-size: 1.25rem;
-        color: #e10600;
+        color: #005C66;
     }
 
     .badge-stock {
@@ -180,7 +181,7 @@
                         
                         <div class="position-absolute top-0 start-0 m-2 d-flex gap-1 flex-column">
                             @if($p->jenisProduk)
-                                <span class="badge bg-dark bg-opacity-90 shadow-sm">{{ $p->jenisProduk->NamaJenis }}</span>
+                                <span class="badge shadow-sm" style="background: rgba(0, 27, 39, 0.88); color: #fff;">{{ $p->jenisProduk->NamaJenis }}</span>
                             @endif
                         </div>
                     </div>
@@ -203,11 +204,11 @@
                             <div class="d-flex justify-content-between align-items-center mt-2 mb-3">
                                 <span class="product-price">Rp {{ number_format($p->Harga, 0, ',', '.') }}</span>
                                 @if($p->Status == 'Tersedia' && $p->Stok > 0)
-                                    <span class="badge bg-success bg-opacity-10 text-success badge-stock border border-success">
+                                    <span class="badge badge-stock" style="background: rgba(0, 184, 190, 0.15); color: #005C66; border: 1px solid rgba(0, 184, 190, 0.4);">
                                         <i class="bi bi-check2-circle me-1"></i> Tersedia
                                     </span>
                                 @else
-                                    <span class="badge bg-danger bg-opacity-10 text-danger badge-stock border border-danger">
+                                    <span class="badge badge-stock" style="background: rgba(0, 27, 39, 0.08); color: #53707c; border: 1px solid rgba(0, 27, 39, 0.15);">
                                         <i class="bi bi-slash-circle me-1"></i> Terjual
                                     </span>
                                 @endif

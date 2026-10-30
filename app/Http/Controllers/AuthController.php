@@ -11,47 +11,89 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * Tampilkan formulir login publik untuk Pelanggan & Seller.
+     */
     public function showLogin()
     {
-        if (Auth::check()) {
-            return $this->redirectByRole(Auth::user());
+        // Hanya redirect jika kedua guard pembeli dan penjual sudah aktif di sesi ini
+        if (Auth::guard('web')->check() && Auth::guard('seller')->check()) {
+            return redirect()->route('pelanggan.katalog');
         }
+
         return view('auth.login');
     }
 
+    /**
+     * Proses login untuk Pelanggan atau Seller dengan pemilihan radio button.
+     */
     public function login(Request $request)
     {
         $request->validate([
+            'role' => 'required|in:pelanggan,seller',
             'email' => 'required|string',
             'password' => 'required|string',
         ], [
+            'role.required' => 'Pilih peran login Anda (Pelanggan atau Seller).',
+            'role.in' => 'Pilihan peran tidak valid.',
             'email.required' => 'Nomor HP atau Email wajib diisi.',
             'password.required' => 'Password wajib diisi.',
         ]);
 
+        $role = $request->input('role');
         $identifier = trim($request->input('email'));
         $password = $request->input('password');
 
-        // Login hanya lewat NoHP_Email (kolom ini unik; Nama tidak unik)
         $user = User::where('NoHP_Email', $identifier)->first();
 
-        if ($user && (Hash::check($password, $user->Password) || password_verify($password, $user->Password))) {
-            Auth::login($user, $request->boolean('remember'));
-            $request->session()->regenerate();
+        // Verifikasi kecocokan password
+        $passwordMatches = $user && (
+            Hash::check($password, $user->Password) || 
+            password_verify($password, $user->Password)
+        );
 
-            return $this->redirectByRole($user)->with('success', 'Selamat datang kembali, ' . $user->Nama . '!');
+        if (!$user || !$passwordMatches) {
+            return back()
+                ->withInput($request->only('email', 'role'))
+                ->with('error', 'Login gagal. Nomor HP / Email atau password salah.');
         }
 
-        return back()
-            ->withInput($request->only('email'))
-            ->with('error', 'Login gagal. Nomor HP / Email atau password salah.');
+        // Jika akun adalah Admin, tolak dan arahkan ke portal admin
+        if ($user->isAdmin()) {
+            return back()
+                ->withInput($request->only('email', 'role'))
+                ->with('error', 'Akun Administrator tidak dapat masuk melalui halaman ini. Silakan akses portal khusus di /admin/login.');
+        }
+
+        // Proses autentikasi sesuai peran yang dipilih pada radio button
+        if ($role === 'seller') {
+            if (!$user->isSeller()) {
+                return back()
+                    ->withInput($request->only('email', 'role'))
+                    ->with('error', 'Akun ini belum disetujui sebagai Seller. Silakan pilih login sebagai "Pelanggan" untuk masuk atau memeriksa status pengajuan Seller Anda.');
+            }
+
+            Auth::guard('seller')->login($user, $request->boolean('remember'));
+            $request->session()->regenerate();
+
+            return redirect()->route('seller.produk.index')
+                ->with('success', 'Selamat datang di Toko Anda, ' . $user->Nama . '!');
+        }
+
+        // Peran Pelanggan (Buyer)
+        Auth::guard('web')->login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
+
+        return redirect()->route('pelanggan.katalog')
+            ->with('success', 'Selamat datang kembali, ' . $user->Nama . '!');
     }
 
     public function showRegister()
     {
-        if (Auth::check()) {
-            return $this->redirectByRole(Auth::user());
+        if (Auth::guard('web')->check()) {
+            return redirect()->route('pelanggan.katalog');
         }
+
         return view('auth.register');
     }
 
@@ -76,16 +118,17 @@ class AuthController extends Controller
             'Role' => 'Pelanggan',
         ]);
 
-        Auth::login($user);
+        Auth::guard('web')->login($user);
         $request->session()->regenerate();
 
         return redirect()->route('pelanggan.katalog')
             ->with('success', 'Registrasi berhasil! Selamat datang di SecondSpace.');
     }
-        public function showRegisterSeller()
+
+    public function showRegisterSeller()
     {
-        if (Auth::check()) {
-            return $this->redirectByRole(Auth::user());
+        if (Auth::guard('seller')->check()) {
+            return redirect()->route('seller.produk.index');
         }
 
         return view('auth.register_seller');
@@ -119,7 +162,6 @@ class AuthController extends Controller
             'setuju.accepted' => 'Anda harus menyetujui pernyataan sebelum mendaftar.',
         ]);
 
-        // Akun dibuat sebagai Pelanggan; hak Seller baru aktif setelah Admin menyetujui.
         $user = DB::transaction(function () use ($request) {
             $user = User::create([
                 'Nama' => trim($request->input('nama')),
@@ -139,32 +181,32 @@ class AuthController extends Controller
             return $user;
         });
 
-        Auth::login($user);
+        Auth::guard('web')->login($user);
         $request->session()->regenerate();
 
         return redirect()->route('pelanggan.seller.status')
             ->with('success', 'Akun dibuat dan pengajuan Seller terkirim. Mohon tunggu persetujuan Admin.');
     }
 
+    /**
+     * Logout untuk guard Pelanggan.
+     */
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
+        Auth::guard('web')->logout();
         $request->session()->regenerateToken();
 
         return redirect()->route('home')->with('success', 'Anda telah berhasil logout.');
     }
 
-    protected function redirectByRole($user)
+    /**
+     * Logout untuk guard Seller.
+     */
+    public function logoutSeller(Request $request)
     {
-        $role = strtolower($user->Role ?? '');
+        Auth::guard('seller')->logout();
+        $request->session()->regenerateToken();
 
-        if ($role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->isSeller()) {
-            return redirect()->route('seller.produk.index');
-        } else {
-            return redirect()->route('pelanggan.katalog');
-        }
+        return redirect()->route('home')->with('success', 'Seller telah berhasil logout.');
     }
 }

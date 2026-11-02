@@ -22,7 +22,11 @@ class KeranjangController extends Controller
         $item->each(fn ($k) => $k->tersedia = $k->produk && $k->produk->bisaDibeli());
         $total = $item->where('tersedia', true)->sum(fn ($k) => $k->produk->Harga);
 
-        return view('pelanggan.keranjang', compact('item', 'total'));
+        // Kelompokkan barang berdasarkan Seller untuk memfasilitasi checkout per toko (multi-seller friendly)
+        $itemBySeller = $item->groupBy(fn ($k) => $k->produk?->SellerID ?? 0);
+        $sellersTersedia = $item->where('tersedia', true)->pluck('produk.SellerID')->unique()->filter()->values();
+
+        return view('pelanggan.keranjang', compact('item', 'total', 'itemBySeller', 'sellersTersedia'));
     }
 
     public function tambah($id)

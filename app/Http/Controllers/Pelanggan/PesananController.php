@@ -18,6 +18,14 @@ class PesananController extends Controller
             ->latest('PesananID')
             ->paginate(10);
 
+        // Pastikan pesanan COD memiliki PIN Serah-Terima
+        foreach ($pesananAktif as $p) {
+            if ($p->MetodePembayaran === 'COD' && empty($p->KodePinCod)) {
+                $p->KodePinCod = sprintf('%06d', mt_rand(100000, 999999));
+                $p->save();
+            }
+        }
+
         return view('pelanggan.pesanan_aktif', compact('pesananAktif'));
     }
 
@@ -39,6 +47,12 @@ class PesananController extends Controller
             ->where('UserID', Auth::id())
             ->where('PesananID', $id)
             ->firstOrFail();
+
+        // Pastikan PIN COD tersedia jika pesanan COD belum memiliki PIN
+        if ($pesanan->MetodePembayaran === 'COD' && empty($pesanan->KodePinCod)) {
+            $pesanan->KodePinCod = sprintf('%06d', mt_rand(100000, 999999));
+            $pesanan->save();
+        }
 
         // Pastikan Snap Token Midtrans tersedia jika pesanan transfer masih menunggu bayar
         if ($pesanan->MetodePembayaran === 'Transfer' && 
@@ -82,11 +96,13 @@ class PesananController extends Controller
                 $pesanan->pengiriman->save();
             }
 
-            // COD: pembayaran dianggap valid setelah barang diterima
+            // COD: pembayaran dianggap valid setelah barang diterima & daftarkan tagihan komisi COD 4 hari
             if ($pesanan->pembayaran && $pesanan->pembayaran->StatusPembayaran !== 'Valid') {
                 $pesanan->pembayaran->StatusPembayaran = 'Valid';
                 $pesanan->pembayaran->save();
             }
+
+            \App\Services\KomisiService::buatTagihanCodJikaPerlu($pesanan);
 
             return ['success', "Pesanan #{$pesanan->PesananID} selesai. Terima kasih sudah berbelanja!"];
         });

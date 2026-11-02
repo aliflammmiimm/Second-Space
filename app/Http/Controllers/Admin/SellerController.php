@@ -83,6 +83,11 @@ class SellerController extends Controller
                     if ($p->Gambar && !str_starts_with($p->Gambar, 'http')) {
                         $fileHapus[] = $p->Gambar;
                     }
+                    foreach ($p->gambarTambahan as $gt) {
+                        if ($gt->PathGambar && !str_starts_with($gt->PathGambar, 'http')) {
+                            $fileHapus[] = $gt->PathGambar;
+                        }
+                    }
                     $p->delete();
                 }
             }
@@ -103,5 +108,38 @@ class SellerController extends Controller
         }
 
         return back()->with($hasil[0], $hasil[1]);
+    }
+
+    public function blokir(Request $request, $id)
+    {
+        $request->validate([
+            'alasan' => 'required|string|max:255',
+        ], [
+            'alasan.required' => 'Alasan pemblokiran wajib diisi.',
+        ]);
+
+        $seller = User::where('UserID', $id)->where('is_seller', 1)->firstOrFail();
+        if ($seller->isAdmin()) {
+            return back()->with('error', 'Akun Administrator tidak dapat diblokir.');
+        }
+
+        $seller->is_blocked = 1;
+        $seller->AlasanBlokir = trim($request->input('alasan'));
+        $seller->DiblokirPada = now();
+        $seller->save();
+
+        return back()->with('success', "Toko seller \"{$seller->Nama}\" berhasil diblokir.");
+    }
+
+    public function bukaBlokir($id)
+    {
+        $seller = User::where('UserID', $id)->where('is_seller', 1)->firstOrFail();
+
+        $seller->is_blocked = 0;
+        $seller->AlasanBlokir = null;
+        $seller->DiblokirPada = null;
+        $seller->save();
+
+        return back()->with('success', "Blokir toko seller \"{$seller->Nama}\" berhasil dibuka. Toko aktif kembali.");
     }
 }

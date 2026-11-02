@@ -20,7 +20,9 @@ use App\Http\Controllers\Pelanggan\PengajuanSellerController;
 use App\Http\Controllers\Pelanggan\PesananController as PelangganPesananController;
 use App\Http\Controllers\Pelanggan\ProfilController;
 use App\Http\Controllers\Admin\PencairanController as AdminPencairanController;
+use App\Http\Controllers\Admin\KomisiController as AdminKomisiController;
 use App\Http\Controllers\Seller\PencairanController as SellerPencairanController;
+use App\Http\Controllers\Seller\KomisiController as SellerKomisiController;
 use App\Http\Controllers\Seller\PesananController as SellerPesananController;
 use App\Http\Controllers\Seller\ProdukController as SellerProdukController;
 use App\Http\Controllers\MidtransController;
@@ -90,8 +92,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/seller/{id}/approve', [AdminPengajuanSellerController::class, 'approve'])->name('seller.approve');
         Route::put('/seller/{id}/reject', [AdminPengajuanSellerController::class, 'reject'])->name('seller.reject');
 
-        // Daftar seluruh Seller + hapus akun Seller
+        // Daftar seluruh Seller + hapus / blokir akun Seller
         Route::get('/daftar-seller', [AdminSellerController::class, 'index'])->name('seller_aktif.index');
+        Route::put('/daftar-seller/{id}/blokir', [AdminSellerController::class, 'blokir'])->whereNumber('id')->name('seller_aktif.blokir');
+        Route::put('/daftar-seller/{id}/buka-blokir', [AdminSellerController::class, 'bukaBlokir'])->whereNumber('id')->name('seller_aktif.buka_blokir');
         Route::delete('/daftar-seller/{id}', [AdminSellerController::class, 'destroy'])->name('seller_aktif.destroy');
 
         // Pengguna
@@ -119,6 +123,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/pencairan', [AdminPencairanController::class, 'index'])->name('pencairan.index');
         Route::put('/pencairan/{id}/selesai', [AdminPencairanController::class, 'selesai'])->name('pencairan.selesai');
         Route::put('/pencairan/{id}/tolak', [AdminPencairanController::class, 'tolak'])->name('pencairan.tolak');
+
+        // Manajemen Komisi COD (10% batas 4 hari)
+        Route::get('/komisi-cod', [AdminKomisiController::class, 'index'])->name('komisi.index');
+        Route::put('/komisi-cod/{id}/verifikasi', [AdminKomisiController::class, 'verifikasi'])->whereNumber('id')->name('komisi.verifikasi');
     });
 });
 
@@ -133,9 +141,14 @@ Route::prefix('seller')->name('seller.')->middleware(['auth:seller', 'seller'])-
     Route::delete('/produk/{id}', [SellerProdukController::class, 'tarik'])->name('produk.tarik');
     Route::get('/pesanan', [SellerPesananController::class, 'index'])->name('pesanan.index');
     Route::put('/pesanan/{id}/kirim', [SellerPesananController::class, 'kirim'])->whereNumber('id')->name('pesanan.kirim');
+    Route::put('/pesanan/{id}/selesaikan-cod', [SellerPesananController::class, 'selesaikanCod'])->whereNumber('id')->name('pesanan.selesaikan_cod');
 
     // Saldo & pencairan
     Route::get('/pencairan', [SellerPencairanController::class, 'index'])->name('pencairan.index');
     Route::put('/pencairan/rekening', [SellerPencairanController::class, 'simpanRekening'])->name('pencairan.rekening');
     Route::post('/pencairan', [SellerPencairanController::class, 'store'])->name('pencairan.store');
+
+    // Tagihan Komisi COD
+    Route::get('/komisi-cod', [SellerKomisiController::class, 'index'])->name('komisi.index');
+    Route::post('/komisi-cod/{id}/upload-bukti', [SellerKomisiController::class, 'uploadBukti'])->whereNumber('id')->name('komisi.upload_bukti');
 });

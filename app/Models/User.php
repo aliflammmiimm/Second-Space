@@ -14,12 +14,11 @@ class User extends Authenticatable
     protected $primaryKey = 'UserID';
     public $timestamps = false;
 
-    // Role & is_seller sengaja TIDAK fillable.
+    // Role & is_seller sengaja TIDAK fillable demi keamanan (anti mass-assignment).
     protected $fillable = [
         'Nama',
         'NoHP_Email',
         'Password',
-        'Role',
     ];
 
     protected $hidden = [
@@ -63,11 +62,29 @@ class User extends Authenticatable
         return $this->hasMany(Pencairan::class, 'SellerID', 'UserID');
     }
 
-    /** Total pendapatan bersih dari pesanan yang sudah Selesai. */
+    public function tagihanKomisiCod()
+    {
+        return $this->hasMany(TagihanKomisiCod::class, 'SellerID', 'UserID');
+    }
+
+    public function isBlocked(): bool
+    {
+        return (bool) $this->is_blocked;
+    }
+
+    /** Total pendapatan bersih dari pesanan yang sudah Selesai (uang dipegang platform via Transfer/Midtrans). */
     public function totalPendapatan(): int
     {
         return (int) $this->itemPesanan()
-            ->whereHas('pesanan', fn ($q) => $q->where('StatusPesanan', 'Selesai'))
+            ->whereHas('pesanan', fn ($q) => $q->where('StatusPesanan', 'Selesai')->where('MetodePembayaran', 'Transfer'))
+            ->sum('PendapatanSeller');
+    }
+
+    /** Total penjualan COD yang sudah Selesai (uang tunai sudah diterima langsung oleh seller/kurir). */
+    public function totalPendapatanCod(): int
+    {
+        return (int) $this->itemPesanan()
+            ->whereHas('pesanan', fn ($q) => $q->where('StatusPesanan', 'Selesai')->where('MetodePembayaran', 'COD'))
             ->sum('PendapatanSeller');
     }
 

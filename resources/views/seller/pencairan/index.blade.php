@@ -57,14 +57,16 @@
             <div class="seller-stat border-start border-4" style="border-left-color: #005C66 !important;">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="label">Total Pendapatan</div>
+                        <div class="label">Pendapatan Transfer</div>
                         <div class="angka mt-1" style="color: #005C66; font-size: 1.35rem;">
                             Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
                         </div>
                     </div>
                     <div class="fs-3 opacity-75" style="color: #005C66;"><i class="bi bi-graph-up-arrow"></i></div>
                 </div>
-                <small class="text-muted d-block mt-2" style="font-size: 0.75rem;">Akumulasi bersih dari awal berjualan</small>
+                <small class="text-muted d-block mt-2" style="font-size: 0.75rem;">
+                    Transfer Midtrans. @if(!empty($totalPendapatanCod) && $totalPendapatanCod > 0) <span class="text-success">(COD tunai: Rp {{ number_format($totalPendapatanCod, 0, ',', '.') }})</span> @endif
+                </small>
             </div>
         </div>
 

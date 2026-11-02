@@ -94,6 +94,10 @@
                        class="{{ request()->routeIs('seller.pencairan.*') ? 'active' : '' }}">
                         <i class="bi bi-wallet2"></i> Saldo &amp; Pencairan
                     </a>
+                    <a href="{{ route('seller.komisi.index') }}"
+                       class="{{ request()->routeIs('seller.komisi.*') ? 'active' : '' }}">
+                        <i class="bi bi-receipt-cutoff"></i> Komisi COD
+                    </a>
 
                     <hr class="my-2">
 
@@ -111,6 +115,26 @@
         </aside>
 
         <section class="col-lg-9">
+            @if(!empty($u->is_blocked))
+                <div class="alert alert-danger border-0 shadow-sm rounded-4 p-4 mb-4" style="background: rgba(225, 29, 72, 0.1); border-left: 5px solid #e11d48 !important;">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-shield-slash-fill fs-2 text-danger"></i>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-danger">Toko Anda Sedang Diblokir</h5>
+                            <p class="mb-2 text-dark small">{{ $u->AlasanBlokir ?? 'Toko Anda ditangguhkan karena tunggakan komisi COD melewati batas waktu 4 hari atau tindakan penertiban admin.' }}</p>
+                            <div class="small text-muted">
+                                <strong>Dampak pemblokiran:</strong> Produk Anda disembunyikan dari katalog publik dan Anda tidak dapat menambah/mengubah produk.
+                            </div>
+                            <div class="mt-3">
+                                <a href="{{ route('seller.komisi.index') }}" class="btn btn-danger btn-sm rounded-pill px-3 fw-semibold">
+                                    <i class="bi bi-receipt-cutoff me-1"></i> Buka Menu Komisi COD &amp; Selesaikan Tagihan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             @yield('seller_content')
         </section>
     </div>

@@ -116,6 +116,32 @@
             </div>
         </div>
 
+        <!-- KARTU PIN COD PEMBELI (SERAH TERIMA TUNAI) -->
+        @if($pesanan->MetodePembayaran === 'COD' && $pesanan->StatusPesanan !== 'Selesai' && $pesanan->StatusPesanan !== 'Dibatalkan')
+            <div class="card border-0 p-4 rounded-4 mt-4 shadow-sm" style="background: linear-gradient(135deg, rgba(0, 184, 190, 0.08), rgba(0, 27, 39, 0.04)); border: 2px dashed #00B8BE !important;">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-success"><i class="bi bi-cash-stack me-1"></i> Cash on Delivery</span>
+                            <span class="small text-muted">Serah-Terima Barang &amp; Uang Tunai</span>
+                        </div>
+                        <h5 class="fw-bold mb-1" style="color: #001B27;">Kode PIN Serah-Terima COD</h5>
+                        <p class="text-muted small mb-0">
+                            Tunjukkan 6 digit PIN ini kepada penjual <strong>hanya setelah</strong> Anda menerima barang dan menyerahkan uang tunai. Penjual akan memasukkan PIN ini untuk mengonfirmasi transaksi selesai.
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end text-center">
+                        <div class="d-inline-block px-4 py-2 rounded-3 bg-white border shadow-sm">
+                            <div class="small text-muted fw-bold">KODE PIN COD</div>
+                            <div class="fs-2 fw-bolder" style="color: #005C66; letter-spacing: 4px;">
+                                {{ $pesanan->KodePinCod ?? '------' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- BANNER & TOMBOL PEMBAYARAN MIDTRANS JIKA BELUM BAYAR -->
         @if($pesanan->MetodePembayaran == 'Transfer' && $pesanan->StatusPesanan == 'Menunggu Pembayaran')
             <div class="card border-0 p-4 rounded-3 mt-4 text-center" style="background: linear-gradient(135deg, rgba(0, 184, 190, 0.12), rgba(0, 92, 102, 0.08)); border: 1px solid rgba(0, 184, 190, 0.3) !important;">

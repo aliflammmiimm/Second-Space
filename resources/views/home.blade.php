@@ -182,17 +182,19 @@
     }
 
     .swiper-slide {
-        width: 300px;
-        transition: all 0.5s cubic-bezier(.22,.61,.36,1);
-        filter: blur(4px);
-        opacity: 0.5;
-        transform: scale(0.8);
+        width: 320px;
+        max-width: 85vw;
+        transition: transform 0.5s cubic-bezier(.22,.61,.36,1), filter 0.5s ease, opacity 0.5s ease;
+        filter: blur(3px);
+        opacity: 0.55;
+        transform: scale(0.85);
     }
 
-    .swiper-slide-active {
+    .swiper-slide-active,
+    .swiper-slide-duplicate-active {
         filter: blur(0);
         opacity: 1;
-        transform: scale(1.15);
+        transform: scale(1.1);
         z-index: 10;
     }
 
@@ -416,13 +418,16 @@
 
     var swiper = new Swiper(".productSwiper", {
         loop: true,
+        loopAddBlankSlides: true,
+        loopAdditionalSlides: 4,
+        loopPreventsSliding: false,
         centeredSlides: true,
         slidesPerView: "auto",
-        spaceBetween: -50,
+        spaceBetween: 25,
         grabCursor: true,
-        speed: 800,
+        speed: 700,
         autoplay: {
-            delay: 3500,
+            delay: 3200,
             disableOnInteraction: false,
         },
         navigation: {
@@ -431,9 +436,34 @@
         },
         breakpoints: {
             0: { slidesPerView: 1.2, spaceBetween: 15 },
-            768: { slidesPerView: 2.2, spaceBetween: -25 },
-            1200: { slidesPerView: 3, spaceBetween: -50 }
+            768: { slidesPerView: 2.2, spaceBetween: 20 },
+            1200: { slidesPerView: "auto", spaceBetween: 30 }
+        },
+        on: {
+            reachEnd: function () {
+                // Fail-safe jika mencapai slide paling akhir, otomatis putar kembali ke slide pertama
+                this.slideTo(0, 800);
+            }
         }
     });
+
+    // Pengaman tombol navigasi jika mencapai batas slide
+    const nextBtn = document.querySelector(".swiper-button-next");
+    if (nextBtn) {
+        nextBtn.addEventListener("click", function () {
+            if (swiper && (swiper.isEnd || swiper.activeIndex >= swiper.slides.length - 1)) {
+                swiper.slideTo(0, 800);
+            }
+        });
+    }
+
+    const prevBtn = document.querySelector(".swiper-button-prev");
+    if (prevBtn) {
+        prevBtn.addEventListener("click", function () {
+            if (swiper && swiper.isBeginning && !swiper.params.loop) {
+                swiper.slideTo(swiper.slides.length - 1, 800);
+            }
+        });
+    }
 </script>
 @endpush

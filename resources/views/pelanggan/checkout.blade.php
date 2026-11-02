@@ -28,6 +28,8 @@
                     @csrf
                     @if($langsung && $items->isNotEmpty())
                         <input type="hidden" name="produk_id" value="{{ $items->first()->ProdukID }}">
+                    @elseif(!empty($sellerId))
+                        <input type="hidden" name="seller_id" value="{{ $sellerId }}">
                     @endif
 
                     <div class="mb-3">

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\JenisProduk;
 use App\Models\Produk;
+use App\Models\ProdukGambar;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -22,12 +24,20 @@ class ProdukController extends Controller
             'Harga' => 'required|integer|min:1|max:1000000000',
             'Kondisi' => ['required', Rule::in(array_keys(Produk::KONDISI))],
             'foto' => ($fotoWajib ? 'required' : 'nullable') . '|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'foto_tambahan' => 'nullable|array|max:4',
+            'foto_tambahan.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'hapus_foto_tambahan' => 'nullable|array',
+            'hapus_foto_tambahan.*' => 'integer',
         ];
     }
 
     private function simpanFoto(Request $request): string
     {
-        $file = $request->file('foto');
+        return $this->simpanFile($request->file('foto'));
+    }
+
+    private function simpanFile($file): string
+    {
         $nama = time() . '_' . Str::random(10) . '.' . $file->guessExtension();
         $file->move(public_path('upload'), $nama);
         return $nama;
@@ -87,6 +97,19 @@ class ProdukController extends Controller
         $produk->Stok = 1;
         $produk->save();
 
+        if ($request->hasFile('foto_tambahan')) {
+            foreach ($request->file('foto_tambahan') as $idx => $fileTambahan) {
+                if ($fileTambahan) {
+                    $namaFile = $this->simpanFile($fileTambahan);
+                    ProdukGambar::create([
+                        'ProdukID' => $produk->ProdukID,
+                        'PathGambar' => $namaFile,
+                        'Urutan' => $idx + 1,
+                    ]);
+                }
+            }
+        }
+
         return redirect()->route('seller.produk.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
@@ -95,6 +118,7 @@ class ProdukController extends Controller
         $produk = $this->milik($id);
         abort_unless($produk->Status === 'Tersedia', 403, 'Produk yang sedang dipesan/terjual tidak dapat diubah.');
 
+        $produk->load('gambarTambahan');
         $categories = JenisProduk::aktif()->orderBy('NamaJenis')->get();
         return view('seller.produk.edit', ['produk' => $produk, 'categories' => $categories, 'kondisi' => Produk::KONDISI]);
     }
@@ -107,9 +131,51 @@ class ProdukController extends Controller
         $data = $request->validate($this->rules(false));
         $produk->fill(collect($data)->only(['NamaProduk', 'JenisID', 'Deskripsi', 'Harga', 'Kondisi'])->all());
         if ($request->hasFile('foto')) {
+            $fotoLama = $produk->Gambar;
             $produk->Gambar = $this->simpanFoto($request);
+
+            if ($fotoLama && $fotoLama !== 'default.jpg' && !str_starts_with($fotoLama, 'http')) {
+                $path = public_path('upload/' . $fotoLama);
+                if (File::exists($path)) {
+                    @File::delete($path);
+                }
+            }
         }
         $produk->save();
+
+        // Hapus foto tambahan yang dicentang untuk dihapus
+        if ($request->filled('hapus_foto_tambahan')) {
+            $hapusIds = (array) $request->input('hapus_foto_tambahan');
+            $gambarDihapus = ProdukGambar::where('ProdukID', $produk->ProdukID)
+                ->whereIn('GambarID', $hapusIds)
+                ->get();
+
+            foreach ($gambarDihapus as $g) {
+                if ($g->PathGambar && $g->PathGambar !== 'default.jpg' && !str_starts_with($g->PathGambar, 'http')) {
+                    $path = public_path('upload/' . $g->PathGambar);
+                    if (File::exists($path)) {
+                        @File::delete($path);
+                    }
+                }
+                $g->delete();
+            }
+        }
+
+        // Simpan foto tambahan baru
+        if ($request->hasFile('foto_tambahan')) {
+            $urutan = (int) $produk->gambarTambahan()->max('Urutan');
+            foreach ($request->file('foto_tambahan') as $fileTambahan) {
+                if ($fileTambahan) {
+                    $urutan++;
+                    $namaFile = $this->simpanFile($fileTambahan);
+                    ProdukGambar::create([
+                        'ProdukID' => $produk->ProdukID,
+                        'PathGambar' => $namaFile,
+                        'Urutan' => $urutan,
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('seller.produk.index')->with('success', 'Produk diperbarui.');
     }
@@ -124,6 +190,25 @@ class ProdukController extends Controller
             $produk->Status = 'Disembunyikan';
             $produk->save();
         } else {
+            $foto = $produk->Gambar;
+            if ($foto && $foto !== 'default.jpg' && !str_starts_with($foto, 'http')) {
+                $path = public_path('upload/' . $foto);
+                if (File::exists($path)) {
+                    @File::delete($path);
+                }
+            }
+
+            // Hapus seluruh foto tambahan dari storage & DB
+            foreach ($produk->gambarTambahan as $gt) {
+                if ($gt->PathGambar && $gt->PathGambar !== 'default.jpg' && !str_starts_with($gt->PathGambar, 'http')) {
+                    $path = public_path('upload/' . $gt->PathGambar);
+                    if (File::exists($path)) {
+                        @File::delete($path);
+                    }
+                }
+                $gt->delete();
+            }
+
             $produk->delete();
         }
 

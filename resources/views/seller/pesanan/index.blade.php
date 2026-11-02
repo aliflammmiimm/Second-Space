@@ -21,16 +21,31 @@
                         <span class="text-muted">{{ $d->pesanan->pengiriman->StatusPengiriman ?? '' }} {{ $d->pesanan->pengiriman->NoResi ?? '' }}</span></td>
                     <td><span class="badge bg-{{ $warna[$d->pesanan->StatusPesanan] ?? 'secondary' }}">{{ $d->pesanan->StatusPesanan }}</span></td>
                     <td>
-                        @if(in_array($d->pesanan->StatusPesanan, ['Diproses', 'Dikemas'], true))
-                            <form method="POST" action="{{ route('seller.pesanan.kirim', $d->PesananID) }}" class="d-flex gap-1">
-                                @csrf
-                                @method('PUT')
-                                <input type="text" name="NoResi" class="form-control form-control-sm" placeholder="No. resi" maxlength="100" required>
-                                <button class="btn btn-sm btn-danger text-nowrap">Kirim</button>
-                            </form>
-                        @else
-                            <span class="text-muted small">-</span>
-                        @endif
+                        <div class="d-flex flex-column gap-1">
+                            @if(in_array($d->pesanan->StatusPesanan, ['Diproses', 'Dikemas'], true))
+                                <form method="POST" action="{{ route('seller.pesanan.kirim', $d->PesananID) }}" class="d-flex gap-1">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="text" name="NoResi" class="form-control form-control-sm" placeholder="No. resi" maxlength="100" required>
+                                    <button class="btn btn-sm btn-danger text-nowrap">Kirim</button>
+                                </form>
+                            @endif
+
+                            @if($d->pesanan->MetodePembayaran === 'COD' && in_array($d->pesanan->StatusPesanan, ['Diproses', 'Dikemas', 'Dikirim', 'Sampai Tujuan'], true))
+                                <form method="POST" action="{{ route('seller.pesanan.selesaikan_cod', $d->PesananID) }}" class="d-flex gap-1 mt-1">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="text" name="pin" class="form-control form-control-sm" placeholder="PIN COD 6 Digit" maxlength="6" required style="width: 125px;">
+                                    <button class="btn btn-sm btn-success text-nowrap" title="Verifikasi PIN COD dari pembeli">
+                                        <i class="bi bi-check-circle me-1"></i> Selesaikan COD
+                                    </button>
+                                </form>
+                            @endif
+
+                            @if($d->pesanan->StatusPesanan === 'Selesai')
+                                <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2"><i class="bi bi-check2-circle me-1"></i> Selesai</span>
+                            @endif
+                        </div>
                     </td>
                 </tr>
             @empty

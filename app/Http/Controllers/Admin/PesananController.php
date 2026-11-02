@@ -63,10 +63,13 @@ class PesananController extends Controller
                 $pesanan->pengiriman->save();
             }
 
-            // Pesanan selesai (mis. COD): pembayaran dianggap valid
-            if ($newStatus === 'Selesai' && $pesanan->pembayaran && $pesanan->pembayaran->StatusPembayaran !== 'Valid') {
-                $pesanan->pembayaran->StatusPembayaran = 'Valid';
-                $pesanan->pembayaran->save();
+            // Pesanan selesai (mis. COD): pembayaran dianggap valid & buat tagihan komisi COD
+            if ($newStatus === 'Selesai') {
+                if ($pesanan->pembayaran && $pesanan->pembayaran->StatusPembayaran !== 'Valid') {
+                    $pesanan->pembayaran->StatusPembayaran = 'Valid';
+                    $pesanan->pembayaran->save();
+                }
+                \App\Services\KomisiService::buatTagihanCodJikaPerlu($pesanan);
             }
 
             return ['success', "Status pesanan #{$pesanan->PesananID} berhasil diubah menjadi {$newStatus}."];

@@ -18,6 +18,7 @@ class Pesanan extends Model
         'TanggalPesanan',
         'StatusPesanan',
         'MetodePembayaran',
+        'KodePinCod',
         'TotalHarga',
         'BatasBayar',
     ];

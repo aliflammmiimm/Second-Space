@@ -20,6 +20,42 @@
     <input id="Harga" type="number" min="1" name="Harga" class="form-control" value="{{ old('Harga', $p?->Harga) }}" required></div>
 <div class="mb-3"><label class="form-label fw-semibold" for="Deskripsi">Deskripsi</label>
     <textarea id="Deskripsi" name="Deskripsi" rows="4" class="form-control" required maxlength="3000">{{ old('Deskripsi', $p?->Deskripsi) }}</textarea></div>
-<div class="mb-3"><label class="form-label fw-semibold" for="foto">Foto barang (JPG/PNG/WEBP, maks. 2 MB)</label>
+<div class="mb-4">
+    <label class="form-label fw-semibold" for="foto">Foto Utama / Sampul (JPG/PNG/WEBP, maks. 2 MB) <span class="text-danger">*</span></label>
     <input id="foto" type="file" name="foto" accept=".jpg,.jpeg,.png,.webp" class="form-control" {{ $p ? '' : 'required' }}>
-    @if($p)<img src="{{ $p->gambar_url }}" class="rounded-3 mt-2" style="height:90px" alt="Foto saat ini">@endif</div>
+    <div class="form-text">Foto ini akan menjadi gambar utama yang tampil pada katalog pencarian.</div>
+    @if($p)
+        <div class="mt-2 d-flex align-items-center gap-2">
+            <img src="{{ $p->gambar_url }}" class="rounded-3 border" style="width: 90px; height: 90px; object-fit: cover;" alt="Foto utama saat ini">
+            <span class="small text-muted">Foto utama saat ini (unggah file baru di atas jika ingin mengganti).</span>
+        </div>
+    @endif
+</div>
+
+<div class="mb-4 p-3 rounded-3" style="background: #f4f9fa; border: 1px dashed rgba(0, 92, 102, 0.3);">
+    <label class="form-label fw-semibold" for="foto_tambahan">
+        <i class="bi bi-images me-1" style="color: #00B8BE;"></i> Foto Pendukung / Detail Thrift (Opsional, Maks. 4 Foto)
+    </label>
+    <input id="foto_tambahan" type="file" name="foto_tambahan[]" accept=".jpg,.jpeg,.png,.webp" class="form-control" multiple>
+    <div class="form-text">
+        Sangat disarankan untuk barang thrift: foto tampak belakang, label/tag merek, atau detail minus (noda/cacat kecil) agar pembeli percaya.
+    </div>
+
+    @if($p && $p->gambarTambahan && $p->gambarTambahan->isNotEmpty())
+        <div class="mt-3">
+            <div class="fw-semibold small mb-2 text-dark">Foto Detail Tambahan yang Sudah Ada:</div>
+            <div class="d-flex flex-wrap gap-3">
+                @foreach($p->gambarTambahan as $gt)
+                    <div class="border rounded-3 p-2 bg-white text-center shadow-sm" style="width: 110px;">
+                        <img src="{{ $gt->gambar_url }}" class="rounded-2 w-100 mb-2" style="height: 80px; object-fit: cover;" alt="Detail">
+                        <div class="form-check d-flex justify-content-center align-items-center gap-1">
+                            <input class="form-check-input mt-0" type="checkbox" name="hapus_foto_tambahan[]" value="{{ $gt->GambarID }}" id="hapus_foto_{{ $gt->GambarID }}">
+                            <label class="form-check-label small text-danger" for="hapus_foto_{{ $gt->GambarID }}" style="font-size: 0.75rem;">Hapus</label>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <small class="text-muted d-block mt-1">Centang "Hapus" pada foto yang ingin dibuang saat menyimpan perubahan.</small>
+        </div>
+    @endif
+</div>

@@ -69,4 +69,60 @@ class PesananController extends Controller
 
         return back()->with($pesan[0], $pesan[1]);
     }
+
+    /**
+     * Seller menyelesaikan transaksi COD dengan memasukkan Kode PIN 6 digit yang diberikan pembeli saat serah terima.
+     */
+    public function selesaikanCod(Request $request, $id)
+    {
+        $request->validate([
+            'pin' => 'required|string|size:6',
+        ], [
+            'pin.required' => 'Kode PIN Serah-Terima COD wajib diisi.',
+            'pin.size' => 'Kode PIN harus 6 digit angka.',
+        ]);
+
+        $uid = (int) Auth::id();
+        PesananDetail::where('PesananID', $id)->where('SellerID', $uid)->firstOrFail();
+
+        $pesan = DB::transaction(function () use ($request, $id) {
+            $pesanan = Pesanan::with(['pengiriman', 'pembayaran'])
+                ->where('PesananID', $id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($pesanan->MetodePembayaran !== 'COD') {
+                return ['error', 'Metode verifikasi PIN hanya berlaku untuk pesanan Cash on Delivery (COD).'];
+            }
+
+            if (!in_array($pesanan->StatusPesanan, ['Diproses', 'Dikemas', 'Dikirim', 'Sampai Tujuan'], true)) {
+                return ['error', 'Status pesanan tidak valid untuk diselesaikan.'];
+            }
+
+            if (!$pesanan->KodePinCod || trim($request->input('pin')) !== trim($pesanan->KodePinCod)) {
+                return ['error', 'Kode PIN Serah-Terima tidak cocok dengan data pembeli. Mohon pastikan kembali PIN dari pembeli.'];
+            }
+
+            $pesanan->StatusPesanan = 'Selesai';
+            $pesanan->save();
+
+            if ($pesanan->pengiriman) {
+                $pesanan->pengiriman->StatusPengiriman = 'Sampai Tujuan';
+                $pesanan->pengiriman->TanggalUpdate = now();
+                $pesanan->pengiriman->save();
+            }
+
+            if ($pesanan->pembayaran) {
+                $pesanan->pembayaran->StatusPembayaran = 'Valid';
+                $pesanan->pembayaran->save();
+            }
+
+            // Daftarkan tagihan komisi COD 4 hari
+            \App\Services\KomisiService::buatTagihanCodJikaPerlu($pesanan);
+
+            return ['success', "Pesanan COD #{$pesanan->PesananID} berhasil diverifikasi dan diselesaikan. Tagihan komisi 10% telah diterbitkan."];
+        });
+
+        return back()->with($pesan[0], $pesan[1]);
+    }
 }

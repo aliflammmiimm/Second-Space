@@ -14,11 +14,11 @@
     <div class="card custom-card border-0 shadow-sm p-4 p-md-5 mb-5">
         <div class="row g-4 align-items-center">
             
-            <!-- GAMBAR PRODUK -->
+            <!-- GAMBAR PRODUK & GALERI DETAIL -->
             <div class="col-md-5">
-                <div class="position-relative rounded-4 overflow-hidden shadow-sm" style="background: #f4f9fa; border: 1px solid rgba(0, 92, 102, 0.12);">
-                    <img src="{{ $produk->gambar_url }}" alt="{{ $produk->NamaProduk }}" class="w-100" 
-                         style="max-height: 480px; object-fit: cover; object-position: center;"
+                <div class="position-relative rounded-4 overflow-hidden shadow-sm mb-3" style="background: #f4f9fa; border: 1px solid rgba(0, 92, 102, 0.12);">
+                    <img id="mainProductImage" src="{{ $produk->gambar_url }}" alt="{{ $produk->NamaProduk }}" class="w-100" 
+                         style="max-height: 460px; min-height: 320px; object-fit: cover; object-position: center; transition: opacity 0.2s ease;"
                          onerror="this.onerror=null; this.src='{{ asset('upload/default.jpg') }}';">
                     
                     @if($produk->Status !== 'Tersedia')
@@ -29,6 +29,37 @@
                         </div>
                     @endif
                 </div>
+
+                @php($galeri = $produk->semua_gambar)
+                @if(count($galeri) > 1)
+                    <div class="d-flex gap-2 overflow-auto pb-2" id="galleryThumbnails">
+                        @foreach($galeri as $index => $g)
+                            <div class="thumbnail-wrapper rounded-3 overflow-hidden" 
+                                 style="width: 72px; height: 72px; flex-shrink: 0; cursor: pointer; border: 2px solid {{ $loop->first ? '#00B8BE' : 'rgba(0, 92, 102, 0.2)' }}; transition: border-color 0.2s;"
+                                 onclick="changeMainImage('{{ $g['url'] }}', this)">
+                                <img src="{{ $g['url'] }}" alt="Thumbnail {{ $index + 1 }}" class="w-100 h-100" style="object-fit: cover;" onerror="this.onerror=null; this.src='{{ asset('upload/default.jpg') }}';">
+                            </div>
+                        @endforeach
+                    </div>
+                    <small class="text-muted d-block mt-1" style="font-size: 0.75rem;"><i class="bi bi-hand-index-thumb me-1" style="color: #00B8BE;"></i> Klik foto kecil untuk memperbesar detail (tampak belakang, label, minus).</small>
+
+                    <script>
+                        function changeMainImage(url, el) {
+                            const mainImg = document.getElementById('mainProductImage');
+                            if (!mainImg) return;
+                            mainImg.style.opacity = '0.3';
+                            setTimeout(() => {
+                                mainImg.src = url;
+                                mainImg.style.opacity = '1';
+                            }, 150);
+
+                            document.querySelectorAll('#galleryThumbnails .thumbnail-wrapper').forEach(item => {
+                                item.style.borderColor = 'rgba(0, 92, 102, 0.2)';
+                            });
+                            el.style.borderColor = '#00B8BE';
+                        }
+                    </script>
+                @endif
             </div>
 
             <!-- DETAIL INFO -->

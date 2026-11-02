@@ -111,12 +111,13 @@ class AuthController extends Controller
             'password.min' => 'Password minimal 8 karakter.',
         ]);
 
-        $user = User::create([
+        $user = new User([
             'Nama' => $request->input('nama'),
             'NoHP_Email' => trim($request->input('email')),
             'Password' => Hash::make($request->input('password')),
-            'Role' => 'Pelanggan',
         ]);
+        $user->Role = 'Pelanggan';
+        $user->save();
 
         Auth::guard('web')->login($user);
         $request->session()->regenerate();
@@ -163,12 +164,13 @@ class AuthController extends Controller
         ]);
 
         $user = DB::transaction(function () use ($request) {
-            $user = User::create([
+            $user = new User([
                 'Nama' => trim($request->input('nama')),
                 'NoHP_Email' => trim($request->input('email')),
                 'Password' => Hash::make($request->input('password')),
-                'Role' => 'Pelanggan',
             ]);
+            $user->Role = 'Pelanggan';
+            $user->save();
 
             PengajuanSeller::create([
                 'UserID' => $user->UserID,

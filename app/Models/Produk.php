@@ -44,16 +44,51 @@ class Produk extends Model
         return $this->hasMany(PesananDetail::class, 'ProdukID', 'ProdukID');
     }
 
-    // Hanya barang yang boleh dibeli: status Tersedia + Seller masih approved
+    public function gambarTambahan()
+    {
+        return $this->hasMany(ProdukGambar::class, 'ProdukID', 'ProdukID')->orderBy('Urutan', 'asc');
+    }
+
+    /**
+     * Mengembalikan daftar semua gambar produk (foto utama + foto pendukung).
+     */
+    public function getSemuaGambarAttribute(): array
+    {
+        $list = [];
+
+        if ($this->gambar_url) {
+            $list[] = [
+                'id' => null,
+                'url' => $this->gambar_url,
+                'is_primary' => true,
+            ];
+        }
+
+        $tambahan = $this->relationLoaded('gambarTambahan')
+            ? $this->gambarTambahan
+            : $this->gambarTambahan()->get();
+
+        foreach ($tambahan as $g) {
+            $list[] = [
+                'id' => $g->GambarID,
+                'url' => $g->gambar_url,
+                'is_primary' => false,
+            ];
+        }
+
+        return $list;
+    }
+
+    // Hanya barang yang boleh dibeli: status Tersedia + Seller masih approved & tidak diblokir
     public function scopeTersedia($q)
     {
         return $q->where('Status', 'Tersedia')
-            ->whereHas('seller', fn ($s) => $s->where('is_seller', 1));
+            ->whereHas('seller', fn ($s) => $s->where('is_seller', 1)->where('is_blocked', 0));
     }
 
     public function bisaDibeli(): bool
     {
-        return $this->Status === 'Tersedia' && $this->seller && $this->seller->is_seller;
+        return $this->Status === 'Tersedia' && $this->seller && $this->seller->is_seller && empty($this->seller->is_blocked);
     }
 
     public function getGambarUrlAttribute(): string

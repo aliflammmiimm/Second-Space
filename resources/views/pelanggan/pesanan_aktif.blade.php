@@ -189,6 +189,20 @@
                             </div>
                         @endif
 
+                        @if($ps->MetodePembayaran === 'COD' && $ps->KodePinCod && !in_array($ps->StatusPesanan, ['Selesai', 'Dibatalkan']))
+                            <div class="p-3 rounded-3 mb-3 border" style="background: rgba(0, 184, 190, 0.08); border: 1px dashed #00B8BE !important;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="small text-muted d-block fw-semibold"><i class="bi bi-cash-stack text-success me-1"></i> PIN Serah-Terima COD:</span>
+                                        <small class="text-muted" style="font-size: 0.75rem;">Berikan ke penjual saat serah-terima</small>
+                                    </div>
+                                    <div class="fs-4 fw-bolder px-3 py-1 bg-white rounded border shadow-sm" style="color: #005C66; letter-spacing: 3px;">
+                                        {{ $ps->KodePinCod }}
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                                                 <div class="d-flex justify-content-between align-items-center pt-3 border-top gap-2 flex-wrap">
                             <div>
                                 <small class="text-muted d-block">Total Tagihan</small>

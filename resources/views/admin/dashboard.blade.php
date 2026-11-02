@@ -130,6 +130,9 @@
             <a href="{{ route('admin.pencairan.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
                 <i class="bi bi-cash-coin me-1"></i> Pencairan Seller
             </a>
+            <a href="{{ route('admin.komisi.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
+                <i class="bi bi-receipt-cutoff me-1"></i> Komisi COD
+            </a>
         </div>
     </div>
 

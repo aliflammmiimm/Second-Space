@@ -28,6 +28,7 @@ class PencairanController extends Controller
         return view('seller.pencairan.index', [
             'user' => $user,
             'totalPendapatan' => $user->totalPendapatan(),
+            'totalPendapatanCod' => $user->totalPendapatanCod(),
             'saldo' => $user->saldoTersedia(),
             'danaTertahan' => $danaTertahan,
             'minimal' => self::MINIMAL,

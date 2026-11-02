@@ -18,15 +18,19 @@ class CheckoutController extends Controller
 {
     private const BATAS_BAYAR_JAM = 24;
 
-    /** Id produk yang di-checkout: 1 produk (Beli Sekarang) atau seluruh isi keranjang. */
-    private function idTerpilih($langsungId): array
+    /** Id produk yang di-checkout: 1 produk (Beli Sekarang) atau isi keranjang dari 1 seller. */
+    private function idTerpilih($langsungId, $sellerId = null): array
     {
         if ($langsungId) {
             return [(int) $langsungId];
         }
 
-        return Keranjang::where('UserID', Auth::id())
-            ->pluck('ProdukID')
+        $query = Keranjang::where('UserID', Auth::id());
+        if ($sellerId) {
+            $query->whereHas('produk', fn ($q) => $q->where('SellerID', (int) $sellerId));
+        }
+
+        return $query->pluck('ProdukID')
             ->map(fn ($i) => (int) $i)
             ->all();
     }
@@ -38,11 +42,12 @@ class CheckoutController extends Controller
         )->values();
     }
 
-    public function show($id = null)
+    public function show(Request $request, $id = null)
     {
         ReservasiService::lepasKedaluwarsa();
 
-        $ids = $this->idTerpilih($id);
+        $sellerId = $request->query('seller_id');
+        $ids = $this->idTerpilih($id, $sellerId);
 
         $items = $this->layak(
             Produk::with(['seller:UserID,Nama,is_seller', 'jenisProduk'])
@@ -55,17 +60,26 @@ class CheckoutController extends Controller
                 ->with('error', 'Tidak ada barang yang bisa di-checkout.');
         }
 
+        // Jika dalam keranjang ada barang dari beberapa seller berbeda dan belum difilter
+        $sellerCount = $items->pluck('SellerID')->unique()->count();
+        if ($sellerCount > 1) {
+            return redirect()->route('pelanggan.keranjang')
+                ->with('error', 'Keranjang Anda berisi produk dari beberapa toko berbeda. Silakan gunakan tombol "Checkout Toko Ini" pada toko yang ingin Anda proses.');
+        }
+
+        $sellerId = $items->first()->SellerID;
         $total = $items->sum('Harga');
         $langsung = (bool) $id;
         $produk = $langsung ? $items->first() : null;
 
-        return view('pelanggan.checkout', compact('items', 'total', 'langsung', 'produk'));
+        return view('pelanggan.checkout', compact('items', 'total', 'langsung', 'produk', 'sellerId'));
     }
 
     public function process(Request $request)
     {
         $request->validate([
             'produk_id' => 'nullable|integer',
+            'seller_id' => 'nullable|integer',
             'alamat' => 'required|string|min:5|max:255',
             'metode' => 'required|in:Transfer,COD',
         ], [
@@ -76,7 +90,8 @@ class CheckoutController extends Controller
 
         $userId = (int) Auth::id();
         $langsung = $request->filled('produk_id');
-        $ids = $this->idTerpilih($langsung ? $request->input('produk_id') : null);
+        $sellerId = $request->input('seller_id');
+        $ids = $this->idTerpilih($langsung ? $request->input('produk_id') : null, $sellerId);
         $alamat = trim($request->input('alamat'));
         $metode = $request->input('metode');
 
@@ -98,8 +113,13 @@ class CheckoutController extends Controller
                     throw new \RuntimeException('Barang sudah tidak tersedia atau tidak dapat Anda beli.');
                 }
 
+                if ($layak->pluck('SellerID')->unique()->count() > 1) {
+                    throw new \RuntimeException('Satu pesanan hanya boleh memproses barang dari satu toko yang sama.');
+                }
+
                 $transfer = $metode === 'Transfer';
                 $total = $layak->sum('Harga');
+                $pinCod = $metode === 'COD' ? sprintf('%06d', mt_rand(100000, 999999)) : null;
 
                 $pesanan = Pesanan::create([
                     'UserID' => $userId,
@@ -107,6 +127,7 @@ class CheckoutController extends Controller
                     'TotalHarga' => $total,
                     'StatusPesanan' => $transfer ? 'Menunggu Pembayaran' : 'Diproses',
                     'MetodePembayaran' => $metode,
+                    'KodePinCod' => $pinCod,
                     'BatasBayar' => $transfer ? now()->addHours(self::BATAS_BAYAR_JAM) : null,
                 ]);
 

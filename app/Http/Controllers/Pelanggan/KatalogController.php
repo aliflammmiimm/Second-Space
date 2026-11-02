@@ -57,7 +57,7 @@ class KatalogController extends Controller
 
     public function detail($id)
     {
-        $produk = Produk::with(['jenisProduk', 'seller:UserID,Nama,is_seller'])
+        $produk = Produk::with(['jenisProduk', 'seller:UserID,Nama,is_seller', 'gambarTambahan'])
             ->where('Status', '!=', 'Disembunyikan')
             ->findOrFail($id);
 

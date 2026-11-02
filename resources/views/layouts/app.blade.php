@@ -473,6 +473,7 @@
     </nav>
 
     <!-- FLASH MESSAGES -->
+    @if(session('success') || session('error') || session('info') || (isset($errors) && $errors->any()))
     <div class="container mt-3">
         @if(session('success'))
             <div class="alert alert-success alert-custom alert-dismissible fade show" role="alert">
@@ -512,6 +513,7 @@
             </div>
         @endif
     </div>
+    @endif
 
     <!-- MAIN CONTENT -->
     <main class="flex-grow-1">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Pengiriman;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PengirimanController extends Controller
 {
@@ -23,20 +24,42 @@ class PengirimanController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $pengiriman = Pengiriman::findOrFail($id);
-
         $request->validate([
             'StatusPengiriman' => 'required|in:Dikemas,Dikirim,Sampai Tujuan',
             'NoResi' => 'nullable|string|max:100',
         ]);
 
-        $pengiriman->StatusPengiriman = $request->input('StatusPengiriman');
-        if ($request->filled('NoResi')) {
-            $pengiriman->NoResi = trim($request->input('NoResi'));
-        }
-        $pengiriman->TanggalUpdate = now();
-        $pengiriman->save();
+        $status = $request->input('StatusPengiriman');
 
-        return back()->with('success', "Status pengiriman #{$pengiriman->PengirimanID} berhasil diperbarui.");
+        DB::transaction(function () use ($request, $id, $status) {
+            $pengiriman = Pengiriman::with(['pesanan.pembayaran'])->findOrFail($id);
+
+            $pengiriman->StatusPengiriman = $status;
+            if ($request->filled('NoResi')) {
+                $pengiriman->NoResi = trim($request->input('NoResi'));
+            }
+            $pengiriman->TanggalUpdate = now();
+            $pengiriman->save();
+
+            $pesanan = $pengiriman->pesanan;
+            if ($pesanan && !in_array($pesanan->StatusPesanan, ['Dibatalkan', 'Kedaluwarsa'], true)) {
+                // Sinkronkan status pesanan dengan status pengiriman
+                if ($status === 'Dikirim' && in_array($pesanan->StatusPesanan, ['Diproses', 'Dikemas'], true)) {
+                    $pesanan->StatusPesanan = 'Dikirim';
+                    $pesanan->save();
+                } elseif ($status === 'Sampai Tujuan') {
+                    $pesanan->StatusPesanan = 'Sampai Tujuan';
+                    $pesanan->save();
+
+                    // Pada pesanan COD, jika barang sampai tujuan/selesai, pembayaran dianggap valid
+                    if ($pesanan->MetodePembayaran === 'COD' && $pesanan->pembayaran && $pesanan->pembayaran->StatusPembayaran !== 'Valid') {
+                        $pesanan->pembayaran->StatusPembayaran = 'Valid';
+                        $pesanan->pembayaran->save();
+                    }
+                }
+            }
+        });
+
+        return back()->with('success', "Status pengiriman #{$id} dan pesanan terkait berhasil diperbarui.");
     }
 }

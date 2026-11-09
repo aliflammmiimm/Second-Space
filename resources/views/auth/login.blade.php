@@ -28,9 +28,9 @@
             
             <div class="card custom-card border-0 shadow-lg p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <div class="d-inline-flex p-3 rounded-circle mb-3" style="background: rgba(0, 184, 190, 0.15);">
-                        <i class="bi bi-person-fill-lock fs-2" style="color: #005C66;"></i>
-                    </div>
+                    <a href="{{ route('home') }}" class="d-inline-block text-decoration-none">
+                        <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace" class="rounded-4 mb-3 shadow" style="width: 72px; height: 72px; object-fit: cover; border: 2px solid rgba(0, 184, 190, 0.4);">
+                    </a>
                     <h3 class="fw-bold mb-1" style="color: #001B27;">Masuk Akun</h3>
                     <p class="text-muted" style="font-size: 0.88rem;">Pilih peran dan gunakan Nomor HP / Email untuk login</p>
                 </div>

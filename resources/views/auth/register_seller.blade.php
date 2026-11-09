@@ -9,9 +9,9 @@
 
             <div class="card custom-card border-0 shadow-lg p-4">
                 <div class="text-center mb-4">
-                    <div class="d-inline-flex p-3 rounded-circle bg-dark text-white mb-3">
-                        <i class="bi bi-shop fs-2"></i>
-                    </div>
+                    <a href="{{ route('home') }}" class="d-inline-block text-decoration-none">
+                        <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace" class="rounded-4 mb-3 shadow" style="width: 72px; height: 72px; object-fit: cover; border: 2px solid rgba(0, 184, 190, 0.4);">
+                    </a>
                     <h3 class="fw-bold mb-1">Daftar Seller</h3>
                     <p class="text-muted mb-0" style="font-size: 0.9rem;">Buat akun dan ajukan diri untuk menjual barang di SecondSpace</p>
                 </div>

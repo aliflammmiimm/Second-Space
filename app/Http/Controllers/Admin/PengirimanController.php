@@ -11,7 +11,7 @@ class PengirimanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pengiriman::with(['pesanan.user']);
+        $query = Pengiriman::with(['pesanan.user', 'pesanan.detail.seller:UserID,Nama']);
 
         if ($request->filled('status')) {
             $query->where('StatusPengiriman', $request->input('status'));

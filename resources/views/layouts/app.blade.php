@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'SecondSpace - Pre-Loved & Thrift Marketplace')</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="{{ asset('assets/images/logo.jpeg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/logo.jpeg') }}">
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,7 +71,23 @@
             font-size: 1.35rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .navbar-logo {
+            height: 38px;
+            width: 38px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1.5px solid rgba(0, 184, 190, 0.4);
+            box-shadow: 0 2px 10px rgba(0, 184, 190, 0.3);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .navbar-brand:hover .navbar-logo {
+            transform: scale(1.08);
+            box-shadow: 0 4px 15px rgba(0, 184, 190, 0.6);
         }
 
         .navbar-brand i {
@@ -321,7 +341,8 @@
     <nav class="navbar navbar-dark navbar-expand-lg navbar-custom">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <i class="bi bi-box-seam"></i> SECOND<span>SPACE</span>
+                <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace Logo" class="navbar-logo">
+                <span>SECOND</span>SPACE
             </a>
 
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
@@ -523,6 +544,9 @@
     <!-- FOOTER -->
     <footer class="footer">
         <div class="container text-center">
+            <a href="{{ route('home') }}" class="d-inline-block mb-3 text-decoration-none">
+                <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace" class="rounded-3" style="width: 44px; height: 44px; object-fit: cover; border: 1.5px solid rgba(0, 184, 190, 0.35); box-shadow: 0 4px 15px rgba(0, 184, 190, 0.25);">
+            </a>
             <p class="mb-1 fw-bold text-white">SecondSpace &copy; {{ date('Y') }}</p>
             <p class="mb-0" style="color: #89a9b7; font-size: 0.85rem;">Marketplace Pre-Loved & Thrift Terkurasi &bull; Elektronik &bull; Fashion &bull; Peralatan Rumah Tangga &bull; ATK</p>
         </div>

@@ -16,9 +16,12 @@
 
     <div class="card custom-card border-0 p-4 p-md-5">
         <div class="d-flex justify-content-between align-items-start border-bottom pb-4 mb-4">
-            <div>
-                <h3 class="fw-bold mb-1" style="color: #001B27;"><i class="bi bi-tag-fill me-1" style="color: #00B8BE;"></i> SECONDSPACE</h3>
-                <p class="text-muted small mb-0">Invoice Pemesanan &bull; Pre-Loved & Thrift Marketplace</p>
+            <div class="d-flex align-items-center gap-3">
+                <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace" class="rounded-3 shadow-sm" style="width: 48px; height: 48px; object-fit: cover; border: 1.5px solid rgba(0, 184, 190, 0.35);">
+                <div>
+                    <h3 class="fw-bold mb-0" style="color: #001B27;">SECOND<span style="color: #00B8BE;">SPACE</span></h3>
+                    <p class="text-muted small mb-0">Invoice Pemesanan &bull; Pre-Loved & Thrift Marketplace</p>
+                </div>
             </div>
             <div class="text-end">
                 <h4 class="fw-bold mb-1" style="color: #001B27;">#{{ $pesanan->PesananID }}</h4>
@@ -69,8 +72,8 @@
                                 {{ $item->produk ? $item->produk->Brand : '-' }}
                             </td>
                             <td class="text-center">{{ $item->Jumlah }}</td>
-                            <td class="text-end">Rp {{ number_format($item->HargaSatuan, 0, ',', '.') }}</td>
-                            <td class="text-end fw-bold" style="color: #005C66;">Rp {{ number_format($item->Subtotal, 0, ',', '.') }}</td>
+                            <td class="text-end">Rp {{ number_format($item->HargaSatuan ?? 0, 0, ',', '.') }}</td>
+                            <td class="text-end fw-bold" style="color: #005C66;">Rp {{ number_format($item->SubTotal ?? $item->Subtotal ?? (($item->HargaSatuan ?? 0) * ($item->Jumlah ?? 1)), 0, ',', '.') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

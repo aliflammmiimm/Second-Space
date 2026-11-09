@@ -67,13 +67,19 @@ class MidtransService
         ];
 
         try {
-            $response = Http::withBasicAuth($serverKey, '')
+            $client = Http::withBasicAuth($serverKey, '')
                 ->withHeaders([
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
                 ])
-                ->timeout(15)
-                ->post($apiUrl, $payload);
+                ->timeout(15);
+
+            // Pada mode Sandbox atau di lingkungan lokal Windows/XAMPP tanpa global CA cert
+            if (!config('midtrans.is_production') || app()->environment('local')) {
+                $client->withoutVerifying();
+            }
+
+            $response = $client->post($apiUrl, $payload);
 
             if ($response->successful()) {
                 $data = $response->json();

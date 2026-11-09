@@ -103,6 +103,49 @@
         color: #001B27;
     }
 
+    /* HERO LOGO FLOATING */
+    .hero-logo-box {
+        position: relative;
+    }
+
+    .hero-logo-box::before {
+        content: "";
+        position: absolute;
+        inset: -15px;
+        background: radial-gradient(circle, rgba(0, 184, 190, 0.45) 0%, rgba(0, 27, 39, 0) 70%);
+        border-radius: 40px;
+        z-index: 1;
+        filter: blur(20px);
+        animation: pulseGlow 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+        from { opacity: 0.5; transform: scale(0.95); }
+        to { opacity: 0.9; transform: scale(1.05); }
+    }
+
+    .hero-logo-img {
+        position: relative;
+        z-index: 2;
+        width: 320px;
+        max-width: 100%;
+        border-radius: 36px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55), 0 0 40px rgba(0, 184, 190, 0.4);
+        border: 2px solid rgba(0, 184, 190, 0.4);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        animation: heroFloat 5s ease-in-out infinite;
+    }
+
+    .hero-logo-img:hover {
+        transform: translateY(-8px) scale(1.03);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65), 0 0 55px rgba(0, 184, 190, 0.65);
+    }
+
+    @keyframes heroFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+
     /* CATEGORIES GRID PREVIEW */
     .cat-card {
         background: rgba(0, 92, 102, 0.35);
@@ -270,14 +313,17 @@
 
     <!-- INTRO REVEAL -->
     <div class="intro">
-        <h1>SECONDSPACE</h1>
+        <div class="text-center">
+            <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace" class="mb-3 rounded-4 shadow-lg" style="width: 95px; height: 95px; object-fit: cover; border: 2px solid rgba(0, 184, 190, 0.6); box-shadow: 0 0 35px rgba(0, 184, 190, 0.5); animation: titleReveal 1.4s forwards;">
+            <h1>SECONDSPACE</h1>
+        </div>
     </div>
 
     <!-- HERO SECTION -->
     <section class="hero-wrapper">
         <div class="container">
-            <div class="row align-items-center mb-5">
-                <div class="col-lg-8">
+            <div class="row align-items-center mb-5 g-4">
+                <div class="col-lg-7">
                     <h1 class="hero-title">
                         SECOND<span>SPACE</span>
                     </h1>
@@ -299,6 +345,11 @@
                                 <i class="bi bi-person-fill"></i> Masuk Akun
                             </a>
                         @endauth
+                    </div>
+                </div>
+                <div class="col-lg-5 text-center d-none d-lg-block">
+                    <div class="hero-logo-box d-inline-block">
+                        <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace Official Logo" class="hero-logo-img">
                     </div>
                 </div>
             </div>

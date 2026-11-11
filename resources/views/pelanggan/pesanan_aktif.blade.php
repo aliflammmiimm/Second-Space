@@ -223,6 +223,15 @@
                                         </button>
                                     </form>
                                 @endif
+                                @php($firstProduk = $ps->detail->first()?->produk)
+                                @if($firstProduk)
+                                    <form action="{{ route('pelanggan.chat.mulai', $firstProduk->ProdukID) }}" method="POST" class="d-inline m-0">
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline-success rounded-pill px-3 py-2 fw-bold shadow-sm">
+                                            <i class="bi bi-chat-dots me-1"></i> Chat Penjual
+                                        </button>
+                                    </form>
+                                @endif
                                 <a href="{{ route('pelanggan.pesanan.detail', $ps->PesananID) }}" class="btn btn-dark rounded-pill px-4">
                                     Detail Invoice &rarr;
                                 </a>

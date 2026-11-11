@@ -56,14 +56,15 @@ class ChatController extends Controller
     {
         $produk = Produk::where('Status', '!=', 'Disembunyikan')->findOrFail($produkId);
         $uid = (int) Auth::guard('web')->id();
+        $sellerId = $produk->SellerID ? (int) $produk->SellerID : (int) \App\Models\User::where('is_seller', 1)->value('UserID');
 
-        if (!$produk->SellerID || (int) $produk->SellerID === $uid) {
+        if (!$sellerId || $sellerId === $uid) {
             return back()->with('error', 'Anda tidak dapat mengirim pesan ke toko Anda sendiri.');
         }
 
         $c = Percakapan::firstOrCreate([
             'PembeliID' => $uid,
-            'SellerID' => (int) $produk->SellerID,
+            'SellerID' => $sellerId,
         ]);
 
         return redirect()->route('pelanggan.chat.show', [$c->PercakapanID, 'produk' => $produk->ProdukID]);

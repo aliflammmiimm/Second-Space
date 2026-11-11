@@ -55,6 +55,17 @@
                 @if($pesanan->pengiriman && $pesanan->pengiriman->NoResi)
                     <div class="mt-2"><span class="badge bg-light text-dark border">No Resi: {{ $pesanan->pengiriman->NoResi }}</span></div>
                 @endif
+                @php($firstProduk = $pesanan->detail->first()?->produk)
+                @if($firstProduk)
+                    <div class="mt-2">
+                        <form action="{{ route('pelanggan.chat.mulai', $firstProduk->ProdukID) }}" method="POST" class="d-inline-block">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-sm">
+                                <i class="bi bi-chat-dots-fill me-1"></i> Tanya / Chat Penjual
+                            </button>
+                        </form>
+                    </div>
+                @endif
             </div>
         </div>
 

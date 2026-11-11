@@ -73,14 +73,25 @@
                             </div>
                         @endif
 
-                        <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top gap-2 flex-wrap">
                             <div>
                                 <small class="text-muted d-block">Total Pembayaran</small>
                                 <span class="fs-5 fw-bold" style="color: #005C66;">Rp {{ number_format($p->TotalHarga, 0, ',', '.') }}</span>
                             </div>
-                            <a href="{{ route('pelanggan.pesanan.detail', $p->PesananID) }}" class="btn btn-outline-dark btn-sm rounded-pill px-3">
-                                Rincian <i class="bi bi-chevron-right ms-1"></i>
-                            </a>
+                            <div class="d-flex gap-2">
+                                @php($firstProduk = $p->detail->first()?->produk)
+                                @if($firstProduk)
+                                    <form action="{{ route('pelanggan.chat.mulai', $firstProduk->ProdukID) }}" method="POST" class="d-inline m-0">
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                                            <i class="bi bi-chat-dots me-1"></i> Chat Penjual
+                                        </button>
+                                    </form>
+                                @endif
+                                <a href="{{ route('pelanggan.pesanan.detail', $p->PesananID) }}" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+                                    Rincian <i class="bi bi-chevron-right ms-1"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

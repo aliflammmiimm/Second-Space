@@ -102,47 +102,63 @@
                         </ul>
                     </div>
 
-                    @if($produk->Status == 'Tersedia')
-                        @auth
-                            @if((int) $produk->SellerID === (int) Auth::id())
-                                <div class="alert alert-info mb-0">Ini adalah barang milik Anda sendiri.</div>
-                            @elseif(Auth::user()->Role === 'Pelanggan')
-                                <div class="d-flex gap-3 flex-wrap">
+                    @php($currentUid = Auth::id())
+                    @php($isOwner = $produk->SellerID && (int) $produk->SellerID === (int) $currentUid)
+
+                    @if($isOwner)
+                        <div class="alert alert-info mb-3">
+                            <i class="bi bi-info-circle me-1"></i> Ini adalah barang dagangan milik Anda sendiri di SecondSpace.
+                        </div>
+                    @endif
+
+                    <div class="d-flex gap-3 flex-wrap align-items-center">
+                        @if($produk->Status == 'Tersedia')
+                            @auth
+                                @if(!$isOwner)
                                     <a href="{{ route('pelanggan.checkout.show', $produk->ProdukID) }}" class="btn btn-danger btn-lg px-4 py-3 fw-bold rounded-pill shadow">
                                         <i class="bi bi-bag-check-fill me-1"></i> Beli Sekarang
                                     </a>
 
-                                    <form action="{{ route('pelanggan.keranjang.tambah', $produk->ProdukID) }}" method="POST">
+                                    <form action="{{ route('pelanggan.keranjang.tambah', $produk->ProdukID) }}" method="POST" class="m-0">
                                         @csrf
                                         <button type="submit" class="btn btn-outline-danger btn-lg px-4 py-3 fw-bold rounded-pill">
                                             <i class="bi bi-cart-plus me-1"></i> Tambah ke Keranjang
                                         </button>
                                     </form>
-
-                                    <form action="{{ route('pelanggan.chat.mulai', $produk->ProdukID) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-outline-success btn-lg px-4 py-3 fw-bold rounded-pill">
-                                            <i class="bi bi-chat-dots me-1"></i> Tanya Penjual
-                                        </button>
-                                    </form>
-
-                                    @if($waUrl)
-                                        <a href="{{ $waUrl }}" target="_blank" rel="noopener" class="btn btn-success btn-lg px-4 py-3 fw-bold rounded-pill shadow">
-                                            <i class="bi bi-whatsapp me-1"></i> Tanya via WhatsApp
-                                        </a>
-                                    @endif
-                                </div>
-                            @endif
+                                @endif
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-danger btn-lg px-4 py-3 fw-bold rounded-pill shadow">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i> Login untuk Membeli
+                                </a>
+                            @endauth
                         @else
-                            <a href="{{ route('login') }}" class="btn btn-danger btn-lg px-4 py-3 fw-bold rounded-pill shadow">
-                                <i class="bi bi-box-arrow-in-right me-1"></i> Login untuk Membeli
+                            <button class="btn btn-secondary btn-lg px-4 py-3 rounded-pill disabled" disabled>
+                                {{ $produk->Status === 'Dipesan' ? 'Barang Sedang Dipesan' : 'Barang Telah Terjual' }}
+                            </button>
+                        @endif
+
+                        {{-- TOMBOL TANYA PENJUAL (CHAT REAL-TIME) --}}
+                        @if(!$isOwner)
+                            @auth
+                                <form action="{{ route('pelanggan.chat.mulai', $produk->ProdukID) }}" method="POST" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success btn-lg px-4 py-3 fw-bold rounded-pill shadow">
+                                        <i class="bi bi-chat-dots me-1"></i> Tanya Penjual
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-success btn-lg px-4 py-3 fw-bold rounded-pill shadow">
+                                    <i class="bi bi-chat-dots me-1"></i> Tanya Penjual
+                                </a>
+                            @endauth
+                        @endif
+
+                        @if($waUrl && !$isOwner)
+                            <a href="{{ $waUrl }}" target="_blank" rel="noopener" class="btn btn-outline-success btn-lg px-4 py-3 fw-bold rounded-pill">
+                                <i class="bi bi-whatsapp me-1"></i> WhatsApp
                             </a>
-                        @endauth
-                    @else
-                        <button class="btn btn-secondary btn-lg px-4 py-3 rounded-pill disabled" disabled>
-                            {{ $produk->Status === 'Dipesan' ? 'Barang Sedang Dipesan' : 'Barang Telah Terjual' }}
-                        </button>
-                    @endif
+                        @endif
+                    </div>
                 </div>
             </div>
 

@@ -65,6 +65,7 @@ class PesananController extends Controller
                 if ($token) {
                     $pesanan->pembayaran->SnapToken = $token;
                     $pesanan->pembayaran->save();
+                    $pesanan->load('pembayaran');
                 }
             }
         }

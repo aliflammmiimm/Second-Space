@@ -42,6 +42,16 @@ class MidtransService
             ];
         }
 
+        // Ongkir harus jadi item sendiri agar total item_details = gross_amount
+        if ((int) $pesanan->Ongkir > 0) {
+            $items[] = [
+                'id' => 'ONGKIR',
+                'price' => (int) $pesanan->Ongkir,
+                'quantity' => 1,
+                'name' => 'Ongkir Pengantaran Seller',
+            ];
+        }
+
         // Midtrans Order ID: SS-{PesananID}-{timestamp} untuk mencegah duplicate order_id jika dicoba ulang
         $orderId = 'SS-' . $pesanan->PesananID . '-' . time();
 

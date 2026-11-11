@@ -98,6 +98,14 @@
                        class="{{ request()->routeIs('seller.komisi.*') ? 'active' : '' }}">
                         <i class="bi bi-receipt-cutoff"></i> Komisi COD
                     </a>
+                    <a href="{{ route('seller.chat.index') }}"
+                       class="{{ request()->routeIs('seller.chat.*') ? 'active' : '' }}">
+                        <i class="bi bi-chat-dots"></i> Pesan Pembeli
+                    </a>
+                    <a href="{{ route('seller.pengaturan.index') }}"
+                       class="{{ request()->routeIs('seller.pengaturan.*') ? 'active' : '' }}">
+                        <i class="bi bi-gear"></i> Pengaturan Toko
+                    </a>
 
                     <hr class="my-2">
 

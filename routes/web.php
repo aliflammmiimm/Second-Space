@@ -25,7 +25,9 @@ use App\Http\Controllers\Seller\PencairanController as SellerPencairanController
 use App\Http\Controllers\Seller\KomisiController as SellerKomisiController;
 use App\Http\Controllers\Seller\PesananController as SellerPesananController;
 use App\Http\Controllers\Seller\ProdukController as SellerProdukController;
+use App\Http\Controllers\Seller\PengaturanTokoController;
 use App\Http\Controllers\MidtransController;
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 
 // Midtrans Webhook Notification Callback (No Auth, No CSRF)
@@ -69,6 +71,13 @@ Route::prefix('pelanggan')->name('pelanggan.')->middleware(['auth:web', 'role:Pe
     Route::get('/pesanan', [PelangganPesananController::class, 'index'])->name('pesanan');
     Route::get('/pesanan/{id}', [PelangganPesananController::class, 'detail'])->name('pesanan.detail');
     Route::put('/pesanan/{id}/terima', [PelangganPesananController::class, 'terima'])->name('pesanan.terima');
+
+    // Chat dengan seller
+    Route::match(['get', 'post'], '/chat/mulai/{produk}', [ChatController::class, 'mulai'])->whereNumber('produk')->name('chat.mulai');
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{id}', [ChatController::class, 'show'])->whereNumber('id')->name('chat.show');
+    Route::post('/chat/{id}', [ChatController::class, 'kirim'])->whereNumber('id')->name('chat.kirim');
+    Route::get('/chat/{id}/pesan', [ChatController::class, 'pesan'])->whereNumber('id')->name('chat.pesan');
 });
 
 // Admin (Guard: admin, Role: Admin)
@@ -140,8 +149,19 @@ Route::prefix('seller')->name('seller.')->middleware(['auth:seller', 'seller'])-
     Route::put('/produk/{id}', [SellerProdukController::class, 'update'])->name('produk.update');
     Route::delete('/produk/{id}', [SellerProdukController::class, 'tarik'])->name('produk.tarik');
     Route::get('/pesanan', [SellerPesananController::class, 'index'])->name('pesanan.index');
+    Route::put('/pesanan/{id}/kemas', [SellerPesananController::class, 'kemas'])->whereNumber('id')->name('pesanan.kemas');
     Route::put('/pesanan/{id}/kirim', [SellerPesananController::class, 'kirim'])->whereNumber('id')->name('pesanan.kirim');
     Route::put('/pesanan/{id}/selesaikan-cod', [SellerPesananController::class, 'selesaikanCod'])->whereNumber('id')->name('pesanan.selesaikan_cod');
+
+    // Pengaturan Toko Seller
+    Route::get('/pengaturan', [PengaturanTokoController::class, 'index'])->name('pengaturan.index');
+    Route::put('/pengaturan', [PengaturanTokoController::class, 'update'])->name('pengaturan.update');
+
+    // Chat dengan pembeli
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{id}', [ChatController::class, 'show'])->whereNumber('id')->name('chat.show');
+    Route::post('/chat/{id}', [ChatController::class, 'kirim'])->whereNumber('id')->name('chat.kirim');
+    Route::get('/chat/{id}/pesan', [ChatController::class, 'pesan'])->whereNumber('id')->name('chat.pesan');
 
     // Saldo & pencairan
     Route::get('/pencairan', [SellerPencairanController::class, 'index'])->name('pencairan.index');

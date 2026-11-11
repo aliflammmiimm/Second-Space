@@ -17,6 +17,19 @@ class PengirimanController extends Controller
             $query->where('StatusPengiriman', $request->input('status'));
         }
 
+        if ($request->filled('cara')) {
+            $cara = $request->input('cara');
+            $query->whereHas('pesanan', fn ($p) => $p->where('CaraTerima', $cara));
+        }
+
+        if ($request->filled('q')) {
+            $q = trim($request->input('q'));
+            $query->whereHas('pesanan', function ($p) use ($q) {
+                $p->where('PesananID', (int) $q)
+                    ->orWhereHas('user', fn ($u) => $u->where('Nama', 'like', "%{$q}%"));
+            });
+        }
+
         $pengiriman = $query->latest('PengirimanID')->paginate(10)->withQueryString();
 
         return view('admin.pengiriman.index', compact('pengiriman'));

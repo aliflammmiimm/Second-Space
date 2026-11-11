@@ -43,9 +43,45 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Alamat Pengiriman Lengkap <span style="color: #00B8BE;">*</span></label>
-                        <textarea name="alamat" rows="3" class="form-control" placeholder="Contoh: Jl. Merdeka No. 45, RT 02/RW 04, Kelurahan ..., Kecamatan ..., Kota ..., Kode Pos ..." required>{{ old('alamat') }}</textarea>
-                        <div class="form-text">Pastikan alamat jelas agar kurir dapat mengantar pesanan tepat waktu.</div>
+                        <label class="form-label fw-bold">Cara Terima Barang <span style="color: #00B8BE;">*</span></label>
+                        <div class="d-flex flex-column gap-2">
+                            @if($seller->bisaAmbil())
+                                <label class="p-3 border rounded-3 d-flex align-items-center gap-3 cursor-pointer" style="cursor: pointer; border-color: rgba(0, 92, 102, 0.15) !important;">
+                                    <input type="radio" name="cara_terima" value="Ambil Sendiri" class="form-check-input mt-0"
+                                           {{ old('cara_terima', $seller->bisaAmbil() ? 'Ambil Sendiri' : 'Diantar') == 'Ambil Sendiri' ? 'checked' : '' }}>
+                                    <div>
+                                        <div class="fw-bold"><i class="bi bi-shop text-primary me-1"></i> Ambil sendiri di toko seller</div>
+                                        <small class="text-muted">Gratis ongkir. Anda datang langsung ke alamat seller untuk mengambil barang.</small>
+                                    </div>
+                                </label>
+                            @endif
+                            @if($seller->bisaAntar())
+                                <label class="p-3 border rounded-3 d-flex align-items-center gap-3 cursor-pointer" style="cursor: pointer; border-color: rgba(0, 92, 102, 0.15) !important;">
+                                    <input type="radio" name="cara_terima" value="Diantar" class="form-check-input mt-0"
+                                           {{ old('cara_terima', $seller->bisaAmbil() ? 'Ambil Sendiri' : 'Diantar') == 'Diantar' ? 'checked' : '' }}>
+                                    <div>
+                                        <div class="fw-bold"><i class="bi bi-truck text-danger me-1"></i> Diantar seller (khusus Kota Makassar)</div>
+                                        <small class="text-muted">Ongkir flat Rp {{ number_format($seller->ongkirAntar(), 0, ',', '.') }}. Diantar langsung ke tempat Anda.</small>
+                                    </div>
+                                </label>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div id="blokAntar">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Alamat Lengkap di Kota Makassar <span style="color: #00B8BE;">*</span></label>
+                            <textarea name="alamat" id="inputAlamat" rows="3" class="form-control" placeholder="Contoh: Jl. Pettarani No. 45, Kelurahan ..., Kecamatan ..., Makassar">{{ old('alamat') }}</textarea>
+                            <div class="form-text">Pastikan alamat jelas agar seller dapat mengantar pesanan tepat waktu.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nomor HP Penerima <span style="color: #00B8BE;">*</span></label>
+                            <input type="text" name="no_hp" id="inputHp" class="form-control" value="{{ old('no_hp', Auth::user()->NoHP_Email) }}" placeholder="08xxxxxxxxxx">
+                        </div>
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="di_makassar" value="1" id="diMakassar" {{ old('di_makassar') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="diMakassar">Saya menyatakan alamat ini berada di Kota Makassar.</label>
+                        </div>
                     </div>
 
                     <div class="mb-4">
@@ -56,18 +92,18 @@
                                 <input type="radio" name="metode" value="COD" class="form-check-input mt-0" {{ old('metode', 'COD') == 'COD' ? 'checked' : '' }} required>
                                 <div>
                                     <div class="fw-bold"><i class="bi bi-cash-stack text-success me-1"></i> Cash on Delivery (COD)</div>
-                                    <small class="text-muted">Bayar tunai langsung saat kurir mengantarkan barang ke tempat Anda.</small>
+                                    <small class="text-muted">Bayar tunai ke seller saat serah-terima barang (harga + ongkir bila diantar). Anda akan menerima PIN COD.</small>
                                 </div>
                             </label>
 
                             <label class="p-3 border rounded-3 d-flex align-items-center gap-3 cursor-pointer" style="cursor: pointer; border-color: rgba(0, 92, 102, 0.15) !important;">
                                 <input type="radio" name="metode" value="Transfer" class="form-check-input mt-0" {{ old('metode') == 'Transfer' ? 'checked' : '' }}>
                                 <div>
-                                                                        <div class="fw-bold" style="color: #005C66;">
+                                    <div class="fw-bold" style="color: #005C66;">
                                         <i class="bi bi-bank me-1" style="color: #00B8BE;"></i> Transfer Bank / E-Wallet (Midtrans)
                                         <span class="badge rounded-pill ms-1" style="background: rgba(0, 184, 190, 0.15); color: #005C66; font-size: 0.7rem;">Otomatis</span>
                                     </div>
-                                    <small class="text-muted">Bayar instan via Virtual Account (BCA, Mandiri, BNI, BRI, Permata) & QRIS / GoPay.</small>
+                                    <small class="text-muted">Bayar instan via Virtual Account (BCA, Mandiri, BNI, BRI, Permata) &amp; QRIS / GoPay.</small>
                                 </div>
                             </label>
                         </div>
@@ -117,8 +153,8 @@
                     <span>{{ $items->count() }} Unit</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
-                    <span class="text-muted">Biaya Pengiriman</span>
-                    <span class="text-success fw-bold">GRATIS</span>
+                    <span class="text-muted">Ongkir</span>
+                    <span class="fw-bold" id="labelOngkir">GRATIS</span>
                 </div>
 
                 <hr>
@@ -134,4 +170,36 @@
 
     </div>
 </div>
+
+<script>
+(function () {
+    var subtotal = {{ (int) $total }};
+    var ongkirAntar = {{ (int) $seller->ongkirAntar() }};
+    var rp = function (n) { return 'Rp ' + n.toLocaleString('id-ID'); };
+
+    function perbarui() {
+        var pilih = document.querySelector('input[name="cara_terima"]:checked');
+        var antar = pilih && pilih.value === 'Diantar';
+        var blok = document.getElementById('blokAntar');
+        if (blok) blok.style.display = antar ? '' : 'none';
+        var inputAlamat = document.getElementById('inputAlamat');
+        if (inputAlamat) inputAlamat.required = antar;
+        var inputHp = document.getElementById('inputHp');
+        if (inputHp) inputHp.required = antar;
+        var diMakassar = document.getElementById('diMakassar');
+        if (diMakassar) diMakassar.required = antar;
+
+        var ongkir = antar ? ongkirAntar : 0;
+        var labelOngkir = document.getElementById('labelOngkir');
+        if (labelOngkir) labelOngkir.textContent = antar ? rp(ongkir) : 'GRATIS';
+        var labelTotal = document.getElementById('labelTotal');
+        if (labelTotal) labelTotal.textContent = rp(subtotal + ongkir);
+    }
+
+    document.querySelectorAll('input[name="cara_terima"]').forEach(function (el) {
+        el.addEventListener('change', perbarui);
+    });
+    perbarui();
+})();
+</script>
 @endsection

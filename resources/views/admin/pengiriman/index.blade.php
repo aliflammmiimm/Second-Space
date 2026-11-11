@@ -77,6 +77,12 @@
                             </td>
                             <td>
                                 <div class="fw-bold text-dark">{{ $row->pesanan && $row->pesanan->user ? $row->pesanan->user->Nama : '-' }}</div>
+                                <div class="mb-1">
+                                    <span class="badge bg-light text-dark border">{{ $row->pesanan->CaraTerima ?? 'Diantar' }}</span>
+                                    @if(($row->pesanan->Ongkir ?? 0) > 0)
+                                        <span class="badge bg-light text-success border">Ongkir: Rp {{ number_format($row->pesanan->Ongkir, 0, ',', '.') }}</span>
+                                    @endif
+                                </div>
                                 <div class="text-truncate text-muted small" style="max-width: 200px;" title="{{ $row->AlamatPengiriman }}">
                                     <i class="bi bi-geo-alt text-danger me-1"></i>{{ $row->AlamatPengiriman }}
                                 </div>

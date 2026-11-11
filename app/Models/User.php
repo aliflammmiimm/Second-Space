@@ -72,20 +72,66 @@ class User extends Authenticatable
         return (bool) $this->is_blocked;
     }
 
-    /** Total pendapatan bersih dari pesanan yang sudah Selesai (uang dipegang platform via Transfer/Midtrans). */
+    public const ONGKIR_MAKSIMAL = 10000;
+
+    public function isMakassar(): bool
+    {
+        return stripos((string) $this->Kota, 'makassar') !== false;
+    }
+
+    public function bisaAntar(): bool
+    {
+        return (bool) $this->melayani_antar && $this->isMakassar();
+    }
+
+    public function bisaAmbil(): bool
+    {
+        return (bool) $this->melayani_ambil;
+    }
+
+    /** Ongkir toko, selalu dibatasi maksimal Rp10.000. */
+    public function ongkirAntar(): int
+    {
+        return $this->bisaAntar() ? min(max(0, (int) $this->tarif_antar), self::ONGKIR_MAKSIMAL) : 0;
+    }
+
+    /** Teks info untuk katalog & detail produk. */
+    public function infoPengantaran(): string
+    {
+        $bagian = [];
+        if ($this->bisaAntar()) {
+            $bagian[] = 'Antar khusus Kota Makassar, ongkir Rp' . number_format($this->ongkirAntar(), 0, ',', '.');
+        }
+        if ($this->bisaAmbil()) {
+            $bagian[] = 'Ambil sendiri gratis';
+        }
+
+        return $bagian ? implode(' · ', $bagian) : 'Hubungi seller untuk cara terima barang';
+    }
+
+    /** Ongkir milik seller dari pesanan Selesai (ongkir 100% milik seller, tanpa komisi). */
+    public function totalOngkir(string $metode): int
+    {
+        return (int) Pesanan::where('StatusPesanan', 'Selesai')
+            ->where('MetodePembayaran', $metode)
+            ->whereHas('detail', fn ($q) => $q->where('SellerID', $this->UserID))
+            ->sum('Ongkir');
+    }
+
+    /** Total pendapatan bersih + ongkir dari pesanan yang sudah Selesai (uang dipegang platform via Transfer/Midtrans). */
     public function totalPendapatan(): int
     {
         return (int) $this->itemPesanan()
             ->whereHas('pesanan', fn ($q) => $q->where('StatusPesanan', 'Selesai')->where('MetodePembayaran', 'Transfer'))
-            ->sum('PendapatanSeller');
+            ->sum('PendapatanSeller') + $this->totalOngkir('Transfer');
     }
 
-    /** Total penjualan COD yang sudah Selesai (uang tunai sudah diterima langsung oleh seller/kurir). */
+    /** Total penjualan COD yang sudah Selesai (uang tunai sudah diterima langsung oleh seller/kurir), termasuk ongkir. */
     public function totalPendapatanCod(): int
     {
         return (int) $this->itemPesanan()
             ->whereHas('pesanan', fn ($q) => $q->where('StatusPesanan', 'Selesai')->where('MetodePembayaran', 'COD'))
-            ->sum('PendapatanSeller');
+            ->sum('PendapatanSeller') + $this->totalOngkir('COD');
     }
 
     /** Pendapatan dikurangi pencairan yang menunggu / sudah ditransfer. */

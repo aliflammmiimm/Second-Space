@@ -18,6 +18,7 @@ class Pengiriman extends Model
         'StatusPengiriman',
         'TanggalUpdate',
         'AlamatPengiriman',
+        'NoHPPenerima',
         'NoResi',
     ];
 

@@ -71,8 +71,9 @@ class CheckoutController extends Controller
         $total = $items->sum('Harga');
         $langsung = (bool) $id;
         $produk = $langsung ? $items->first() : null;
+        $seller = $items->first()->seller;
 
-        return view('pelanggan.checkout', compact('items', 'total', 'langsung', 'produk', 'sellerId'));
+        return view('pelanggan.checkout', compact('items', 'total', 'langsung', 'produk', 'sellerId', 'seller'));
     }
 
     public function process(Request $request)
@@ -80,9 +81,17 @@ class CheckoutController extends Controller
         $request->validate([
             'produk_id' => 'nullable|integer',
             'seller_id' => 'nullable|integer',
-            'alamat' => 'required|string|min:5|max:255',
+            'cara_terima' => 'required|in:Ambil Sendiri,Diantar',
+            'alamat' => 'required_if:cara_terima,Diantar|nullable|string|min:5|max:255',
+            'no_hp' => ['required_if:cara_terima,Diantar', 'nullable', 'regex:/^[0-9+\-\s]{8,20}$/'],
+            'di_makassar' => 'accepted_if:cara_terima,Diantar',
             'metode' => 'required|in:Transfer,COD',
         ], [
+            'cara_terima.required' => 'Pilih cara terima barang.',
+            'no_hp.required_if' => 'Nomor HP wajib diisi untuk pengantaran.',
+            'no_hp.regex' => 'Nomor HP tidak valid.',
+            'di_makassar.accepted_if' => 'Centang untuk menyatakan alamat Anda berada di Kota Makassar.',
+            'alamat.required_if' => 'Alamat pengantaran wajib diisi.',
             'alamat.required' => 'Alamat pengiriman wajib diisi.',
             'alamat.min' => 'Alamat terlalu pendek, mohon isi dengan lengkap.',
             'metode.required' => 'Metode pembayaran wajib dipilih.',
@@ -92,7 +101,9 @@ class CheckoutController extends Controller
         $langsung = $request->filled('produk_id');
         $sellerId = $request->input('seller_id');
         $ids = $this->idTerpilih($langsung ? $request->input('produk_id') : null, $sellerId);
-        $alamat = trim($request->input('alamat'));
+        $cara = $request->input('cara_terima');
+        $alamat = $cara === 'Diantar' ? trim($request->input('alamat')) : 'Ambil sendiri di toko seller';
+        $noHp = $cara === 'Diantar' ? trim($request->input('no_hp')) : null;
         $metode = $request->input('metode');
 
         if (empty($ids)) {
@@ -100,7 +111,7 @@ class CheckoutController extends Controller
         }
 
         try {
-            $pesanan = DB::transaction(function () use ($userId, $ids, $langsung, $alamat, $metode) {
+            $pesanan = DB::transaction(function () use ($userId, $ids, $langsung, $alamat, $metode, $cara, $noHp) {
                 // Kunci baris produk agar tidak ada dua pembeli yang mengambil barang yang sama
                 $produk = Produk::with('seller')
                     ->whereIn('ProdukID', $ids)
@@ -118,7 +129,17 @@ class CheckoutController extends Controller
                 }
 
                 $transfer = $metode === 'Transfer';
-                $total = $layak->sum('Harga');
+                $seller = $layak->first()->seller;
+
+                if ($cara === 'Diantar' && !$seller->bisaAntar()) {
+                    throw new \RuntimeException('Toko ini tidak melayani antar. Pilih ambil sendiri.');
+                }
+                if ($cara === 'Ambil Sendiri' && !$seller->bisaAmbil()) {
+                    throw new \RuntimeException('Toko ini tidak melayani ambil sendiri. Pilih diantar.');
+                }
+
+                $ongkir = $cara === 'Diantar' ? $seller->ongkirAntar() : 0;
+                $total = $layak->sum('Harga') + $ongkir;
                 $pinCod = $metode === 'COD' ? sprintf('%06d', mt_rand(100000, 999999)) : null;
 
                 $pesanan = Pesanan::create([
@@ -128,6 +149,8 @@ class CheckoutController extends Controller
                     'StatusPesanan' => $transfer ? 'Menunggu Pembayaran' : 'Diproses',
                     'MetodePembayaran' => $metode,
                     'KodePinCod' => $pinCod,
+                    'CaraTerima' => $cara,
+                    'Ongkir' => $ongkir,
                     'BatasBayar' => $transfer ? now()->addHours(self::BATAS_BAYAR_JAM) : null,
                 ]);
 
@@ -153,8 +176,9 @@ class CheckoutController extends Controller
 
                 Pengiriman::create([
                     'PesananID' => $pesanan->PesananID,
-                    'StatusPengiriman' => 'Dikemas',
+                    'StatusPengiriman' => $transfer ? null : 'Dikemas',
                     'AlamatPengiriman' => $alamat,
+                    'NoHPPenerima' => $noHp,
                     'TanggalUpdate' => now(),
                 ]);
 

@@ -75,6 +75,12 @@ class MidtransController extends Controller
                     $pesanan->BatasBayar = null;
                     $pesanan->save();
 
+                    if ($pesanan->pengiriman) {
+                        $pesanan->pengiriman->StatusPengiriman = 'Dikemas';
+                        $pesanan->pengiriman->TanggalUpdate = now();
+                        $pesanan->pengiriman->save();
+                    }
+
                     Produk::whereIn('ProdukID', $pesanan->detail()->pluck('ProdukID'))
                         ->where('Status', 'Dipesan')
                         ->update(['Status' => 'Terjual']);

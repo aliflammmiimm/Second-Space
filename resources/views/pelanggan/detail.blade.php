@@ -76,7 +76,8 @@
                     </div>
 
                     <h2 class="fw-bold mb-2" style="color: #001B27;">{{ $produk->NamaProduk }}</h2>
-                    <p class="text-muted mb-3">Seller: <strong>{{ $produk->seller?->Nama ?? '-' }}</strong></p>
+                    <p class="text-muted mb-1">Seller: <strong>{{ $produk->seller?->Nama ?? '-' }}</strong></p>
+                    <p class="small mb-3" style="color: #005C66;"><i class="bi bi-truck me-1"></i>{{ $produk->seller?->infoPengantaran() }}</p>
 
                     <div class="d-flex align-items-baseline gap-3 mb-4 flex-wrap">
                         <span class="fs-2 fw-bolder" style="color: #005C66;">Rp {{ number_format($produk->Harga, 0, ',', '.') }}</span>
@@ -115,6 +116,13 @@
                                         @csrf
                                         <button type="submit" class="btn btn-outline-danger btn-lg px-4 py-3 fw-bold rounded-pill">
                                             <i class="bi bi-cart-plus me-1"></i> Tambah ke Keranjang
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ route('pelanggan.chat.mulai', $produk->ProdukID) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline-success btn-lg px-4 py-3 fw-bold rounded-pill">
+                                            <i class="bi bi-chat-dots me-1"></i> Tanya Penjual
                                         </button>
                                     </form>
 

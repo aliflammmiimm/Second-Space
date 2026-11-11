@@ -39,8 +39,19 @@
                 <div class="text-muted">{{ Auth::user()->NoHP_Email }}</div>
             </div>
             <div class="col-md-6">
-                <h6 class="fw-bold text-muted small text-uppercase mb-2">Alamat Pengiriman:</h6>
+                <h6 class="fw-bold text-muted small text-uppercase mb-2">Alamat &amp; Cara Terima:</h6>
                 <p class="mb-0 text-dark">{{ $pesanan->pengiriman ? $pesanan->pengiriman->AlamatPengiriman : 'Belum diisi' }}</p>
+                <div class="mt-2">
+                    <span class="badge bg-light text-dark border">{{ $pesanan->CaraTerima ?? 'Diantar' }}</span>
+                    <span class="badge bg-light text-dark border">Ongkir: {{ ($pesanan->Ongkir ?? 0) > 0 ? 'Rp ' . number_format($pesanan->Ongkir, 0, ',', '.') : 'Gratis' }}</span>
+                </div>
+                @if(($pesanan->CaraTerima ?? '') === 'Ambil Sendiri')
+                    <div class="mt-2 p-2 rounded-3 small" style="background: #f4f9fa; border: 1px solid rgba(0, 92, 102, 0.15);">
+                        <i class="bi bi-geo-alt-fill me-1" style="color: #00B8BE;"></i>
+                        <strong>Ambil di:</strong> {{ $pesanan->detail->first()?->seller?->AlamatToko ?? 'Alamat belum diisi seller, silakan tanyakan via chat.' }}
+                        <div class="text-muted">Seller: {{ $pesanan->detail->first()?->seller?->Nama }}</div>
+                    </div>
+                @endif
                 @if($pesanan->pengiriman && $pesanan->pengiriman->NoResi)
                     <div class="mt-2"><span class="badge bg-light text-dark border">No Resi: {{ $pesanan->pengiriman->NoResi }}</span></div>
                 @endif
@@ -79,8 +90,10 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="5" class="text-end">Biaya Pengiriman:</th>
-                        <th class="text-end text-success">GRATIS</th>
+                        <th colspan="5" class="text-end">Biaya Pengiriman ({{ $pesanan->CaraTerima ?? 'Diantar' }}):</th>
+                        <th class="text-end {{ ($pesanan->Ongkir ?? 0) > 0 ? '' : 'text-success' }}">
+                            {{ ($pesanan->Ongkir ?? 0) > 0 ? 'Rp ' . number_format($pesanan->Ongkir, 0, ',', '.') : 'GRATIS' }}
+                        </th>
                     </tr>
                     <tr class="table-light">
                         <th colspan="5" class="text-end fs-5" style="color: #001B27;">Total Pembayaran:</th>
@@ -111,7 +124,11 @@
             <div class="col-md-6 text-md-end">
                 <h6 class="fw-bold text-muted small text-uppercase mb-2">Status Pengiriman:</h6>
                 <div class="fw-bold" style="color: #001B27;">
-                    {{ $pesanan->pengiriman ? $pesanan->pengiriman->StatusPengiriman : 'Dalam Proses' }}
+                    @if($pesanan->MetodePembayaran === 'Transfer' && $pesanan->StatusPesanan === 'Menunggu Pembayaran')
+                        <span class="text-warning"><i class="bi bi-clock-history me-1"></i> Menunggu Pembayaran</span>
+                    @else
+                        {{ $pesanan->pengiriman && $pesanan->pengiriman->StatusPengiriman ? $pesanan->pengiriman->StatusPengiriman : 'Dalam Proses' }}
+                    @endif
                 </div>
                 @if($pesanan->pengiriman && $pesanan->pengiriman->TanggalKirim)
                     <div class="small text-muted">Dikirim pada: {{ $pesanan->pengiriman->TanggalKirim->format('d M Y') }}</div>
@@ -168,8 +185,20 @@
                     </div>
                     <small class="text-muted d-block mt-2">Mendukung Virtual Account (BCA, Mandiri, BNI, BRI, Permata) &amp; QRIS / GoPay</small>
                 @else
-                    <div class="alert alert-warning py-2 px-3 small d-inline-block mx-auto">
-                        <i class="bi bi-exclamation-triangle me-1"></i> Kunci Midtrans Server Key belum diatur di file <code>.env</code>.
+                    <div class="alert alert-warning py-3 px-4 small d-inline-block mx-auto text-start">
+                        @if(empty(config('midtrans.server_key')) || config('midtrans.server_key') === 'SB-Mid-server-YOUR_SANDBOX_SERVER_KEY')
+                            <div><i class="bi bi-exclamation-triangle-fill text-warning me-1"></i> <strong>Konfigurasi Belum Lengkap:</strong> Kunci Midtrans Server Key belum diatur di file <code>.env</code>.</div>
+                        @else
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="bi bi-info-circle-fill text-primary"></i>
+                                <span>Sesi pembayaran Midtrans belum termuat atau sempat terkendala koneksi.</span>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" onclick="window.location.reload()" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                                    <i class="bi bi-arrow-clockwise me-1"></i> Muat Ulang Pembayaran
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 @endif
             </div>

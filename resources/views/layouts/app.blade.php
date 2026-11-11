@@ -394,6 +394,9 @@
                                 </ul>
                             </div>
                         @elseif($activeGuard === 'seller')
+                            <a href="{{ route('seller.chat.index') }}" class="glass-btn {{ request()->routeIs('seller.chat.*') ? 'active' : '' }}">
+                                <i class="bi bi-chat-dots"></i> Pesan
+                            </a>
                             <a href="{{ route('seller.produk.index') }}" class="glass-btn {{ request()->routeIs('seller.produk.*') ? 'active' : '' }}">
                                 <i class="bi bi-shop text-danger"></i> Toko Saya
                             </a>
@@ -439,6 +442,9 @@
                             </div>
                         @else
                             {{-- Guard Web (Pelanggan) --}}
+                            <a href="{{ route('pelanggan.chat.index') }}" class="glass-btn {{ request()->routeIs('pelanggan.chat.*') ? 'active' : '' }}">
+                                <i class="bi bi-chat-dots"></i> Pesan
+                            </a>
                             <a href="{{ route('pelanggan.keranjang') }}" class="glass-btn {{ request()->routeIs('pelanggan.keranjang') ? 'active' : '' }}">
                                 <i class="bi bi-cart3"></i> Keranjang
                             </a>

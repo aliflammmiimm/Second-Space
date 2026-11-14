@@ -11,6 +11,7 @@
         left: 0;
         width: 100%;
         height: 100vh;
+        height: 100dvh;
         background: #001B27;
         display: flex;
         align-items: center;
@@ -18,21 +19,41 @@
         z-index: 99999;
         animation: introFade 2s forwards;
         pointer-events: none;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .intro .intro-content {
+        max-width: 90vw;
+        text-align: center;
+    }
+
+    .intro-logo {
+        width: clamp(70px, 18vw, 95px);
+        height: clamp(70px, 18vw, 95px);
+        object-fit: cover;
+        border-radius: 22px;
+        border: 2px solid rgba(0, 184, 190, 0.6);
+        box-shadow: 0 0 35px rgba(0, 184, 190, 0.5);
+        animation: titleReveal 1.4s forwards;
     }
 
     .intro h1 {
-        font-size: clamp(38px, 8vw, 84px);
-        letter-spacing: 10px;
+        font-size: clamp(24px, 6.5vw, 64px);
+        letter-spacing: clamp(3px, 1.2vw, 8px);
         font-weight: 900;
         color: #00B8BE;
         opacity: 0;
         animation: titleReveal 1.4s forwards;
-        text-shadow: 0 0 40px rgba(0, 184, 190, 0.5);
+        text-shadow: 0 0 30px rgba(0, 184, 190, 0.5);
+        white-space: nowrap;
+        margin: 0;
     }
 
     @keyframes titleReveal {
         0% { opacity: 0; transform: scale(0.85); }
-        60% { opacity: 1; transform: scale(1.08); }
+        60% { opacity: 1; transform: scale(1.03); }
         100% { opacity: 1; transform: scale(1); }
     }
 
@@ -60,11 +81,12 @@
     }
 
     .hero-title {
-        font-size: clamp(38px, 5.5vw, 68px);
+        font-size: clamp(32px, 5.5vw, 68px);
         font-weight: 900;
-        letter-spacing: 2px;
+        letter-spacing: clamp(1px, 0.5vw, 2px);
         line-height: 1.15;
         margin-bottom: 20px;
+        word-break: break-word;
     }
 
     .hero-title span {
@@ -308,6 +330,9 @@
     }
 
     @media (max-width: 576px) {
+        .hero-title {
+            font-size: clamp(28px, 8vw, 40px) !important;
+        }
         .swiper-button-next, .swiper-button-prev {
             display: none !important;
         }
@@ -328,8 +353,8 @@
 
     <!-- INTRO REVEAL -->
     <div class="intro">
-        <div class="text-center">
-            <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace" class="mb-3 rounded-4 shadow-lg" style="width: 95px; height: 95px; object-fit: cover; border: 2px solid rgba(0, 184, 190, 0.6); box-shadow: 0 0 35px rgba(0, 184, 190, 0.5); animation: titleReveal 1.4s forwards;">
+        <div class="text-center intro-content">
+            <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace" class="mb-3 rounded-4 shadow-lg intro-logo">
             <h1>SECONDSPACE</h1>
         </div>
     </div>

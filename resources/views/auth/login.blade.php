@@ -6,8 +6,9 @@
 <style>
     .role-card {
         background: #ffffff;
-        border: 1px solid rgba(0, 92, 102, 0.15) !important;
+        border: 1.5px solid rgba(0, 92, 102, 0.18) !important;
         transition: all 0.2s ease;
+        min-height: 72px;
     }
     .role-card:hover {
         border-color: #00B8BE !important;
@@ -16,7 +17,11 @@
     .role-card:has(input:checked) {
         border-color: #00B8BE !important;
         background: rgba(0, 184, 190, 0.08) !important;
-        box-shadow: 0 4px 12px rgba(0, 184, 190, 0.15);
+        box-shadow: 0 4px 14px rgba(0, 184, 190, 0.2);
+    }
+    .role-card input[type="radio"]:checked {
+        background-color: #00B8BE;
+        border-color: #00B8BE;
     }
 </style>
 @endpush
@@ -44,21 +49,27 @@
                             <i class="bi bi-person-badge me-1" style="color: #00B8BE;"></i> Masuk Sebagai:
                         </label>
                         <div class="row g-2">
-                            <div class="col-6">
-                                <label class="role-card p-3 rounded-3 d-flex align-items-center gap-2 cursor-pointer w-100" style="cursor: pointer;">
-                                    <input type="radio" name="role" value="pelanggan" class="form-check-input mt-0" {{ old('role', 'pelanggan') === 'pelanggan' ? 'checked' : '' }} required>
-                                    <div>
-                                        <div class="fw-bold small" style="color: #001B27;"><i class="bi bi-bag-heart me-1" style="color: #00B8BE;"></i> Pelanggan</div>
-                                        <small class="text-muted" style="font-size: 0.72rem;">Belanja thrift</small>
+                            <div class="col-6 d-flex">
+                                <label class="role-card p-2.5 px-2 px-sm-3 rounded-3 d-flex align-items-center gap-2 cursor-pointer w-100 h-100" style="cursor: pointer;">
+                                    <input type="radio" name="role" value="pelanggan" class="form-check-input mt-0 flex-shrink-0" {{ old('role', 'pelanggan') === 'pelanggan' ? 'checked' : '' }} required>
+                                    <div class="overflow-hidden flex-grow-1">
+                                        <div class="fw-bold small text-nowrap d-flex align-items-center gap-1" style="color: #001B27; font-size: 0.84rem;">
+                                            <i class="bi bi-bag-heart flex-shrink-0" style="color: #00B8BE; font-size: 0.95rem;"></i>
+                                            <span class="text-truncate">Pelanggan</span>
+                                        </div>
+                                        <small class="text-muted d-block text-truncate mt-0.5" style="font-size: 0.72rem;">Belanja thrift</small>
                                     </div>
                                 </label>
                             </div>
-                            <div class="col-6">
-                                <label class="role-card p-3 rounded-3 d-flex align-items-center gap-2 cursor-pointer w-100" style="cursor: pointer;">
-                                    <input type="radio" name="role" value="seller" class="form-check-input mt-0" {{ old('role') === 'seller' ? 'checked' : '' }}>
-                                    <div>
-                                        <div class="fw-bold small" style="color: #001B27;"><i class="bi bi-shop me-1" style="color: #005C66;"></i> Seller</div>
-                                        <small class="text-muted" style="font-size: 0.72rem;">Kelola toko</small>
+                            <div class="col-6 d-flex">
+                                <label class="role-card p-2.5 px-2 px-sm-3 rounded-3 d-flex align-items-center gap-2 cursor-pointer w-100 h-100" style="cursor: pointer;">
+                                    <input type="radio" name="role" value="seller" class="form-check-input mt-0 flex-shrink-0" {{ old('role') === 'seller' ? 'checked' : '' }}>
+                                    <div class="overflow-hidden flex-grow-1">
+                                        <div class="fw-bold small text-nowrap d-flex align-items-center gap-1" style="color: #001B27; font-size: 0.84rem;">
+                                            <i class="bi bi-shop flex-shrink-0" style="color: #005C66; font-size: 0.95rem;"></i>
+                                            <span class="text-truncate">Seller</span>
+                                        </div>
+                                        <small class="text-muted d-block text-truncate mt-0.5" style="font-size: 0.72rem;">Kelola toko</small>
                                     </div>
                                 </label>
                             </div>

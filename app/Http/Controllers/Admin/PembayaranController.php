@@ -21,8 +21,9 @@ class PembayaranController extends Controller
         }
 
         $pembayaran = $query->latest('PembayaranID')->paginate(10)->withQueryString();
+        $menungguCount = Pembayaran::where('StatusPembayaran', 'Menunggu')->whereNotNull('BuktiBayar')->count();
 
-        return view('admin.pembayaran.index', compact('pembayaran'));
+        return view('admin.pembayaran.index', compact('pembayaran', 'menungguCount'));
     }
 
     public function updateStatus(Request $request, $id)

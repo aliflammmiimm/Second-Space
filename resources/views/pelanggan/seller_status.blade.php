@@ -111,9 +111,15 @@
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold" for="Provinsi">Provinsi</label>
-                        <input id="Provinsi" name="Provinsi" class="form-control @error('Provinsi') is-invalid @enderror"
-                               value="{{ old('Provinsi') }}" required maxlength="60">
-                        <div class="form-hint mt-1">Masukkan provinsi tempat tinggalmu.</div>
+                        <select id="Provinsi" name="Provinsi" class="form-select @error('Provinsi') is-invalid @enderror" required>
+                            <option value="" disabled {{ old('Provinsi') ? '' : 'selected' }}>-- Pilih Provinsi --</option>
+                            @foreach(\App\Models\PengajuanSeller::DAFTAR_PROVINSI as $prov)
+                                <option value="{{ $prov }}" {{ old('Provinsi', 'Sulawesi Selatan') === $prov ? 'selected' : '' }}>
+                                    {{ $prov }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="form-hint mt-1">Pilih provinsi tempat tinggalmu.</div>
                         @error('Provinsi')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                     </div>
 

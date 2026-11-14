@@ -20,6 +20,9 @@ class Pengiriman extends Model
         'AlamatPengiriman',
         'NoHPPenerima',
         'NoResi',
+        'Latitude',
+        'Longitude',
+        'JarakKM',
     ];
 
     protected $casts = [

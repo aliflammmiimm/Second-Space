@@ -59,11 +59,17 @@
         <a href="{{ route('admin.komisi.index') }}" class="btn btn-sm rounded-pill px-3 {{ !request()->filled('status') ? 'btn-dark' : 'btn-outline-dark' }}">
             Semua Tagihan
         </a>
-        <a href="{{ route('admin.komisi.index', ['status' => 'Menunggu Verifikasi']) }}" class="btn btn-sm rounded-pill px-3 {{ request('status') === 'Menunggu Verifikasi' ? 'btn-info text-white' : 'btn-outline-info' }}">
+        <a href="{{ route('admin.komisi.index', ['status' => 'Menunggu Verifikasi']) }}" class="btn btn-sm rounded-pill px-3 d-inline-flex align-items-center {{ request('status') === 'Menunggu Verifikasi' ? 'btn-info text-white' : 'btn-outline-info' }}">
             Menunggu Verifikasi
+            @if(!empty($countMenungguVerifikasi))
+                <span class="badge bg-danger rounded-pill ms-1.5">{{ $countMenungguVerifikasi }}</span>
+            @endif
         </a>
-        <a href="{{ route('admin.komisi.index', ['status' => 'menunggak']) }}" class="btn btn-sm rounded-pill px-3 {{ request('status') === 'menunggak' ? 'btn-danger' : 'btn-outline-danger' }}">
+        <a href="{{ route('admin.komisi.index', ['status' => 'menunggak']) }}" class="btn btn-sm rounded-pill px-3 d-inline-flex align-items-center {{ request('status') === 'menunggak' ? 'btn-danger' : 'btn-outline-danger' }}">
             Menunggak (Lewat 4 Hari)
+            @if(!empty($countMenunggak))
+                <span class="badge bg-white text-danger rounded-pill ms-1.5 fw-bold">{{ $countMenunggak }}</span>
+            @endif
         </a>
         <a href="{{ route('admin.komisi.index', ['status' => 'Belum Dibayar']) }}" class="btn btn-sm rounded-pill px-3 {{ request('status') === 'Belum Dibayar' ? 'btn-warning text-dark' : 'btn-outline-warning text-dark' }}">
             Belum Dibayar (Dalam Batas)

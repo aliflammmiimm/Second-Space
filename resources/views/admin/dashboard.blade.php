@@ -12,8 +12,11 @@
             <p class="text-muted mb-0">Selamat datang kembali, <strong>{{ Auth::guard('admin')->user()->Nama ?? (Auth::user()->Nama ?? 'Administrator') }}</strong>! Ringkasan operasional SecondSpace.</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('admin.seller.index') }}" class="btn btn-danger rounded-pill fw-semibold shadow-sm px-3">
+            <a href="{{ route('admin.seller.index') }}" class="btn btn-danger rounded-pill fw-semibold shadow-sm px-3 d-inline-flex align-items-center">
                 <i class="bi bi-person-check me-1"></i> Pengajuan Seller
+                @if($pengajuanPending > 0)
+                    <span class="badge bg-white text-danger rounded-pill ms-2 fw-bold">{{ $pengajuanPending }}</span>
+                @endif
             </a>
             <a href="{{ route('pelanggan.katalog') }}" class="btn btn-outline-dark rounded-pill px-3" target="_blank">
                 <i class="bi bi-box-arrow-up-right me-1"></i> Buka Katalog
@@ -103,8 +106,11 @@
     <!-- QUICK NAV BUTTONS -->
     <div class="card custom-card border-0 p-3 mb-4">
         <div class="d-flex gap-2 flex-wrap">
-            <a href="{{ route('admin.seller.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
+            <a href="{{ route('admin.seller.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2 d-inline-flex align-items-center">
                 <i class="bi bi-person-check me-1"></i> Pengajuan Seller
+                @if($pengajuanPending > 0)
+                    <span class="badge bg-danger rounded-pill ms-1.5">{{ $pengajuanPending }}</span>
+                @endif
             </a>
             <a href="{{ route('admin.seller_aktif.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
                 Daftar Seller
@@ -121,17 +127,26 @@
             <a href="{{ route('admin.pesanan.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
                 <i class="bi bi-cart me-1"></i> Pesanan
             </a>
-            <a href="{{ route('admin.pembayaran.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
+            <a href="{{ route('admin.pembayaran.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2 d-inline-flex align-items-center">
                 <i class="bi bi-credit-card me-1"></i> Verifikasi Pembayaran
+                @if($pembayaranPending > 0)
+                    <span class="badge bg-danger rounded-pill ms-1.5">{{ $pembayaranPending }}</span>
+                @endif
             </a>
             <a href="{{ route('admin.pengiriman.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
                 <i class="bi bi-truck me-1"></i> Pengiriman
             </a>
-            <a href="{{ route('admin.pencairan.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
+            <a href="{{ route('admin.pencairan.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2 d-inline-flex align-items-center">
                 <i class="bi bi-cash-coin me-1"></i> Pencairan Seller
+                @if($pencairanPending > 0)
+                    <span class="badge bg-danger rounded-pill ms-1.5">{{ $pencairanPending }}</span>
+                @endif
             </a>
-            <a href="{{ route('admin.komisi.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
+            <a href="{{ route('admin.komisi.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2 d-inline-flex align-items-center">
                 <i class="bi bi-receipt-cutoff me-1"></i> Komisi COD
+                @if($komisiPending > 0)
+                    <span class="badge bg-danger rounded-pill ms-1.5">{{ $komisiPending }}</span>
+                @endif
             </a>
         </div>
     </div>

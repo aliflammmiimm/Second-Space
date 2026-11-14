@@ -160,8 +160,10 @@
                         <label class="form-label fw-semibold small text-muted">Jumlah Penarikan (Rp)</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0 fw-bold text-muted">Rp</span>
-                            <input type="number" name="Jumlah" id="inputJumlah" class="form-control border-start-0" min="{{ $minimal }}" max="{{ max($saldo, 0) }}" placeholder="Masukkan nominal" value="{{ old('Jumlah') }}" required {{ $saldo < $minimal ? 'disabled' : '' }}>
+                            <input type="text" inputmode="numeric" id="inputJumlahDisplay" class="form-control border-start-0" placeholder="Contoh: 100.000" value="{{ old('Jumlah') ? number_format((int) old('Jumlah'), 0, ',', '.') : '' }}" required {{ $saldo < $minimal ? 'disabled' : '' }} style="font-weight: 600; color: #001B27;">
                         </div>
+                        <input type="hidden" name="Jumlah" id="inputJumlah" value="{{ old('Jumlah') }}">
+                        <div class="form-text text-muted" style="font-size: 0.78rem;">Format otomatis ribuan (contoh: 50.000).</div>
                         @error('Jumlah')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                         
                         @if($saldo >= $minimal)
@@ -246,9 +248,26 @@
 <script>
     function setJumlah(val) {
         const inp = document.getElementById('inputJumlah');
-        if (inp) {
+        const disp = document.getElementById('inputJumlahDisplay');
+        if (inp && disp) {
             inp.value = val;
+            disp.value = val ? val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const dispJumlah = document.getElementById('inputJumlahDisplay');
+        const hiddenJumlah = document.getElementById('inputJumlah');
+        if (dispJumlah && hiddenJumlah) {
+            dispJumlah.addEventListener('input', function () {
+                const raw = this.value.replace(/[^0-9]/g, '');
+                hiddenJumlah.value = raw;
+                this.value = raw ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+            });
+            dispJumlah.closest('form')?.addEventListener('submit', function () {
+                hiddenJumlah.value = dispJumlah.value.replace(/[^0-9]/g, '');
+            });
+        }
+    });
 </script>
 @endsection

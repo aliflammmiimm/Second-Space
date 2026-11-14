@@ -71,7 +71,14 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold" style="font-size: 0.9rem;">Provinsi</label>
-                            <input type="text" name="Provinsi" class="form-control" value="{{ old('Provinsi') }}" required maxlength="60">
+                            <select name="Provinsi" class="form-select" required>
+                                <option value="" disabled {{ old('Provinsi') ? '' : 'selected' }}>-- Pilih Provinsi --</option>
+                                @foreach(\App\Models\PengajuanSeller::DAFTAR_PROVINSI as $prov)
+                                    <option value="{{ $prov }}" {{ old('Provinsi', 'Sulawesi Selatan') === $prov ? 'selected' : '' }}>
+                                        {{ $prov }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 

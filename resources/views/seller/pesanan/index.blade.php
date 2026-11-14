@@ -2,10 +2,26 @@
 @section('title', 'Pesanan Masuk - Seller')
 
 @section('seller_content')
-@php($warna = ['Menunggu Pembayaran' => 'warning text-dark', 'Diproses' => 'info text-dark', 'Dikemas' => 'primary', 'Dikirim' => 'primary', 'Sampai Tujuan' => 'success', 'Selesai' => 'success', 'Dibatalkan' => 'danger', 'Kedaluwarsa' => 'secondary'])
+@php($warna = ['Menunggu Konfirmasi Ongkir' => 'warning text-dark', 'Menunggu Pembayaran' => 'warning text-dark', 'Diproses' => 'info text-dark', 'Dikemas' => 'primary', 'Dikirim' => 'primary', 'Sampai Tujuan' => 'success', 'Selesai' => 'success', 'Dibatalkan' => 'danger', 'Kedaluwarsa' => 'secondary'])
 @php($sudahAksi = [])
 <div>
-    <h4 class="fw-bold mb-3"><i class="bi bi-inbox text-danger me-2"></i> Pesanan Masuk &amp; Riwayat Penjualan</h4>
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h4 class="fw-bold mb-0" style="color: #001B27;"><i class="bi bi-inbox me-2" style="color: #00B8BE;"></i> Pesanan Masuk &amp; Riwayat Penjualan</h4>
+        @if(($perluOngkirCount ?? 0) > 0 || ($perluKemasCount ?? 0) > 0)
+            <div class="d-flex gap-2 flex-wrap">
+                @if(($perluOngkirCount ?? 0) > 0)
+                    <span class="badge rounded-pill bg-danger px-3 py-2 fw-semibold">
+                        <i class="bi bi-exclamation-circle me-1"></i> {{ $perluOngkirCount }} Perlu Konfirmasi Ongkir
+                    </span>
+                @endif
+                @if(($perluKemasCount ?? 0) > 0)
+                    <span class="badge rounded-pill bg-warning text-dark px-3 py-2 fw-semibold">
+                        <i class="bi bi-box-seam me-1"></i> {{ $perluKemasCount }} Siap Dikemas
+                    </span>
+                @endif
+            </div>
+        @endif
+    </div>
     <div class="card custom-card border-0 p-3">
         <div class="table-responsive">
             <table class="table align-middle mb-0">
@@ -39,14 +55,22 @@
                         <td>{{ $ps->user->Nama ?? '-' }}</td>
                         <td class="small">
                             <span class="badge bg-light text-dark border">{{ $ps->CaraTerima ?? 'Diantar' }}</span>
+                            @if($ps->pengiriman?->JarakKM)
+                                <span class="badge bg-light text-dark border"><i class="bi bi-signpost-2 me-1" style="color: #00B8BE;"></i> {{ $ps->pengiriman->JarakKM }} KM</span>
+                            @endif
                             @if(($ps->Ongkir ?? 0) > 0)
                                 <span class="text-success fw-semibold">+ ongkir Rp {{ number_format($ps->Ongkir, 0, ',', '.') }}</span>
                             @endif
                             <br>
                             {{ $ps->pengiriman->AlamatPengiriman ?? '-' }}<br>
-                            @if($ps->MetodePembayaran === 'COD' || ($ps->pembayaran->StatusPembayaran ?? '') === 'Valid')
+                            @if($ps->pengiriman?->Latitude && $ps->pengiriman?->Longitude)
+                                <a href="https://www.google.com/maps?q={{ $ps->pengiriman->Latitude }},{{ $ps->pengiriman->Longitude }}" target="_blank" class="small text-decoration-none text-primary d-inline-block my-1 fw-semibold">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i> Buka Rute Google Maps
+                                </a><br>
+                            @endif
+                            @if($ps->StatusPesanan === 'Menunggu Konfirmasi Ongkir' || $ps->MetodePembayaran === 'COD' || ($ps->pembayaran->StatusPembayaran ?? '') === 'Valid')
                                 @if($ps->pengiriman?->NoHPPenerima)
-                                    <i class="bi bi-telephone text-primary"></i> {{ $ps->pengiriman->NoHPPenerima }}<br>
+                                    <i class="bi bi-telephone text-primary"></i> <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $ps->pengiriman->NoHPPenerima)) }}" target="_blank" class="text-decoration-none fw-semibold text-dark">{{ $ps->pengiriman->NoHPPenerima }}</a><br>
                                 @endif
                             @else
                                 <span class="text-muted fst-italic">No. HP tampil setelah pembayaran valid</span><br>
@@ -68,16 +92,40 @@
                                 @php($diantar = ($ps->CaraTerima ?? 'Diantar') === 'Diantar')
                                 @php($cod = $ps->MetodePembayaran === 'COD')
 
-                                @if($status === 'Menunggu Pembayaran')
+                                @if($status === 'Menunggu Konfirmasi Ongkir')
+                                    <div class="p-2 rounded-3 border" style="background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.35) !important;">
+                                        <div class="fw-bold text-dark small mb-1" style="font-size: 0.78rem;">
+                                            <i class="bi bi-geo-alt-fill text-danger me-1"></i> Tentukan Ongkir
+                                        </div>
+                                        <form method="POST" action="{{ route('seller.pesanan.konfirmasi_ongkir', $d->PesananID) }}" class="m-0">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="input-group input-group-sm mb-1">
+                                                <span class="input-group-text bg-white px-2" style="font-size: 0.72rem;">Rp</span>
+                                                <input type="number" name="ongkir" class="form-control form-control-sm px-2" placeholder="Contoh: 15000" min="0" max="500000" required style="font-size: 0.78rem;">
+                                            </div>
+                                            <button type="submit" class="btn btn-sm btn-dark w-100 py-1 fw-bold" style="font-size: 0.75rem; background: #001B27; border: 1px solid #00B8BE; color: #00B8BE;">
+                                                <i class="bi bi-check-circle me-1"></i> Simpan Ongkir
+                                            </button>
+                                        </form>
+                                        <small class="text-muted d-block mt-1" style="font-size: 0.68rem; line-height: 1.2;">
+                                            Sesuaikan jarak pengantaran di Makassar.
+                                        </small>
+                                    </div>
+
+                                @elseif($status === 'Menunggu Pembayaran')
                                     <span class="text-muted small">Menunggu pembayaran</span>
 
                                 @elseif(in_array($status, ['Dibatalkan', 'Kedaluwarsa'], true))
                                     <span class="text-muted small">{{ $status }}</span>
 
                                 @elseif($status === 'Selesai')
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2">
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2 d-block mb-1">
                                         <i class="bi bi-check2-circle me-1"></i> Selesai
                                     </span>
+                                    <a href="{{ route('seller.pesanan.label', $d->PesananID) }}" target="_blank" class="btn btn-outline-secondary btn-sm w-100 py-0.5 d-inline-flex align-items-center justify-content-center gap-1" style="font-size: 0.72rem;">
+                                        <i class="bi bi-printer"></i> Label Paket
+                                    </a>
 
                                 @else
                                     <div class="d-grid gap-1" style="max-width: 170px;">
@@ -129,6 +177,11 @@
                                         @elseif(in_array($status, ['Dikemas', 'Dikirim', 'Sampai Tujuan'], true))
                                             <span class="text-muted lh-sm small fst-italic">Tunggu konfirmasi pembeli</span>
                                         @endif
+
+                                        {{-- CETAK LABEL PENGIRIMAN PAKET --}}
+                                        <a href="{{ route('seller.pesanan.label', $d->PesananID) }}" target="_blank" class="btn btn-outline-dark btn-sm w-100 py-1 d-inline-flex align-items-center justify-content-center gap-1 mt-1" style="font-size: 0.74rem;">
+                                            <i class="bi bi-printer"></i> Cetak Label
+                                        </a>
                                     </div>
                                 @endif
                             @endif

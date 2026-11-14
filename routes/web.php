@@ -28,6 +28,8 @@ use App\Http\Controllers\Seller\ProdukController as SellerProdukController;
 use App\Http\Controllers\Seller\PengaturanTokoController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\Pelanggan\UlasanController as PelangganUlasanController;
 use Illuminate\Support\Facades\Route;
 
 // Midtrans Webhook Notification Callback (No Auth, No CSRF)
@@ -63,6 +65,7 @@ Route::prefix('pelanggan')->name('pelanggan.')->middleware(['auth:web', 'role:Pe
     // {id?} opsional: dengan id = "Beli Sekarang" 1 produk, tanpa id = checkout isi keranjang
     Route::get('/checkout/{id?}', [CheckoutController::class, 'show'])->whereNumber('id')->name('checkout.show');
     Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::post('/checkout/hitung-ongkir', [CheckoutController::class, 'hitungOngkir'])->name('checkout.hitung_ongkir');
 
     Route::get('/seller', [PengajuanSellerController::class, 'status'])->name('seller.status');
     Route::post('/seller', [PengajuanSellerController::class, 'store'])->name('seller.store');
@@ -70,15 +73,32 @@ Route::prefix('pelanggan')->name('pelanggan.')->middleware(['auth:web', 'role:Pe
     Route::get('/pesanan-aktif', [PelangganPesananController::class, 'pesananAktif'])->name('pesanan_aktif');
     Route::get('/pesanan', [PelangganPesananController::class, 'index'])->name('pesanan');
     Route::get('/pesanan/{id}', [PelangganPesananController::class, 'detail'])->name('pesanan.detail');
+    Route::post('/pesanan/{id}/upload-bukti', [PelangganPesananController::class, 'uploadBukti'])->whereNumber('id')->name('pesanan.upload_bukti');
     Route::put('/pesanan/{id}/terima', [PelangganPesananController::class, 'terima'])->name('pesanan.terima');
 
     // Chat dengan seller
     Route::match(['get', 'post'], '/chat/mulai/{produk}', [ChatController::class, 'mulai'])->whereNumber('produk')->name('chat.mulai');
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unread_count');
     Route::get('/chat/{id}', [ChatController::class, 'show'])->whereNumber('id')->name('chat.show');
     Route::post('/chat/{id}', [ChatController::class, 'kirim'])->whereNumber('id')->name('chat.kirim');
     Route::get('/chat/{id}/pesan', [ChatController::class, 'pesan'])->whereNumber('id')->name('chat.pesan');
+    Route::put('/chat/{id}/pesan/{pesanId}', [ChatController::class, 'updatePesan'])->whereNumber('id')->whereNumber('pesanId')->name('chat.pesan.update');
+    Route::delete('/chat/{id}/pesan/{pesanId}', [ChatController::class, 'hapusPesan'])->whereNumber('id')->whereNumber('pesanId')->name('chat.pesan.hapus');
+    Route::post('/chat/{id}/tawar', [ChatController::class, 'tawar'])->whereNumber('id')->name('chat.tawar');
+    Route::post('/chat/{id}/tawar/{tawaranId}/batal', [ChatController::class, 'batalTawaran'])->whereNumber('id')->whereNumber('tawaranId')->name('chat.tawar.batal');
+
+    // Rating & Ulasan Produk
+    Route::post('/ulasan', [PelangganUlasanController::class, 'store'])->name('ulasan.store');
+
+    // Pusat Notifikasi Pelanggan
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
 });
+
+// Endpoint Notifikasi Interaktif (Global / Auth)
+Route::get('/notifikasi/feed', [NotifikasiController::class, 'feed'])->name('notifikasi.feed');
+Route::get('/notifikasi/{id}/baca', [NotifikasiController::class, 'baca'])->whereNumber('id')->name('notifikasi.baca');
+Route::post('/notifikasi/tandai-semua-dibaca', [NotifikasiController::class, 'tandaiSemuaDibaca'])->name('notifikasi.tandai_semua_dibaca');
 
 // Admin (Guard: admin, Role: Admin)
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -149,6 +169,8 @@ Route::prefix('seller')->name('seller.')->middleware(['auth:seller', 'seller'])-
     Route::put('/produk/{id}', [SellerProdukController::class, 'update'])->name('produk.update');
     Route::delete('/produk/{id}', [SellerProdukController::class, 'tarik'])->name('produk.tarik');
     Route::get('/pesanan', [SellerPesananController::class, 'index'])->name('pesanan.index');
+    Route::get('/pesanan/{id}/label', [SellerPesananController::class, 'cetakLabel'])->whereNumber('id')->name('pesanan.label');
+    Route::put('/pesanan/{id}/konfirmasi-ongkir', [SellerPesananController::class, 'konfirmasiOngkir'])->whereNumber('id')->name('pesanan.konfirmasi_ongkir');
     Route::put('/pesanan/{id}/kemas', [SellerPesananController::class, 'kemas'])->whereNumber('id')->name('pesanan.kemas');
     Route::put('/pesanan/{id}/kirim', [SellerPesananController::class, 'kirim'])->whereNumber('id')->name('pesanan.kirim');
     Route::put('/pesanan/{id}/selesaikan-cod', [SellerPesananController::class, 'selesaikanCod'])->whereNumber('id')->name('pesanan.selesaikan_cod');
@@ -159,9 +181,13 @@ Route::prefix('seller')->name('seller.')->middleware(['auth:seller', 'seller'])-
 
     // Chat dengan pembeli
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unread_count');
     Route::get('/chat/{id}', [ChatController::class, 'show'])->whereNumber('id')->name('chat.show');
     Route::post('/chat/{id}', [ChatController::class, 'kirim'])->whereNumber('id')->name('chat.kirim');
     Route::get('/chat/{id}/pesan', [ChatController::class, 'pesan'])->whereNumber('id')->name('chat.pesan');
+    Route::put('/chat/{id}/pesan/{pesanId}', [ChatController::class, 'updatePesan'])->whereNumber('id')->whereNumber('pesanId')->name('chat.pesan.update');
+    Route::delete('/chat/{id}/pesan/{pesanId}', [ChatController::class, 'hapusPesan'])->whereNumber('id')->whereNumber('pesanId')->name('chat.pesan.hapus');
+    Route::post('/chat/{id}/tawar/{tawaranId}/respon', [ChatController::class, 'responTawaran'])->whereNumber('id')->whereNumber('tawaranId')->name('chat.tawar.respon');
 
     // Saldo & pencairan
     Route::get('/pencairan', [SellerPencairanController::class, 'index'])->name('pencairan.index');
@@ -171,4 +197,7 @@ Route::prefix('seller')->name('seller.')->middleware(['auth:seller', 'seller'])-
     // Tagihan Komisi COD
     Route::get('/komisi-cod', [SellerKomisiController::class, 'index'])->name('komisi.index');
     Route::post('/komisi-cod/{id}/upload-bukti', [SellerKomisiController::class, 'uploadBukti'])->whereNumber('id')->name('komisi.upload_bukti');
+
+    // Pusat Notifikasi Seller
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
 });

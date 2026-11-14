@@ -58,6 +58,10 @@ class PencairanController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->filled('Jumlah')) {
+            $request->merge(['Jumlah' => (int) preg_replace('/[^0-9]/', '', (string) $request->input('Jumlah'))]);
+        }
+
         $request->validate(['Jumlah' => 'required|integer|min:' . self::MINIMAL]);
 
         $jumlah = (int) $request->input('Jumlah');

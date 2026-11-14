@@ -10,7 +10,12 @@
 
     <div class="mb-3 d-flex gap-2">
         @foreach(['pending' => 'Menunggu', 'approved' => 'Disetujui', 'rejected' => 'Ditolak'] as $s => $label)
-            <a href="{{ route('admin.seller.index', ['status' => $s]) }}" class="btn btn-sm rounded-pill {{ $status === $s ? 'btn-dark' : 'btn-outline-dark' }}">{{ $label }}</a>
+            <a href="{{ route('admin.seller.index', ['status' => $s]) }}" class="btn btn-sm rounded-pill d-inline-flex align-items-center {{ $status === $s ? 'btn-dark' : 'btn-outline-dark' }}">
+                {{ $label }}
+                @if($s === 'pending' && !empty($pendingCount))
+                    <span class="badge bg-danger rounded-pill ms-1.5">{{ $pendingCount }}</span>
+                @endif
+            </a>
         @endforeach
     </div>
 

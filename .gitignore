@@ -25,3 +25,9 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+/public/upload/pembayaran/*
+!/public/upload/pembayaran/.gitkeep
+/public/upload/ulasan/*
+!/public/upload/ulasan/.gitkeep
+/public/upload/komisi/*
+!/public/upload/komisi/.gitkeep

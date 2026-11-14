@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pelanggan;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notifikasi;
 use App\Models\Pesanan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -54,22 +55,6 @@ class PesananController extends Controller
             $pesanan->save();
         }
 
-        // Pastikan Snap Token Midtrans tersedia jika pesanan transfer masih menunggu bayar
-        if ($pesanan->MetodePembayaran === 'Transfer' && 
-            $pesanan->pembayaran && 
-            $pesanan->pembayaran->StatusPembayaran === 'Menunggu' && 
-            in_array($pesanan->StatusPesanan, ['Menunggu Pembayaran', 'Diproses'])) {
-            
-            if (!$pesanan->pembayaran->SnapToken) {
-                $token = \App\Services\MidtransService::createSnapToken($pesanan);
-                if ($token) {
-                    $pesanan->pembayaran->SnapToken = $token;
-                    $pesanan->pembayaran->save();
-                    $pesanan->load('pembayaran');
-                }
-            }
-        }
-
         return view('pelanggan.pesanan_detail', compact('pesanan'));
     }
 
@@ -105,9 +90,73 @@ class PesananController extends Controller
 
             \App\Services\KomisiService::buatTagihanCodJikaPerlu($pesanan);
 
+            // Notifikasi ke pembeli untuk memberi ulasan
+            Notifikasi::kirim(
+                (int) $pesanan->UserID,
+                'pesanan_selesai',
+                "Pesanan #{$pesanan->PesananID} Selesai! Beri Ulasan ⭐",
+                "Terima kasih telah berbelanja di SecondSpace. Mohon luangkan waktu untuk memberikan rating & ulasan produk.",
+                route('pelanggan.pesanan.detail', $pesanan->PesananID),
+                'bi-star-fill',
+                '#f59e0b'
+            );
+
+            // Notifikasi ke seller bahwa barang telah diterima
+            $firstDetail = $pesanan->detail ? $pesanan->detail->first() : null;
+            if ($firstDetail && $firstDetail->SellerID) {
+                Notifikasi::kirim(
+                    (int) $firstDetail->SellerID,
+                    'pesanan_selesai',
+                    "Pesanan #{$pesanan->PesananID} Telah Diterima Pembeli",
+                    "Pembeli telah mengonfirmasi penerimaan barang. Transaksi dinyatakan selesai.",
+                    route('seller.pesanan.index'),
+                    'bi-check2-circle',
+                    '#10b981'
+                );
+            }
+
             return ['success', "Pesanan #{$pesanan->PesananID} selesai. Terima kasih sudah berbelanja!"];
         });
 
         return back()->with($pesan[0], $pesan[1]);
+    }
+
+    /** Pembeli mengunggah bukti pembayaran QRIS */
+    public function uploadBukti(\Illuminate\Http\Request $request, $id)
+    {
+        $pesanan = Pesanan::with('pembayaran')
+            ->where('UserID', Auth::id())
+            ->where('PesananID', $id)
+            ->firstOrFail();
+
+        $request->validate([
+            'bukti_bayar' => 'required|image|mimes:jpeg,png,jpg,webp|max:3072',
+        ], [
+            'bukti_bayar.required' => 'Pilih file bukti pembayaran terlebih dahulu.',
+            'bukti_bayar.image' => 'File harus berupa gambar.',
+            'bukti_bayar.mimes' => 'Format file yang didukung: JPG, PNG, WEBP.',
+            'bukti_bayar.max' => 'Ukuran file bukti pembayaran maksimal 3 MB.',
+        ]);
+
+        $file = $request->file('bukti_bayar');
+        $namaFile = 'bukti_' . $pesanan->PesananID . '_' . time() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('upload/pembayaran'), $namaFile);
+
+        $pembayaran = $pesanan->pembayaran ?: new \App\Models\Pembayaran([
+            'PesananID' => $pesanan->PesananID,
+            'Metode' => $pesanan->MetodePembayaran,
+        ]);
+
+        // Hapus file lama jika ada
+        if ($pembayaran->BuktiBayar && file_exists(public_path('upload/pembayaran/' . $pembayaran->BuktiBayar))) {
+            @unlink(public_path('upload/pembayaran/' . $pembayaran->BuktiBayar));
+        }
+
+        $pembayaran->BuktiBayar = $namaFile;
+        $pembayaran->DiunggahPada = now();
+        $pembayaran->StatusPembayaran = 'Menunggu';
+        $pembayaran->save();
+
+        return back()->with('success', 'Bukti pembayaran QRIS berhasil diunggah. Mohon tunggu verifikasi admin.');
     }
 }

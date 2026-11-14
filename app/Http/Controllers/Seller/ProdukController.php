@@ -88,6 +88,10 @@ class ProdukController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->filled('Harga')) {
+            $request->merge(['Harga' => (int) preg_replace('/[^0-9]/', '', (string) $request->input('Harga'))]);
+        }
+
         $data = $request->validate($this->rules(true));
 
         $produk = new Produk(collect($data)->only(['NamaProduk', 'JenisID', 'Deskripsi', 'Harga', 'Kondisi'])->all());
@@ -127,6 +131,10 @@ class ProdukController extends Controller
     {
         $produk = $this->milik($id);
         abort_unless($produk->Status === 'Tersedia', 403, 'Produk yang sedang dipesan/terjual tidak dapat diubah.');
+
+        if ($request->filled('Harga')) {
+            $request->merge(['Harga' => (int) preg_replace('/[^0-9]/', '', (string) $request->input('Harga'))]);
+        }
 
         $data = $request->validate($this->rules(false));
         $produk->fill(collect($data)->only(['NamaProduk', 'JenisID', 'Deskripsi', 'Harga', 'Kondisi'])->all());

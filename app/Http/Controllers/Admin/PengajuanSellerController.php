@@ -21,7 +21,9 @@ class PengajuanSellerController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('admin.seller.pengajuan', compact('pengajuan', 'status'));
+        $pendingCount = PengajuanSeller::where('Status', 'pending')->count();
+
+        return view('admin.seller.pengajuan', compact('pengajuan', 'status', 'pendingCount'));
     }
 
     public function approve($id)

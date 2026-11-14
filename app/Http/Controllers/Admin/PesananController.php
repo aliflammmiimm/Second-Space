@@ -43,8 +43,8 @@ class PesananController extends Controller
         $pesan = DB::transaction(function () use ($request, $id, $newStatus) {
             $pesanan = Pesanan::with('pengiriman', 'pembayaran')->where('PesananID', $id)->lockForUpdate()->firstOrFail();
 
-            if (in_array($pesanan->StatusPesanan, ['Menunggu Pembayaran', 'Dibatalkan', 'Kedaluwarsa'], true)) {
-                return ['error', 'Status tidak dapat diubah: pesanan belum dibayar / sudah dibatalkan.'];
+            if (in_array($pesanan->StatusPesanan, ['Menunggu Konfirmasi Ongkir', 'Menunggu Pembayaran', 'Dibatalkan', 'Kedaluwarsa'], true)) {
+                return ['error', 'Status tidak dapat diubah: pesanan belum dikonfirmasi ongkir / belum dibayar / sudah dibatalkan.'];
             }
 
             $pesanan->StatusPesanan = $newStatus;
@@ -84,7 +84,7 @@ class PesananController extends Controller
         $hasil = DB::transaction(function () use ($id) {
             $pesanan = Pesanan::where('PesananID', $id)->lockForUpdate()->firstOrFail();
 
-            if (!in_array($pesanan->StatusPesanan, ['Menunggu Pembayaran', 'Diproses', 'Dikemas'], true)) {
+            if (!in_array($pesanan->StatusPesanan, ['Menunggu Konfirmasi Ongkir', 'Menunggu Pembayaran', 'Diproses', 'Dikemas'], true)) {
                 return false;
             }
 

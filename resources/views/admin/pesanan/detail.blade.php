@@ -126,6 +126,14 @@
                 <div class="mb-2">
                     <span class="text-muted small d-block">Alamat Pengiriman:</span>
                     <p class="mb-0">{{ $pesanan->pengiriman ? $pesanan->pengiriman->AlamatPengiriman : '-' }}</p>
+                    @if($pesanan->pengiriman?->JarakKM)
+                        <span class="badge bg-light text-dark border mt-1"><i class="bi bi-signpost-2 me-1" style="color: #00B8BE;"></i> Jarak: {{ $pesanan->pengiriman->JarakKM }} KM</span>
+                    @endif
+                    @if($pesanan->pengiriman?->Latitude && $pesanan->pengiriman?->Longitude)
+                        <br><a href="https://www.google.com/maps?q={{ $pesanan->pengiriman->Latitude }},{{ $pesanan->pengiriman->Longitude }}" target="_blank" class="small text-primary text-decoration-none fw-semibold">
+                            <i class="bi bi-geo-alt-fill text-danger me-1"></i> Lihat Titik di Google Maps
+                        </a>
+                    @endif
                 </div>
                 <div class="mb-2">
                     <span class="text-muted small d-block">Status Pengiriman:</span>
@@ -133,7 +141,13 @@
                 </div>
                 <div class="mb-2">
                     <span class="text-muted small d-block">Metode Pembayaran:</span>
-                    <strong>{{ $pesanan->MetodePembayaran }}</strong>
+                    <strong style="color: #001B27;">
+                        @if($pesanan->MetodePembayaran == 'COD')
+                            <i class="bi bi-cash-stack text-success me-1"></i> Cash on Delivery (COD)
+                        @else
+                            <i class="bi bi-qr-code-scan me-1" style="color: #00B8BE;"></i> {{ $pesanan->MetodePembayaran }}
+                        @endif
+                    </strong>
                 </div>
                 <div>
                     <span class="text-muted small d-block">Status Pembayaran:</span>
@@ -141,6 +155,21 @@
                         {{ $pesanan->pembayaran ? $pesanan->pembayaran->StatusPembayaran : 'Menunggu' }}
                     </span>
                 </div>
+                @if($pesanan->pembayaran && $pesanan->pembayaran->BuktiBayar)
+                    <div class="mt-3 p-2.5 rounded-3 border" style="background: #f4f9fa; border-color: rgba(0, 92, 102, 0.2) !important;">
+                        <span class="small fw-bold d-block mb-1" style="color: #001B27;">
+                            <i class="bi bi-image me-1" style="color: #00B8BE;"></i> Bukti Pembayaran QRIS:
+                        </span>
+                        <a href="{{ asset('upload/pembayaran/' . $pesanan->pembayaran->BuktiBayar) }}" target="_blank" class="d-inline-block">
+                            <img src="{{ asset('upload/pembayaran/' . $pesanan->pembayaran->BuktiBayar) }}" alt="Bukti Pembayaran" class="img-thumbnail rounded-3" style="max-height: 140px; object-fit: contain;">
+                        </a>
+                        <div class="mt-1">
+                            <a href="{{ asset('upload/pembayaran/' . $pesanan->pembayaran->BuktiBayar) }}" target="_blank" class="small fw-semibold text-decoration-none" style="color: #005C66;">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> Buka Foto Penuh
+                            </a>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

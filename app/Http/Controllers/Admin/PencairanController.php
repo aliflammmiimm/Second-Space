@@ -19,8 +19,9 @@ class PencairanController extends Controller
         }
 
         $pencairan = $query->latest('PencairanID')->paginate(10)->withQueryString();
+        $menungguCount = Pencairan::where('Status', 'Menunggu')->count();
 
-        return view('admin.pencairan.index', compact('pencairan'));
+        return view('admin.pencairan.index', compact('pencairan', 'menungguCount'));
     }
 
     /** Admin sudah mentransfer manual ke rekening seller. */

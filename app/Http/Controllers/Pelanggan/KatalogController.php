@@ -57,7 +57,14 @@ class KatalogController extends Controller
 
     public function detail($id)
     {
-        $produk = Produk::with(['jenisProduk', 'seller:UserID,Nama,is_seller', 'gambarTambahan'])
+        $produk = Produk::with([
+            'jenisProduk',
+            'seller:UserID,Nama,is_seller',
+            'gambarTambahan',
+            'ulasan' => function ($q) {
+                $q->with('user:UserID,Nama')->orderByDesc('DibuatPada');
+            }
+        ])
             ->where('Status', '!=', 'Disembunyikan')
             ->findOrFail($id);
 

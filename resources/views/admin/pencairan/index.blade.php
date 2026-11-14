@@ -20,7 +20,12 @@
             <span class="fw-bold text-muted small me-2"><i class="bi bi-funnel"></i> Status:</span>
             <a href="{{ route('admin.pencairan.index') }}" class="btn btn-sm {{ !request('status') ? 'btn-dark' : 'btn-outline-secondary' }} rounded-pill">Semua</a>
             @foreach(['Menunggu', 'Selesai', 'Ditolak'] as $st)
-                <a href="{{ route('admin.pencairan.index', ['status' => $st]) }}" class="btn btn-sm {{ request('status') == $st ? 'btn-dark' : 'btn-outline-secondary' }} rounded-pill">{{ $st }}</a>
+                <a href="{{ route('admin.pencairan.index', ['status' => $st]) }}" class="btn btn-sm d-inline-flex align-items-center {{ request('status') == $st ? 'btn-dark' : 'btn-outline-secondary' }} rounded-pill">
+                    {{ $st }}
+                    @if($st === 'Menunggu' && !empty($menungguCount))
+                        <span class="badge bg-danger rounded-pill ms-1.5">{{ $menungguCount }}</span>
+                    @endif
+                </a>
             @endforeach
         </div>
     </div>

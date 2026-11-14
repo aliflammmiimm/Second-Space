@@ -16,8 +16,19 @@
             @endforeach
         </select></div>
 </div>
-<div class="mb-3"><label class="form-label fw-semibold" for="Harga">Harga (Rp)</label>
-    <input id="Harga" type="number" min="1" name="Harga" class="form-control" value="{{ old('Harga', $p?->Harga) }}" required></div>
+<div class="mb-3">
+    <label class="form-label fw-semibold" for="HargaDisplay">Harga (Rp) <span class="text-danger">*</span></label>
+    <div class="input-group">
+        <span class="input-group-text bg-light fw-bold" style="border-color: rgba(0, 92, 102, 0.25); color: #005C66;">Rp</span>
+        <input id="HargaDisplay" type="text" inputmode="numeric" class="form-control" 
+               placeholder="Contoh: 50.000" 
+               value="{{ old('Harga', $p?->Harga) ? number_format((int) old('Harga', $p?->Harga), 0, ',', '.') : '' }}" 
+               required autocomplete="off" style="border-color: rgba(0, 92, 102, 0.25); font-weight: 600; color: #001B27;">
+    </div>
+    <input id="Harga" type="hidden" name="Harga" value="{{ old('Harga', $p?->Harga) }}">
+    <div class="form-text text-muted">Format otomatis pemisah ribuan agar nominal mudah dibaca (contoh: 50.000).</div>
+    @error('Harga')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+</div>
 <div class="mb-3"><label class="form-label fw-semibold" for="Deskripsi">Deskripsi</label>
     <textarea id="Deskripsi" name="Deskripsi" rows="4" class="form-control" required maxlength="3000">{{ old('Deskripsi', $p?->Deskripsi) }}</textarea></div>
 <div class="mb-4">
@@ -59,3 +70,32 @@
         </div>
     @endif
 </div>
+
+<script>
+(function () {
+    const displayInput = document.getElementById('HargaDisplay');
+    const hiddenInput = document.getElementById('Harga');
+
+    function formatRibuan(angka) {
+        if (!angka) return '';
+        const clean = angka.toString().replace(/[^0-9]/g, '');
+        return clean.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    if (displayInput && hiddenInput) {
+        if (hiddenInput.value) {
+            displayInput.value = formatRibuan(hiddenInput.value);
+        }
+
+        displayInput.addEventListener('input', function () {
+            const raw = this.value.replace(/[^0-9]/g, '');
+            hiddenInput.value = raw;
+            this.value = formatRibuan(raw);
+        });
+
+        displayInput.closest('form')?.addEventListener('submit', function () {
+            hiddenInput.value = displayInput.value.replace(/[^0-9]/g, '');
+        });
+    }
+})();
+</script>

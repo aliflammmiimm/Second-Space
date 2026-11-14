@@ -112,7 +112,11 @@
                     <span class="text-muted small">&bull; {{ $ps->TanggalPesanan ? $ps->TanggalPesanan->format('d M Y, H:i') : '-' }}</span>
                 </div>
                 <div>
-                    @if($status == 'Diproses')
+                    @if($status == 'Menunggu Konfirmasi Ongkir')
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="bi bi-hourglass-top me-1"></i> Menunggu Konfirmasi Ongkir</span>
+                    @elseif($status == 'Menunggu Pembayaran')
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="bi bi-wallet2 me-1"></i> Menunggu Pembayaran</span>
+                    @elseif($status == 'Diproses')
                         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="bi bi-hourglass-split me-1"></i> Sedang Diproses</span>
                     @elseif($status == 'Dikemas')
                         <span class="badge px-3 py-2 rounded-pill" style="background: #005C66; color: #fff;"><i class="bi bi-box-seam me-1"></i> Sedang Dikemas</span>
@@ -176,7 +180,13 @@
 
                         <div class="mb-3">
                             <span class="text-muted small d-block">Metode Pembayaran:</span>
-                            <span class="badge bg-secondary me-1">{{ $ps->MetodePembayaran }}</span>
+                            <span class="badge me-1" style="background: #001B27; color: #00B8BE; border: 1px solid #005C66;">
+                                @if($ps->MetodePembayaran === 'COD')
+                                    <i class="bi bi-cash-stack text-success me-1"></i> COD
+                                @else
+                                    <i class="bi bi-qr-code me-1"></i> {{ $ps->MetodePembayaran === 'Transfer' ? 'QRIS' : $ps->MetodePembayaran }}
+                                @endif
+                            </span>
                             <span class="badge {{ $ps->pembayaran && $ps->pembayaran->StatusPembayaran == 'Valid' ? 'bg-success' : 'bg-warning text-dark' }}">
                                 Status: {{ $ps->pembayaran ? $ps->pembayaran->StatusPembayaran : 'Menunggu' }}
                             </span>
@@ -209,7 +219,11 @@
                                 <span class="fs-4 fw-bolder" style="color: #005C66;">Rp {{ number_format($ps->TotalHarga, 0, ',', '.') }}</span>
                             </div>
                             <div class="d-flex gap-2 align-items-center">
-                                                                @if($ps->StatusPesanan === 'Menunggu Pembayaran')
+                                @if($ps->StatusPesanan === 'Menunggu Konfirmasi Ongkir')
+                                    <a href="{{ route('pelanggan.pesanan.detail', $ps->PesananID) }}" class="btn btn-outline-warning text-dark rounded-pill px-3 py-2 fw-semibold">
+                                        <i class="bi bi-hourglass-top me-1"></i> Cek Status Ongkir
+                                    </a>
+                                @elseif($ps->StatusPesanan === 'Menunggu Pembayaran')
                                     <a href="{{ route('pelanggan.pesanan.detail', $ps->PesananID) }}" class="btn btn-danger rounded-pill px-3 py-2 fw-bold shadow-sm">
                                         <i class="bi bi-wallet2 me-1"></i> Bayar Sekarang
                                     </a>
@@ -227,8 +241,9 @@
                                 @if($firstProduk)
                                     <form action="{{ route('pelanggan.chat.mulai', $firstProduk->ProdukID) }}" method="POST" class="d-inline m-0">
                                         @csrf
-                                        <button type="submit" class="btn btn-outline-success rounded-pill px-3 py-2 fw-bold shadow-sm">
-                                            <i class="bi bi-chat-dots me-1"></i> Chat Penjual
+                                        <input type="hidden" name="ref" value="{{ url()->full() }}">
+                                        <button type="submit" class="btn btn-sm rounded-pill px-3 py-2 fw-semibold shadow-sm" style="background: #001B27; color: #ffffff; border: 1px solid #005C66;">
+                                            <i class="bi bi-chat-dots me-1" style="color: #00B8BE;"></i> Chat Penjual
                                         </button>
                                     </form>
                                 @endif

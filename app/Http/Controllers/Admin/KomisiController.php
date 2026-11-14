@@ -29,11 +29,16 @@ class KomisiController extends Controller
         $totalMenungguVerifikasi = TagihanKomisiCod::where('Status', 'Menunggu Verifikasi')->sum('JumlahKomisi');
         $totalMenunggak = TagihanKomisiCod::where('Status', 'Belum Dibayar')->where('BatasBayar', '<', now())->sum('JumlahKomisi');
 
+        $countMenungguVerifikasi = TagihanKomisiCod::where('Status', 'Menunggu Verifikasi')->count();
+        $countMenunggak = TagihanKomisiCod::where('Status', 'Belum Dibayar')->where('BatasBayar', '<', now())->count();
+
         return view('admin.komisi.index', compact(
             'tagihan',
             'totalLunas',
             'totalMenungguVerifikasi',
-            'totalMenunggak'
+            'totalMenunggak',
+            'countMenungguVerifikasi',
+            'countMenunggak'
         ));
     }
 

@@ -28,7 +28,11 @@
                     <span class="text-muted small">&bull; {{ $p->TanggalPesanan ? $p->TanggalPesanan->format('d M Y, H:i') : '-' }}</span>
                 </div>
                 <div>
-                    @if($p->StatusPesanan == 'Diproses')
+                    @if($p->StatusPesanan == 'Menunggu Konfirmasi Ongkir')
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="bi bi-hourglass-top me-1"></i> Menunggu Konfirmasi Ongkir</span>
+                    @elseif($p->StatusPesanan == 'Menunggu Pembayaran')
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="bi bi-wallet2 me-1"></i> Menunggu Pembayaran</span>
+                    @elseif($p->StatusPesanan == 'Diproses')
                         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="bi bi-hourglass-split me-1"></i> Diproses</span>
                     @elseif($p->StatusPesanan == 'Dikemas')
                         <span class="badge px-3 py-2 rounded-pill" style="background: #005C66; color: #fff;"><i class="bi bi-box-seam me-1"></i> Dikemas</span>
@@ -61,7 +65,7 @@
                 <div class="col-md-5 border-start-md">
                     <div class="ps-md-3">
                         <div class="small text-muted mb-1">
-                            Metode Pembayaran: <strong class="text-dark">{{ $p->MetodePembayaran }}</strong> 
+                            Metode Pembayaran: <strong class="text-dark">{{ $p->MetodePembayaran === 'Transfer' ? 'QRIS' : $p->MetodePembayaran }}</strong> 
                             ({{ $p->pembayaran ? $p->pembayaran->StatusPembayaran : 'Menunggu' }})
                         </div>
                         <div class="small text-muted mb-2">
@@ -83,8 +87,9 @@
                                 @if($firstProduk)
                                     <form action="{{ route('pelanggan.chat.mulai', $firstProduk->ProdukID) }}" method="POST" class="d-inline m-0">
                                         @csrf
-                                        <button type="submit" class="btn btn-outline-success btn-sm rounded-pill px-3">
-                                            <i class="bi bi-chat-dots me-1"></i> Chat Penjual
+                                        <input type="hidden" name="ref" value="{{ url()->full() }}">
+                                        <button type="submit" class="btn btn-sm rounded-pill px-3 fw-semibold shadow-sm" style="background: #001B27; color: #ffffff; border: 1px solid #005C66;">
+                                            <i class="bi bi-chat-dots me-1" style="color: #00B8BE;"></i> Chat Penjual
                                         </button>
                                     </form>
                                 @endif

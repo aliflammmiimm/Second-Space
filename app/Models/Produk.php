@@ -49,6 +49,22 @@ class Produk extends Model
         return $this->hasMany(ProdukGambar::class, 'ProdukID', 'ProdukID')->orderBy('Urutan', 'asc');
     }
 
+    public function ulasan()
+    {
+        return $this->hasMany(UlasanProduk::class, 'ProdukID', 'ProdukID')->orderByDesc('DibuatPada');
+    }
+
+    public function ratingRataRata(): float
+    {
+        $avg = $this->ulasan()->avg('Bintang');
+        return $avg !== null ? round((float) $avg, 1) : 5.0;
+    }
+
+    public function totalUlasan(): int
+    {
+        return (int) $this->ulasan()->count();
+    }
+
     /**
      * Mengembalikan daftar semua gambar produk (foto utama + foto pendukung).
      */

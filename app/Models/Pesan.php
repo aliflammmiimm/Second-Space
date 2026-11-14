@@ -10,7 +10,7 @@ class Pesan extends Model
     protected $primaryKey = 'PesanID';
     public $timestamps = false;
 
-    protected $fillable = ['PercakapanID', 'PengirimID', 'ProdukID', 'Isi', 'DibacaPada', 'DibuatPada'];
+    protected $fillable = ['PercakapanID', 'PengirimID', 'ProdukID', 'TawaranID', 'TipePesan', 'Isi', 'DibacaPada', 'DibuatPada'];
 
     protected $casts = [
         'DibacaPada' => 'datetime',
@@ -30,6 +30,11 @@ class Pesan extends Model
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'ProdukID', 'ProdukID');
+    }
+
+    public function tawaran()
+    {
+        return $this->belongsTo(TawaranHarga::class, 'TawaranID', 'TawaranID');
     }
 }
 

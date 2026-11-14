@@ -14,7 +14,7 @@
 
     <div id="chat-item-{{ $m->PesanID }}" class="d-flex mb-3 {{ $milikku ? 'justify-content-end' : 'justify-content-start' }} message-row">
         <div class="message-bubble rounded-4 shadow-sm position-relative {{ $milikku ? 'text-white' : 'text-dark' }}" 
-             style="max-width: 82%; min-width: 240px; padding: 12px 16px; {{ $milikku ? 'background: #005C66;' : 'background: #ffffff; border: 1px solid rgba(0, 92, 102, 0.15);' }}">
+             style="max-width: 82%; min-width: 260px; padding: 12px 16px; {{ $milikku ? 'background: #005C66;' : 'background: #ffffff; border: 1px solid rgba(0, 92, 102, 0.15);' }}">
 
             {{-- KARTU TAWARAN HARGA INTERAKTIF (SHOPEE STYLE) --}}
             @if($m->tawaran)
@@ -169,27 +169,27 @@
             @endif
 
             {{-- TIMESTAMP & AKSI EDIT / HAPUS --}}
-            <div class="d-flex justify-content-between align-items-center mt-2 pt-1.5 border-top flex-wrap" 
-                 style="gap: 12px; border-color: {{ $milikku ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.06)' }} !important; font-size: 0.72rem;">
-                <div class="d-flex align-items-center" style="gap: 10px;">
+            <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top flex-wrap" 
+                 style="gap: 6px 14px; border-color: {{ $milikku ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.08)' }} !important; font-size: 0.72rem;">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
                     @if($milikku)
-                        <button type="button" class="btn btn-link p-0 text-decoration-none opacity-75 hover-opacity-100 d-inline-flex align-items-center" 
+                        <button type="button" class="btn btn-link p-0 text-decoration-none opacity-75 hover-opacity-100 d-inline-flex align-items-center me-2" 
                                 style="color: #ffffff; font-size: 0.72rem; gap: 4px;" 
                                 onclick="mulaiEditPesan({{ $m->PesanID }})" 
                                 title="Edit pesan">
-                            <i class="bi bi-pencil-square me-1"></i> Edit
+                            <i class="bi bi-pencil-square"></i> <span>Edit</span>
                         </button>
-                        <button type="button" class="btn btn-link p-0 text-decoration-none opacity-75 hover-opacity-100 d-inline-flex align-items-center" 
+                        <button type="button" class="btn btn-link p-0 text-decoration-none opacity-75 hover-opacity-100 d-inline-flex align-items-center me-1" 
                                 style="color: #ffcdd2; font-size: 0.72rem; gap: 4px;" 
                                 onclick="hapusPesanItem({{ $m->PesanID }})" 
                                 title="Hapus pesan">
-                            <i class="bi bi-trash3 me-1"></i> Hapus
+                            <i class="bi bi-trash3"></i> <span>Hapus</span>
                         </button>
                     @endif
                 </div>
-                <div class="text-end opacity-75 ms-auto text-nowrap d-inline-flex align-items-center {{ $milikku ? 'text-white' : 'text-muted' }}" style="gap: 4px;">
+                <div class="text-end opacity-75 ms-auto text-nowrap d-inline-flex align-items-center ps-2 {{ $milikku ? 'text-white' : 'text-muted' }}" style="gap: 5px;">
                     <span id="badge-edited-{{ $m->PesanID }}" class="me-1 d-none fst-italic">(diedit)</span>
-                    <i class="bi bi-clock me-1"></i> <span>{{ $jamFormat }} WITA</span>
+                    <i class="bi bi-clock"></i> <span>{{ $jamFormat }} WITA</span>
                 </div>
             </div>
 

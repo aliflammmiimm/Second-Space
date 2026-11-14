@@ -103,6 +103,10 @@
             padding: 0.55rem 0.75rem;
             font-size: 0.86rem;
         }
+        #mainProductImage {
+            max-height: 360px !important;
+            min-height: 240px !important;
+        }
     }
 </style>
 @endpush
@@ -284,24 +288,24 @@
 
                     {{-- TOMBOL BAGIKAN KE MEDIA SOSIAL --}}
                     <div class="mt-4 pt-3 border-top">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap" style="gap: 12px;">
+                        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
                             <span class="small fw-bold text-muted text-uppercase d-inline-flex align-items-center" style="letter-spacing: 0.5px; font-size: 0.78rem;">
-                                <i class="bi bi-share-fill me-1.5" style="color: #00B8BE;"></i> Bagikan Produk:
+                                <i class="bi bi-share-fill me-2" style="color: #00B8BE;"></i> Bagikan Produk:
                             </span>
-                            <div class="d-flex align-items-center flex-wrap" style="gap: 10px;">
+                            <div class="d-flex align-items-center flex-wrap gap-2 pt-1 pt-sm-0">
                                 {{-- WhatsApp --}}
                                 <a href="https://api.whatsapp.com/send?text={{ rawurlencode('Cek produk thrift keren ini di SecondSpace: ' . $produk->NamaProduk . ' (Rp ' . number_format($produk->Harga, 0, ',', '.') . ') 👉 ' . url()->current()) }}" 
                                    target="_blank" rel="noopener noreferrer" 
-                                   class="btn btn-sm rounded-pill text-white fw-semibold shadow-sm d-inline-flex align-items-center"
-                                   style="background: #25D366; font-size: 0.8rem; padding: 6px 14px; gap: 6px;" title="Bagikan ke WhatsApp">
+                                   class="btn btn-sm rounded-pill text-white fw-semibold shadow-sm d-inline-flex align-items-center gap-1.5"
+                                   style="background: #25D366; font-size: 0.8rem; padding: 6px 14px; text-decoration: none;" title="Bagikan ke WhatsApp">
                                     <i class="bi bi-whatsapp"></i> <span>WhatsApp</span>
                                 </a>
 
                                 {{-- Facebook --}}
                                 <a href="https://www.facebook.com/sharer/sharer.php?u={{ rawurlencode(url()->current()) }}" 
                                    target="_blank" rel="noopener noreferrer" 
-                                   class="btn btn-sm rounded-pill text-white fw-semibold shadow-sm d-inline-flex align-items-center"
-                                   style="background: #1877F2; font-size: 0.8rem; padding: 6px 14px; gap: 6px;" title="Bagikan ke Facebook">
+                                   class="btn btn-sm rounded-pill text-white fw-semibold shadow-sm d-inline-flex align-items-center gap-1.5"
+                                   style="background: #1877F2; font-size: 0.8rem; padding: 6px 14px; text-decoration: none;" title="Bagikan ke Facebook">
                                     <i class="bi bi-facebook"></i> <span>Facebook</span>
                                 </a>
 
@@ -309,13 +313,13 @@
                                 <a href="https://twitter.com/intent/tweet?text={{ rawurlencode('Cek ' . $produk->NamaProduk . ' di SecondSpace: ') }}&url={{ rawurlencode(url()->current()) }}" 
                                    target="_blank" rel="noopener noreferrer" 
                                    class="btn btn-sm btn-dark rounded-pill fw-semibold shadow-sm d-inline-flex align-items-center"
-                                   style="font-size: 0.8rem; background: #000; padding: 6px 14px; gap: 6px;" title="Bagikan ke X / Twitter">
+                                   style="font-size: 0.8rem; background: #000; padding: 6px 12px; text-decoration: none;" title="Bagikan ke X / Twitter">
                                     <i class="bi bi-twitter-x"></i>
                                 </a>
 
                                 {{-- Salin Tautan --}}
-                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill fw-semibold d-inline-flex align-items-center" 
-                                        onclick="salinTautanProduk(this)" style="font-size: 0.8rem; padding: 6px 14px; gap: 6px;" title="Salin Tautan Produk">
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill fw-semibold d-inline-flex align-items-center gap-1.5" 
+                                        onclick="salinTautanProduk(this)" style="font-size: 0.8rem; padding: 6px 14px;" title="Salin Tautan Produk">
                                     <i class="bi bi-link-45deg fs-6"></i> <span class="btn-copy-text">Salin Link</span>
                                 </button>
                             </div>

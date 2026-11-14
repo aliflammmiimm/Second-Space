@@ -28,10 +28,10 @@
 
     <!-- Filter Tabs -->
     <div class="d-flex align-items-center gap-2 mb-4 border-bottom pb-3 flex-wrap">
-        <a href="{{ route($rp, ['filter' => 'semua']) }}" class="btn btn-sm rounded-pill px-3 py-1.5 fw-semibold {{ $filter !== 'belum_dibaca' ? 'btn-dark' : 'btn-outline-secondary' }}">
+        <a href="{{ route($rp, ['filter' => 'semua']) }}" class="btn btn-sm rounded-pill px-3 py-1 fw-semibold {{ $filter !== 'belum_dibaca' ? 'btn-dark' : 'btn-outline-secondary' }}">
             Semua Notifikasi ({{ $daftar->total() }})
         </a>
-        <a href="{{ route($rp, ['filter' => 'belum_dibaca']) }}" class="btn btn-sm rounded-pill px-3 py-1.5 fw-semibold position-relative {{ $filter === 'belum_dibaca' ? 'btn-dark' : 'btn-outline-secondary' }}">
+        <a href="{{ route($rp, ['filter' => 'belum_dibaca']) }}" class="btn btn-sm rounded-pill px-3 py-1 fw-semibold position-relative {{ $filter === 'belum_dibaca' ? 'btn-dark' : 'btn-outline-secondary' }}">
             Belum Dibaca
             @if($unreadCount > 0)
                 <span class="badge rounded-pill bg-danger ms-1" style="font-size: 0.7rem;">{{ $unreadCount }}</span>
@@ -76,13 +76,13 @@
                         </div>
                         <div class="d-flex align-items-center gap-2 align-self-md-center ms-auto ms-md-0 mt-2 mt-md-0">
                             @if($item->Url)
-                                <a href="{{ route('notifikasi.baca', $item->NotifikasiID) }}" class="btn btn-sm btn-dark rounded-pill px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm text-nowrap" style="font-size: 0.82rem;">
+                                <a href="{{ route('notifikasi.baca', $item->NotifikasiID) }}" class="btn btn-sm btn-dark rounded-pill px-3 py-1 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm text-nowrap" style="font-size: 0.82rem;">
                                     <span>Buka Detail</span>
                                     <i class="bi bi-arrow-right"></i>
                                 </a>
                             @else
                                 @if(!$isRead)
-                                    <a href="{{ route('notifikasi.baca', $item->NotifikasiID) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1.5 fw-semibold text-nowrap" style="font-size: 0.82rem;">
+                                    <a href="{{ route('notifikasi.baca', $item->NotifikasiID) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-semibold text-nowrap" style="font-size: 0.82rem;">
                                         Tandai Dibaca
                                     </a>
                                 @endif

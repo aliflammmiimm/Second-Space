@@ -109,7 +109,7 @@
             <a href="{{ route('admin.seller.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2 d-inline-flex align-items-center">
                 <i class="bi bi-person-check me-1"></i> Pengajuan Seller
                 @if($pengajuanPending > 0)
-                    <span class="badge bg-danger rounded-pill ms-1.5">{{ $pengajuanPending }}</span>
+                    <span class="badge bg-danger rounded-pill ms-1">{{ $pengajuanPending }}</span>
                 @endif
             </a>
             <a href="{{ route('admin.seller_aktif.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
@@ -130,7 +130,7 @@
             <a href="{{ route('admin.pembayaran.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2 d-inline-flex align-items-center">
                 <i class="bi bi-credit-card me-1"></i> Verifikasi Pembayaran
                 @if($pembayaranPending > 0)
-                    <span class="badge bg-danger rounded-pill ms-1.5">{{ $pembayaranPending }}</span>
+                    <span class="badge bg-danger rounded-pill ms-1">{{ $pembayaranPending }}</span>
                 @endif
             </a>
             <a href="{{ route('admin.pengiriman.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2">
@@ -139,13 +139,13 @@
             <a href="{{ route('admin.pencairan.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2 d-inline-flex align-items-center">
                 <i class="bi bi-cash-coin me-1"></i> Pencairan Seller
                 @if($pencairanPending > 0)
-                    <span class="badge bg-danger rounded-pill ms-1.5">{{ $pencairanPending }}</span>
+                    <span class="badge bg-danger rounded-pill ms-1">{{ $pencairanPending }}</span>
                 @endif
             </a>
             <a href="{{ route('admin.komisi.index') }}" class="btn btn-outline-dark rounded-pill px-3 py-2 d-inline-flex align-items-center">
                 <i class="bi bi-receipt-cutoff me-1"></i> Komisi COD
                 @if($komisiPending > 0)
-                    <span class="badge bg-danger rounded-pill ms-1.5">{{ $komisiPending }}</span>
+                    <span class="badge bg-danger rounded-pill ms-1">{{ $komisiPending }}</span>
                 @endif
             </a>
         </div>

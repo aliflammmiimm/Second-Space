@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>@yield('title', 'SecondSpace - Pre-Loved & Thrift Marketplace')</title>
     
     <!-- Favicon -->
@@ -374,6 +374,47 @@
                 display: none !important;
             }
         }
+
+        /* MOBILE & CROSS-PLATFORM RESPONSIVENESS ENHANCEMENTS */
+        html, body {
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Prevent auto-zoom on iOS Safari when focusing on inputs */
+        @media (max-width: 767.98px) {
+            input.form-control,
+            select.form-select,
+            textarea.form-control {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Touch scroll smoothness for tables */
+        .table-responsive {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Safe mobile dropdown sizing */
+        .dropdown-menu {
+            max-width: calc(100vw - 24px);
+        }
+
+        /* Decimal spacing utility classes */
+        .gap-1\.5, .gap-1-5 { gap: 0.375rem !important; }
+        .gap-2\.5, .gap-2-5 { gap: 0.625rem !important; }
+        .p-1\.5 { padding: 0.375rem !important; }
+        .px-1\.5 { padding-left: 0.375rem !important; padding-right: 0.375rem !important; }
+        .py-1\.5 { padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; }
+        .pt-1\.5 { padding-top: 0.375rem !important; }
+        .pb-1\.5 { padding-bottom: 0.375rem !important; }
+        .ms-1\.5 { margin-left: 0.375rem !important; }
+        .me-1\.5 { margin-right: 0.375rem !important; }
     </style>
     @stack('styles')
 </head>

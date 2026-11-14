@@ -82,7 +82,7 @@
             <p class="text-muted mb-0">Pantau proses pengemasan dan pelacakan pengiriman paket Anda secara real-time</p>
         </div>
 
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
             <a href="{{ route('pelanggan.pesanan_aktif') }}" class="btn btn-dark rounded-pill px-3 shadow-sm">
                 <i class="bi bi-hourglass-split me-1"></i> Pesanan Aktif
             </a>

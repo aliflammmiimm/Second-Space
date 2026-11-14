@@ -10,7 +10,7 @@
             <h2 class="fw-bold mb-1" style="color: #001B27;"><i class="bi bi-archive me-2" style="color: #00B8BE;"></i> Riwayat Semua Pesanan</h2>
             <p class="text-muted mb-0">Arsip seluruh transaksi dan histori belanja Anda di SecondSpace</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
             <a href="{{ route('pelanggan.pesanan_aktif') }}" class="btn btn-outline-dark rounded-pill px-3 shadow-sm">
                 <i class="bi bi-clock-history me-1" style="color: #00B8BE;"></i> Lihat Pesanan Aktif
             </a>
@@ -82,7 +82,7 @@
                                 <small class="text-muted d-block">Total Pembayaran</small>
                                 <span class="fs-5 fw-bold" style="color: #005C66;">Rp {{ number_format($p->TotalHarga, 0, ',', '.') }}</span>
                             </div>
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 flex-wrap">
                                 @php($firstProduk = $p->detail->first()?->produk)
                                 @if($firstProduk)
                                     <form action="{{ route('pelanggan.chat.mulai', $firstProduk->ProdukID) }}" method="POST" class="d-inline m-0">

@@ -12,6 +12,17 @@
         border: 1.5px solid rgba(0, 92, 102, 0.2);
         z-index: 1;
     }
+    @media (max-width: 991.98px) {
+        .col-lg-5 .sticky-top {
+            position: static !important;
+            top: auto !important;
+        }
+    }
+    @media (max-width: 576px) {
+        #mapCheckout {
+            height: 230px;
+        }
+    }
 </style>
 @endpush
 

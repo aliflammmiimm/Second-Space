@@ -93,7 +93,7 @@
     @endif
 
     {{-- KOTAK DAFTAR PESAN --}}
-    <div id="chatBox" class="p-3 rounded-4 mb-3" style="background:#f4f9fa; border:1px solid rgba(0,92,102,.15); height:60vh; overflow-y:auto; scroll-behavior: smooth;">
+    <div id="chatBox" class="p-3 rounded-4 mb-3" style="background:#f4f9fa; border:1px solid rgba(0,92,102,.15); height: clamp(340px, 58vh, 620px); overflow-y:auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;">
         @if($pesan->isEmpty())
             <div id="chatKosong" class="text-center text-muted small mt-5">
                 <i class="bi bi-chat-heart fs-2 d-block mb-2" style="color: #00B8BE;"></i>

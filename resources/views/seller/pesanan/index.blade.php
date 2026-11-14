@@ -27,15 +27,15 @@
             <table class="table align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Pesanan</th>
-                        <th>Produk</th>
+                        <th style="min-width: 110px;">Pesanan</th>
+                        <th style="min-width: 140px;">Produk</th>
                         <th>Harga</th>
                         <th>Komisi</th>
                         <th>Diterima</th>
                         <th>Pembeli</th>
-                        <th>Cara terima / Alamat</th>
+                        <th style="min-width: 220px;">Cara terima / Alamat</th>
                         <th>Status</th>
-                        <th style="width: 180px;">Aksi</th>
+                        <th style="width: 180px; min-width: 170px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>

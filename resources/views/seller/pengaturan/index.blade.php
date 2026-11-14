@@ -150,7 +150,7 @@
                     @php($hariAktifUser = $user->hariOperasionalArray())
                     <div class="d-flex flex-wrap gap-2">
                         @foreach(\App\Models\User::DAFTAR_HARI as $hari)
-                            <label class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1.5 cursor-pointer" style="font-size: 0.8rem;">
+                            <label class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 d-inline-flex align-items-center gap-2 cursor-pointer" style="font-size: 0.8rem;">
                                 <input type="checkbox" name="hari_operasional[]" value="{{ $hari }}" class="form-check-input mt-0 me-1"
                                        {{ in_array($hari, old('hari_operasional', $hariAktifUser), true) ? 'checked' : '' }}>
                                 {{ $hari }}

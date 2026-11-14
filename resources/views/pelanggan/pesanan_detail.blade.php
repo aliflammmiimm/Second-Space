@@ -126,7 +126,7 @@
                                         <div class="fw-bold" style="color: #001B27;">{{ $item->produk ? $item->produk->NamaProduk : 'Item Produk' }}</div>
                                         @if($pesanan->StatusPesanan === 'Selesai')
                                             @if($review)
-                                                <div class="mt-1 d-flex align-items-center gap-1.5 flex-wrap">
+                                                <div class="mt-1 d-flex align-items-center gap-2 flex-wrap">
                                                     <span class="badge bg-warning text-dark py-0.5 px-2 rounded-pill" style="font-size: 0.72rem;">
                                                         @for($s = 1; $s <= 5; $s++)
                                                             <i class="bi bi-star{{ $s <= $review->Bintang ? '-fill' : '' }}"></i>

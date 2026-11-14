@@ -12,7 +12,7 @@
                 <i class="bi bi-arrow-left fs-5"></i>
             </a>
             <div>
-                <h5 class="fw-bold mb-1 d-flex align-items-center flex-wrap" style="color:#001B27; font-size: 1.05rem;">
+                <h5 class="fw-bold mb-0 d-flex align-items-center flex-wrap" style="color:#001B27; font-size: 1.05rem;">
                     <i class="bi bi-person-circle fs-5 me-2" style="color: #00B8BE;"></i> 
                     <span>{{ $lawan->Nama ?? 'Pengguna' }}</span>
                     <span class="badge rounded-pill ms-2" style="font-size: 0.72rem; padding: 0.35em 0.75em; background: rgba(0, 92, 102, 0.1); color: #005C66; border: 1px solid rgba(0, 92, 102, 0.25);">
@@ -26,12 +26,11 @@
                         </span>
                     @endif
                 </h5>
-                <small class="text-muted d-flex align-items-center" style="font-size: 0.78rem;">
-                    <i class="bi bi-clock-history me-1"></i> Waktu pesan otomatis dalam WITA (Makassar)
-                    @if(!$sebagaiSeller && !empty($stLawan))
-                        <span class="ms-2 text-dark">&bull; Jam Toko: {{ $stLawan['jam'] }}</span>
-                    @endif
-                </small>
+                @if(!$sebagaiSeller && !empty($stLawan))
+                    <small class="text-muted d-flex align-items-center mt-1" style="font-size: 0.76rem;">
+                        <i class="bi bi-clock me-1 text-secondary"></i> Jam Toko: {{ $stLawan['jam'] }}
+                    </small>
+                @endif
             </div>
         </div>
         <div class="text-end">

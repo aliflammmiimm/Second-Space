@@ -18,7 +18,7 @@
 <div>
     <h4 class="fw-bold mb-3" style="color: #001B27;"><i class="bi bi-shop me-2" style="color: #00B8BE;"></i> Pengaturan Toko & Lokasi Pengantaran</h4>
     
-    <div class="card custom-card border-0 p-4" style="max-width: 720px;">
+    <div class="card custom-card border-0 p-3 p-sm-4" style="max-width: 720px;">
         <form method="POST" action="{{ route('seller.pengaturan.update') }}">
             @csrf
             @method('PUT')
@@ -96,17 +96,22 @@
             </div>
 
             {{-- JAM OPERASIONAL & HARI BUKA TOKO --}}
-            <div class="mb-4 p-3.5 p-3 rounded-4 bg-white border shadow-sm" style="border-color: rgba(0, 92, 102, 0.2) !important;">
+            <div class="mb-4 p-3 rounded-4 bg-white border shadow-sm" style="border-color: rgba(0, 92, 102, 0.2) !important;">
                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
                     <h6 class="fw-bold mb-0 text-dark d-flex align-items-center">
                         <i class="bi bi-clock-history me-2" style="color: #00B8BE; font-size: 1.15rem;"></i>
                         <span>Jam Buka & Hari Operasional Toko</span>
                     </h6>
                     @php($statusToko = $user->statusOperasionalToko())
-                    <span class="badge {{ $statusToko['badge_class'] }} px-3 py-1.5 rounded-pill" style="font-size: 0.78rem;">
-                        <i class="bi {{ $statusToko['buka'] ? 'bi-check-circle-fill' : 'bi-moon-stars-fill' }} me-1"></i>
-                        Status Saat Ini: {{ $statusToko['label'] }}
-                    </span>
+                    <div class="d-inline-flex align-items-center gap-1.5 flex-wrap" style="max-width: 100%;">
+                        <span class="text-muted small fw-semibold" style="font-size: 0.76rem;">Status Saat Ini:</span>
+                        <span class="badge {{ $statusToko['badge_class'] }} px-2.5 py-1 rounded-pill d-inline-flex align-items-center text-wrap" 
+                              style="font-size: 0.74rem; max-width: 100%; white-space: normal; line-height: 1.35; text-align: left; word-break: break-word;"
+                              title="{{ $statusToko['pesan'] }}">
+                            <i class="bi {{ $statusToko['buka'] ? 'bi-check-circle-fill' : 'bi-moon-stars-fill' }} me-1 flex-shrink-0"></i>
+                            <span>{{ $statusToko['label'] }}</span>
+                        </span>
+                    </div>
                 </div>
 
                 {{-- Status Buka / Tutup Sementara --}}

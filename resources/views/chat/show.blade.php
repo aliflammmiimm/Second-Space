@@ -20,7 +20,7 @@
                     </span>
                     @if(!$sebagaiSeller && $lawan)
                         @php($stLawan = $lawan->statusOperasionalToko())
-                        <span class="badge {{ $stLawan['badge_class'] }} rounded-pill ms-2" style="font-size: 0.72rem; padding: 0.35em 0.75em;" title="{{ $stLawan['pesan'] }}">
+                        <span class="badge {{ $stLawan['badge_class'] }} rounded-pill ms-2 text-wrap" style="font-size: 0.72rem; padding: 0.35em 0.75em; max-width: 100%;" title="{{ $stLawan['pesan'] }}">
                             <i class="bi {{ $stLawan['buka'] ? 'bi-clock-fill text-success' : 'bi-moon-stars-fill' }} me-1"></i>
                             {{ $stLawan['label'] }}
                         </span>

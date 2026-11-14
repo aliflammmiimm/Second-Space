@@ -189,16 +189,16 @@
                         <span>Seller: <strong>{{ $produk->seller?->Nama ?? '-' }}</strong></span>
                         @if($produk->seller)
                             @php($st = $produk->seller->statusOperasionalToko())
-                            <span class="badge {{ $st['badge_class'] }} rounded-pill px-2.5 py-1" style="font-size: 0.74rem;" title="{{ $st['pesan'] }}">
+                            <span class="badge {{ $st['badge_class'] }} rounded-pill px-2.5 py-1 text-wrap" style="font-size: 0.74rem; max-width: 100%; white-space: normal;" title="{{ $st['pesan'] }}">
                                 <i class="bi {{ $st['buka'] ? 'bi-clock-fill text-success' : 'bi-moon-stars-fill text-muted' }} me-1"></i>
-                                {{ $st['label'] }} ({{ $st['jam'] }})
+                                {{ $st['label'] }}
                             </span>
                         @endif
                     </div>
                     <p class="small mb-3" style="color: #005C66;">
                         <i class="bi bi-truck me-1"></i>{{ $produk->seller?->infoPengantaran() }}
                         @if($produk->seller)
-                            <span class="text-muted ms-1">&bull; Operasional: {{ $produk->seller->hariOperasionalLabel() }}</span>
+                            <span class="text-muted ms-1">&bull; Operasional: {{ $produk->seller->hariOperasionalLabel() }} ({{ $st['jam'] }})</span>
                         @endif
                     </p>
 

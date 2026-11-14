@@ -405,6 +405,61 @@
             max-width: calc(100vw - 24px);
         }
 
+        /* Mobile navbar menu full width and clean card spacing */
+        @media (max-width: 991.98px) {
+            #navbarMenu {
+                background: rgba(0, 27, 39, 0.98);
+                border-radius: 16px;
+                padding: 16px;
+                margin-top: 12px;
+                border: 1px solid rgba(0, 184, 190, 0.3);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            }
+            #navbarMenu .d-flex.flex-column .glass-btn,
+            #navbarMenu .d-flex.flex-column .dropdown,
+            #navbarMenu .d-flex.flex-column .dropdown > button {
+                width: 100% !important;
+                justify-content: flex-start !important;
+                text-align: left !important;
+            }
+            #navbarMenu .dropdown-menu {
+                position: static !important;
+                width: 100% !important;
+                margin-top: 6px !important;
+                background: rgba(0, 36, 52, 0.98) !important;
+                border: 1px solid rgba(0, 184, 190, 0.25) !important;
+                box-shadow: none !important;
+            }
+            #navbarMenu .dropdown-menu .dropdown-item {
+                color: #d1e7ec !important;
+                padding: 10px 16px !important;
+            }
+            #navbarMenu .dropdown-menu .dropdown-item:hover {
+                background: rgba(0, 184, 190, 0.15) !important;
+                color: #00B8BE !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+            .navbar-brand {
+                font-size: 1.15rem !important;
+                letter-spacing: 0.8px !important;
+                gap: 8px !important;
+            }
+            .navbar-logo {
+                height: 32px !important;
+                width: 32px !important;
+            }
+            .card.custom-card {
+                padding: 18px 16px !important;
+                border-radius: 16px !important;
+            }
+        }
+
         /* Decimal spacing utility classes */
         .gap-1\.5, .gap-1-5 { gap: 0.375rem !important; }
         .gap-2\.5, .gap-2-5 { gap: 0.625rem !important; }

@@ -36,7 +36,7 @@
                                 <i class="bi bi-shop me-2" style="color: #00B8BE;"></i> Toko: {{ $namaSeller }}
                             </div>
                             @if($adaTersedia)
-                                <a href="{{ route('pelanggan.checkout.show', ['seller_id' => $sellerId]) }}" class="btn btn-sm btn-danger rounded-pill px-3">
+                                <a href="{{ route('pelanggan.checkout.show', ['seller_id' => $sellerId]) }}" class="btn btn-sm btn-danger rounded-pill px-3 flex-grow-1 flex-sm-grow-0 text-center">
                                     <i class="bi bi-bag-check me-1"></i> Checkout Toko Ini (Rp {{ number_format($subtotalSeller, 0, ',', '.') }})
                                 </a>
                             @endif
@@ -45,7 +45,7 @@
                         <div class="p-3">
                             @foreach($sellerItems as $k)
                                 <div class="d-flex gap-3 align-items-center py-2 {{ !$loop->last ? 'border-bottom' : '' }} {{ $k->tersedia ? '' : 'opacity-75' }}">
-                                    <img src="{{ $k->produk?->gambar_url }}" class="rounded-3" style="width: 80px; height: 80px; object-fit: cover;" alt="">
+                                    <img src="{{ $k->produk?->gambar_url }}" class="rounded-3 flex-shrink-0" style="width: 68px; height: 68px; object-fit: cover;" alt="">
                                     <div class="flex-grow-1">
                                         <div class="fw-bold" style="color: #001B27;">{{ $k->produk?->NamaProduk ?? 'Produk sudah dihapus' }}</div>
                                         <div class="small text-muted">Kondisi: {{ \App\Models\Produk::KONDISI[$k->produk?->Kondisi] ?? ucfirst($k->produk?->Kondisi ?? 'Baik') }} &bull; 1 unit</div>

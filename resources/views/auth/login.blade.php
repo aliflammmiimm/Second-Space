@@ -31,7 +31,7 @@
     <div class="row justify-content-center">
         <div class="col-md-5 col-lg-4">
             
-            <div class="card custom-card border-0 shadow-lg p-4 p-md-5">
+            <div class="card custom-card border-0 shadow-lg p-3 p-sm-4 p-md-5">
                 <div class="text-center mb-4">
                     <a href="{{ route('home') }}" class="d-inline-block text-decoration-none">
                         <img src="{{ asset('assets/images/logo.jpeg') }}" alt="SecondSpace" class="rounded-4 mb-3 shadow" style="width: 72px; height: 72px; object-fit: cover; border: 2px solid rgba(0, 184, 190, 0.4);">

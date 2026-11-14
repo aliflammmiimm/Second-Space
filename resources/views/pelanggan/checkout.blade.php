@@ -45,7 +45,7 @@
         
         <!-- FORM PENGIRIMAN & PEMBAYARAN -->
         <div class="col-lg-7">
-            <div class="card custom-card border-0 p-4 p-md-5">
+            <div class="card custom-card border-0 p-3 p-sm-4 p-md-5">
                 <h4 class="fw-bold mb-4" style="color: #001B27;"><i class="bi bi-geo-alt me-2" style="color: #00B8BE;"></i> Informasi Pengiriman & Pembayaran</h4>
 
                 <form action="{{ route('pelanggan.checkout.process') }}" method="POST" id="checkoutForm">

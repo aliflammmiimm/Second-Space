@@ -365,7 +365,7 @@
             <!-- Summary Rating Card -->
             <div class="p-3 rounded-4 mb-4" style="background: linear-gradient(135deg, rgba(0, 184, 190, 0.08), rgba(0, 92, 102, 0.05)); border: 1px solid rgba(0, 184, 190, 0.2);">
                 <div class="row align-items-center g-3">
-                    <div class="col-md-3 text-center border-end">
+                    <div class="col-md-3 text-center border-bottom border-bottom-md-0 border-end-md pb-3 pb-md-0 mb-2 mb-md-0">
                         <div class="display-4 fw-bold" style="color: #005C66;">{{ $produk->ratingRataRata() }}</div>
                         <div class="text-warning fs-5 mb-1">
                             @php($avgStar = (int) round($produk->ratingRataRata()))
@@ -377,12 +377,12 @@
                     </div>
                     <div class="col-md-9">
                         <div class="d-flex flex-wrap gap-2" id="filterUlasanButtonGroup">
-                            <button type="button" class="btn btn-sm btn-dark rounded-pill px-3 py-1.5 fw-semibold filter-ulasan-btn active" data-filter="all">Semua ({{ $daftarUlasan->count() }})</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1.5 fw-semibold filter-ulasan-btn" data-filter="foto">Dengan Foto ({{ $daftarUlasan->whereNotNull('Foto')->count() }})</button>
+                            <button type="button" class="btn btn-sm btn-dark rounded-pill px-3 py-1 fw-semibold filter-ulasan-btn active" data-filter="all">Semua ({{ $daftarUlasan->count() }})</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-semibold filter-ulasan-btn" data-filter="foto">Dengan Foto ({{ $daftarUlasan->whereNotNull('Foto')->count() }})</button>
                             @for($s = 5; $s >= 1; $s--)
                                 @php($cntStar = $daftarUlasan->where('Bintang', $s)->count())
                                 @if($cntStar > 0)
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1.5 fw-semibold filter-ulasan-btn" data-filter="{{ $s }}">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-semibold filter-ulasan-btn" data-filter="{{ $s }}">
                                         <i class="bi bi-star-fill text-warning me-1"></i> {{ $s }} ({{ $cntStar }})
                                     </button>
                                 @endif

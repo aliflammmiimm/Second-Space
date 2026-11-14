@@ -33,31 +33,36 @@
         <div class="table-responsive">
             <table class="table align-middle mb-0">
                 <thead class="table-light">
-                    <tr><th>Produk</th><th>Kategori</th><th>Kondisi</th><th>Harga</th><th>Status</th><th class="text-end">Aksi</th></tr>
+                    <tr><th>Produk</th><th class="d-none d-md-table-cell">Kategori</th><th class="d-none d-md-table-cell">Kondisi</th><th>Harga</th><th>Status</th><th class="text-end">Aksi</th></tr>
                 </thead>
                 <tbody>
                 @forelse($produk as $p)
                     <tr>
                         <td>
                             <div class="d-flex align-items-center gap-2">
-                                <img src="{{ $p->gambar_url }}" class="rounded-3" style="width:52px;height:52px;object-fit:cover;" alt="">
-                                <div class="fw-semibold">{{ $p->NamaProduk }}</div>
+                                <img src="{{ $p->gambar_url }}" class="rounded-3 flex-shrink-0" style="width:48px;height:48px;object-fit:cover;" alt="">
+                                <div>
+                                    <div class="fw-semibold text-truncate" style="max-width: 170px;">{{ $p->NamaProduk }}</div>
+                                    <div class="d-md-none small text-muted" style="font-size: 0.74rem;">
+                                        {{ $p->jenisProduk->NamaJenis ?? '-' }} &bull; {{ \App\Models\Produk::KONDISI[$p->Kondisi] ?? $p->Kondisi }}
+                                    </div>
+                                </div>
                             </div>
                         </td>
-                        <td>{{ $p->jenisProduk->NamaJenis ?? '-' }}</td>
-                        <td>{{ \App\Models\Produk::KONDISI[$p->Kondisi] ?? $p->Kondisi }}</td>
-                        <td>Rp {{ number_format($p->Harga, 0, ',', '.') }}</td>
+                        <td class="d-none d-md-table-cell">{{ $p->jenisProduk->NamaJenis ?? '-' }}</td>
+                        <td class="d-none d-md-table-cell">{{ \App\Models\Produk::KONDISI[$p->Kondisi] ?? $p->Kondisi }}</td>
+                        <td class="fw-bold" style="color: #005C66; font-size: 0.9rem;">Rp {{ number_format($p->Harga, 0, ',', '.') }}</td>
                         <td><span class="badge bg-{{ $badge[$p->Status] ?? 'secondary' }}">{{ $p->Status }}</span></td>
-                        <td class="text-end">
+                        <td class="text-end text-nowrap">
                             @if($p->Status === 'Tersedia')
                                 <div class="d-inline-flex gap-1">
-                                    <a href="{{ route('seller.produk.edit', $p->ProdukID) }}" class="btn btn-sm btn-outline-dark rounded-pill">
+                                    <a href="{{ route('seller.produk.edit', $p->ProdukID) }}" class="btn btn-sm btn-outline-dark rounded-pill px-2.5 py-1">
                                         <i class="bi bi-pencil"></i> Edit
                                     </a>
                                     <form action="{{ route('seller.produk.tarik', $p->ProdukID) }}" method="POST"
-                                          onsubmit="return confirm('Tarik produk ini dari katalog?');">
+                                          onsubmit="return confirm('Tarik produk ini dari katalog?');" class="m-0">
                                         @csrf @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger rounded-pill"><i class="bi bi-box-arrow-down"></i> Tarik</button>
+                                        <button class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1"><i class="bi bi-box-arrow-down"></i> Tarik</button>
                                     </form>
                                 </div>
                             @else

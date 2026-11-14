@@ -12,6 +12,19 @@
         border: 1px solid rgba(0, 92, 102, 0.12);
     }
 
+    @media (max-width: 576px) {
+        .filter-wrapper {
+            padding: 12px 14px;
+        }
+        .category-pill {
+            padding: 6px 14px;
+            font-size: 0.82rem;
+        }
+        .product-thumb-wrapper {
+            height: 200px;
+        }
+    }
+
     .category-pill {
         display: inline-block;
         padding: 8px 18px;
@@ -171,7 +184,7 @@
     </div>
 
     <!-- GRID PRODUK -->
-    <div class="row g-4 mb-5">
+    <div class="row g-3 g-md-4 mb-5">
         @forelse($produk as $p)
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                 <div class="product-box">

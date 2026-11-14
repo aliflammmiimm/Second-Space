@@ -306,6 +306,21 @@
         font-size: 1rem;
         font-weight: bold;
     }
+
+    @media (max-width: 576px) {
+        .swiper-button-next, .swiper-button-prev {
+            display: none !important;
+        }
+        .hero-wrapper {
+            padding: 55px 0 70px;
+        }
+        .about-section {
+            padding: 55px 0;
+        }
+        .product-showcase {
+            padding: 55px 0 70px;
+        }
+    }
 </style>
 @endpush
 

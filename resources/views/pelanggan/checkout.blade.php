@@ -79,6 +79,7 @@
                                     $bisaAmbil = true;
                                 }
                                 $defaultCara = old('cara_terima', $bisaAmbil ? 'Ambil Sendiri' : 'Diantar');
+                                $stSeller = $seller ? $seller->statusOperasionalToko() : null;
                             @endphp
 
                             @if($bisaAmbil)
@@ -92,8 +93,7 @@
                                             @if($seller && $seller->AlamatToko)
                                                 <br><span class="text-dark fw-semibold"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Lokasi Toko: {{ $seller->AlamatToko }} ({{ $seller->Kota ?? 'Makassar' }})</span>
                                             @endif
-                                            @if($seller)
-                                                @php($stSeller = $seller->statusOperasionalToko())
+                                            @if($seller && $stSeller)
                                                 <br><span class="text-dark small"><i class="bi bi-clock-history me-1" style="color: #00B8BE;"></i> Jam Buka: {{ $stSeller['jam'] }} ({{ $seller->hariOperasionalLabel() }})</span>
                                             @endif
                                         </small>

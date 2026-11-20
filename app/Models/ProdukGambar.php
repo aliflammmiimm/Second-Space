@@ -33,12 +33,6 @@ class ProdukGambar extends Model
             return $this->PathGambar;
         }
 
-        $filePath = public_path('upload/' . $this->PathGambar);
-        $tmpPath = '/tmp/upload/' . $this->PathGambar;
-        if (!file_exists($filePath) && !file_exists($tmpPath)) {
-            return asset('upload/default.jpg');
-        }
-
         $encoded = implode('/', array_map('rawurlencode', explode('/', $this->PathGambar)));
         return asset('upload/' . $encoded);
     }

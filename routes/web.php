@@ -202,21 +202,42 @@ Route::prefix('seller')->name('seller.')->middleware(['auth:seller', 'seller'])-
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
 });
 
-// Layani file upload secara dinamis (kompatibel penuh dengan local Laragon dan Vercel /tmp)
+// Layani file upload secara dinamis (kompatibel penuh dengan local Laragon, Vercel /tmp, dan TiDB Cloud gambar_storage)
 Route::get('/upload/{path}', function (string $path) {
+    // 1. Cek di disk lokal / git repository (public/upload)
     $local = public_path('upload/' . $path);
     if (file_exists($local) && is_file($local)) {
-        return response()->file($local);
+        return response()->file($local, [
+            'Cache-Control' => 'public, max-age=86400',
+        ]);
     }
 
+    // 2. Cek di /tmp/upload (jika baru diunggah di runtime container saat ini)
     $tmp = '/tmp/upload/' . $path;
     if (file_exists($tmp) && is_file($tmp)) {
-        return response()->file($tmp);
+        return response()->file($tmp, [
+            'Cache-Control' => 'public, max-age=86400',
+        ]);
     }
 
+    // 3. Cek di tabel database gambar_storage (penyimpanan cloud persisten untuk serverless Vercel)
+    try {
+        $row = \Illuminate\Support\Facades\DB::table('gambar_storage')->where('nama_file', $path)->first();
+        if ($row && !empty($row->data)) {
+            return response($row->data, 200, [
+                'Content-Type' => $row->mime ?: 'image/jpeg',
+                'Content-Length' => strlen($row->data),
+                'Cache-Control' => 'public, max-age=31536000, immutable',
+            ]);
+        }
+    } catch (\Throwable $e) {}
+
+    // 4. Fallback ke gambar default jika file tidak ditemukan
     $default = public_path('upload/default.jpg');
     if (file_exists($default)) {
-        return response()->file($default);
+        return response()->file($default, [
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
     }
 
     abort(404);

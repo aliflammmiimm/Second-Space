@@ -117,12 +117,6 @@ class Produk extends Model
             return $this->Gambar;
         }
 
-        $filePath = public_path('upload/' . $this->Gambar);
-        $tmpPath = '/tmp/upload/' . $this->Gambar;
-        if (!file_exists($filePath) && !file_exists($tmpPath)) {
-            return asset('upload/default.jpg');
-        }
-
         $encoded = implode('/', array_map('rawurlencode', explode('/', $this->Gambar)));
         return asset('upload/' . $encoded);
     }

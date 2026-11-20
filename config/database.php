@@ -63,6 +63,12 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 Mysql::ATTR_SSL_CA => (function () {
+                    $host = env('DB_HOST', '127.0.0.1');
+                    // Database lokal (Laragon/localhost) tidak menggunakan SSL
+                    if (in_array($host, ['127.0.0.1', 'localhost', '::1'], true)) {
+                        return null;
+                    }
+
                     $ca = env('MYSQL_ATTR_SSL_CA');
                     if ($ca && file_exists($ca)) return $ca;
                     if (file_exists('/etc/ssl/certs/ca-certificates.crt')) return '/etc/ssl/certs/ca-certificates.crt';
@@ -90,6 +96,12 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 Mysql::ATTR_SSL_CA => (function () {
+                    $host = env('DB_HOST', '127.0.0.1');
+                    // Database lokal (Laragon/localhost) tidak menggunakan SSL
+                    if (in_array($host, ['127.0.0.1', 'localhost', '::1'], true)) {
+                        return null;
+                    }
+
                     $ca = env('MYSQL_ATTR_SSL_CA');
                     if ($ca && file_exists($ca)) return $ca;
                     if (file_exists('/etc/ssl/certs/ca-certificates.crt')) return '/etc/ssl/certs/ca-certificates.crt';

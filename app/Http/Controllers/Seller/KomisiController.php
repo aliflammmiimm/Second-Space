@@ -59,23 +59,12 @@ class KomisiController extends Controller
             return back()->with('error', 'Tagihan komisi ini sudah lunas.');
         }
 
-        $file = $request->file('bukti');
-        $namaFile = time() . '_komisi_' . Str::random(10) . '.' . $file->guessExtension();
-
-        $dest = public_path('upload/komisi');
-        if (!File::isDirectory($dest)) {
-            File::makeDirectory($dest, 0755, true, true);
-        }
-
         // Hapus file lama jika ada
-        if ($t->BuktiTransfer && !str_starts_with($t->BuktiTransfer, 'http')) {
-            $pathLama = public_path('upload/komisi/' . $t->BuktiTransfer);
-            if (File::exists($pathLama)) {
-                @File::delete($pathLama);
-            }
+        if ($t->BuktiTransfer) {
+            \App\Services\UploadService::deleteFile($t->BuktiTransfer, 'komisi');
         }
 
-        $file->move($dest, $namaFile);
+        $namaFile = \App\Services\UploadService::saveFile($request->file('bukti'), 'komisi', 'komisi');
 
         $t->BuktiTransfer = $namaFile;
         $t->DiunggahPada = now();

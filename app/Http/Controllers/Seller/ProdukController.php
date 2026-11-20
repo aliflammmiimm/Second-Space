@@ -7,6 +7,7 @@ use App\Models\JenisProduk;
 use App\Models\Produk;
 use App\Models\ProdukGambar;
 use App\Models\User;
+use App\Services\UploadService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -33,14 +34,12 @@ class ProdukController extends Controller
 
     private function simpanFoto(Request $request): string
     {
-        return $this->simpanFile($request->file('foto'));
+        return UploadService::saveFile($request->file('foto'));
     }
 
     private function simpanFile($file): string
     {
-        $nama = time() . '_' . Str::random(10) . '.' . $file->guessExtension();
-        $file->move(public_path('upload'), $nama);
-        return $nama;
+        return UploadService::saveFile($file);
     }
 
     // Selalu query lewat relasi milik user -> produk Seller lain = 404
@@ -141,13 +140,7 @@ class ProdukController extends Controller
         if ($request->hasFile('foto')) {
             $fotoLama = $produk->Gambar;
             $produk->Gambar = $this->simpanFoto($request);
-
-            if ($fotoLama && $fotoLama !== 'default.jpg' && !str_starts_with($fotoLama, 'http')) {
-                $path = public_path('upload/' . $fotoLama);
-                if (File::exists($path)) {
-                    @File::delete($path);
-                }
-            }
+            UploadService::deleteFile($fotoLama);
         }
         $produk->save();
 
@@ -159,12 +152,7 @@ class ProdukController extends Controller
                 ->get();
 
             foreach ($gambarDihapus as $g) {
-                if ($g->PathGambar && $g->PathGambar !== 'default.jpg' && !str_starts_with($g->PathGambar, 'http')) {
-                    $path = public_path('upload/' . $g->PathGambar);
-                    if (File::exists($path)) {
-                        @File::delete($path);
-                    }
-                }
+                UploadService::deleteFile($g->PathGambar);
                 $g->delete();
             }
         }
@@ -198,22 +186,11 @@ class ProdukController extends Controller
             $produk->Status = 'Disembunyikan';
             $produk->save();
         } else {
-            $foto = $produk->Gambar;
-            if ($foto && $foto !== 'default.jpg' && !str_starts_with($foto, 'http')) {
-                $path = public_path('upload/' . $foto);
-                if (File::exists($path)) {
-                    @File::delete($path);
-                }
-            }
+            UploadService::deleteFile($produk->Gambar);
 
             // Hapus seluruh foto tambahan dari storage & DB
             foreach ($produk->gambarTambahan as $gt) {
-                if ($gt->PathGambar && $gt->PathGambar !== 'default.jpg' && !str_starts_with($gt->PathGambar, 'http')) {
-                    $path = public_path('upload/' . $gt->PathGambar);
-                    if (File::exists($path)) {
-                        @File::delete($path);
-                    }
-                }
+                UploadService::deleteFile($gt->PathGambar);
                 $gt->delete();
             }
 

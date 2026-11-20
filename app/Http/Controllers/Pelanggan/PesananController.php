@@ -139,8 +139,7 @@ class PesananController extends Controller
         ]);
 
         $file = $request->file('bukti_bayar');
-        $namaFile = 'bukti_' . $pesanan->PesananID . '_' . time() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('upload/pembayaran'), $namaFile);
+        $namaFile = \App\Services\UploadService::saveFile($file, 'pembayaran', 'bukti_' . $pesanan->PesananID);
 
         $pembayaran = $pesanan->pembayaran ?: new \App\Models\Pembayaran([
             'PesananID' => $pesanan->PesananID,
@@ -148,8 +147,8 @@ class PesananController extends Controller
         ]);
 
         // Hapus file lama jika ada
-        if ($pembayaran->BuktiBayar && file_exists(public_path('upload/pembayaran/' . $pembayaran->BuktiBayar))) {
-            @unlink(public_path('upload/pembayaran/' . $pembayaran->BuktiBayar));
+        if ($pembayaran->BuktiBayar) {
+            \App\Services\UploadService::deleteFile($pembayaran->BuktiBayar, 'pembayaran');
         }
 
         $pembayaran->BuktiBayar = $namaFile;

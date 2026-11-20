@@ -118,7 +118,8 @@ class Produk extends Model
         }
 
         $filePath = public_path('upload/' . $this->Gambar);
-        if (!file_exists($filePath)) {
+        $tmpPath = '/tmp/upload/' . $this->Gambar;
+        if (!file_exists($filePath) && !file_exists($tmpPath)) {
             return asset('upload/default.jpg');
         }
 

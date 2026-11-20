@@ -50,13 +50,7 @@ class UlasanController extends Controller
 
         $fotoNama = null;
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
-            $folder = public_path('upload/ulasan');
-            if (!file_exists($folder)) {
-                @mkdir($folder, 0755, true);
-            }
-            $ext = $request->file('foto')->getClientOriginalExtension();
-            $fotoNama = 'ulasan_' . time() . '_' . mt_rand(1000, 9999) . '.' . $ext;
-            $request->file('foto')->move($folder, $fotoNama);
+            $fotoNama = \App\Services\UploadService::saveFile($request->file('foto'), 'ulasan', 'ulasan');
         }
 
         $ulasan = UlasanProduk::create([

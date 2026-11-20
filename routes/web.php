@@ -201,3 +201,23 @@ Route::prefix('seller')->name('seller.')->middleware(['auth:seller', 'seller'])-
     // Pusat Notifikasi Seller
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
 });
+
+// Layani file upload secara dinamis (kompatibel penuh dengan local Laragon dan Vercel /tmp)
+Route::get('/upload/{path}', function (string $path) {
+    $local = public_path('upload/' . $path);
+    if (file_exists($local) && is_file($local)) {
+        return response()->file($local);
+    }
+
+    $tmp = '/tmp/upload/' . $path;
+    if (file_exists($tmp) && is_file($tmp)) {
+        return response()->file($tmp);
+    }
+
+    $default = public_path('upload/default.jpg');
+    if (file_exists($default)) {
+        return response()->file($default);
+    }
+
+    abort(404);
+})->where('path', '.*')->name('upload.serve');

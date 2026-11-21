@@ -208,7 +208,7 @@ Route::get('/upload/{path}', function (string $path) {
     $local = public_path('upload/' . $path);
     if (file_exists($local) && is_file($local)) {
         return response()->file($local, [
-            'Cache-Control' => 'public, max-age=86400',
+            'Cache-Control' => 'public, max-age=31536000, s-maxage=31536000, immutable',
         ]);
     }
 
@@ -216,7 +216,7 @@ Route::get('/upload/{path}', function (string $path) {
     $tmp = '/tmp/upload/' . $path;
     if (file_exists($tmp) && is_file($tmp)) {
         return response()->file($tmp, [
-            'Cache-Control' => 'public, max-age=86400',
+            'Cache-Control' => 'public, max-age=31536000, s-maxage=31536000, immutable',
         ]);
     }
 
@@ -227,7 +227,7 @@ Route::get('/upload/{path}', function (string $path) {
             return response($row->data, 200, [
                 'Content-Type' => $row->mime ?: 'image/jpeg',
                 'Content-Length' => strlen($row->data),
-                'Cache-Control' => 'public, max-age=31536000, immutable',
+                'Cache-Control' => 'public, max-age=31536000, s-maxage=31536000, immutable',
             ]);
         }
     } catch (\Throwable $e) {}
@@ -236,7 +236,7 @@ Route::get('/upload/{path}', function (string $path) {
     $default = public_path('upload/default.jpg');
     if (file_exists($default)) {
         return response()->file($default, [
-            'Cache-Control' => 'public, max-age=3600',
+            'Cache-Control' => 'public, max-age=86400, s-maxage=86400',
         ]);
     }
 

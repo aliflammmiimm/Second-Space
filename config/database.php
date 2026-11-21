@@ -62,6 +62,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
+                \PDO::ATTR_EMULATE_PREPARES => true,
                 Mysql::ATTR_SSL_CA => (function () {
                     $host = env('DB_HOST', '127.0.0.1');
                     // Database lokal (Laragon/localhost) tidak menggunakan SSL

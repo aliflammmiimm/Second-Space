@@ -112,10 +112,12 @@
         transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 8px;
         border: none;
         text-decoration: none;
         box-shadow: 0 10px 25px rgba(0, 184, 190, 0.45);
+        min-height: 50px;
     }
 
     .btn-shop-now:hover {
@@ -123,6 +125,17 @@
         background: #00d2da;
         box-shadow: 0 15px 35px rgba(0, 184, 190, 0.6);
         color: #001B27;
+    }
+
+    .hero-sec-btn {
+        padding: 14px 28px !important;
+        font-size: 0.95rem;
+        min-height: 50px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 50px;
     }
 
     /* HERO LOGO FLOATING */
@@ -172,14 +185,20 @@
     .cat-card {
         background: rgba(0, 92, 102, 0.35);
         border: 1px solid rgba(0, 184, 190, 0.25);
-        border-radius: 16px;
-        padding: 20px;
+        border-radius: 20px;
+        padding: 22px 14px;
         text-align: center;
         color: white;
         text-decoration: none;
         transition: all 0.3s ease;
-        display: block;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        min-height: 160px;
         backdrop-filter: blur(10px);
+        box-shadow: 0 8px 20px rgba(0, 27, 39, 0.2);
     }
 
     .cat-card:hover {
@@ -187,13 +206,50 @@
         border-color: #00B8BE;
         transform: translateY(-4px);
         color: white;
-        box-shadow: 0 10px 25px rgba(0, 184, 190, 0.25);
+        box-shadow: 0 12px 30px rgba(0, 184, 190, 0.35);
     }
 
     .cat-icon {
-        font-size: 2rem;
-        margin-bottom: 8px;
+        font-size: 2.3rem;
+        line-height: 1;
+        margin-bottom: 12px;
         color: #00B8BE;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+    }
+
+    .cat-card:hover .cat-icon {
+        transform: scale(1.12);
+    }
+
+    .cat-card h6 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1.3;
+        margin-bottom: 4px;
+        min-height: 2.6em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        color: #ffffff;
+        word-break: break-word;
+    }
+
+    .cat-card small {
+        font-size: 0.78rem;
+        line-height: 1.3;
+        color: rgba(209, 231, 236, 0.72);
+        min-height: 2.6em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
     }
 
     /* ABOUT SECTION */
@@ -331,19 +387,74 @@
 
     @media (max-width: 576px) {
         .hero-title {
-            font-size: clamp(28px, 8vw, 40px) !important;
+            font-size: clamp(28px, 8vw, 38px) !important;
+            margin-bottom: 14px;
+        }
+        .hero-text {
+            font-size: 0.94rem;
+            line-height: 1.65;
+            margin-bottom: 22px;
+        }
+        .hero-cta-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 12px !important;
+        }
+        .hero-cta-group .btn-shop-now,
+        .hero-cta-group .hero-sec-btn,
+        .hero-cta-group .glass-btn {
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 13px 20px !important;
+            font-size: 0.95rem !important;
+            border-radius: 50px !important;
+            box-sizing: border-box !important;
+            min-height: 50px;
+            text-align: center;
+        }
+        .cat-card {
+            padding: 16px 10px !important;
+            min-height: 145px !important;
+            border-radius: 16px !important;
+        }
+        .cat-icon {
+            font-size: 1.95rem !important;
+            height: 38px !important;
+            margin-bottom: 8px !important;
+        }
+        .cat-card h6 {
+            font-size: 0.88rem !important;
+            min-height: 2.5em !important;
+        }
+        .cat-card small {
+            font-size: 0.72rem !important;
+            min-height: 2.5em !important;
+        }
+        .hero-wrapper {
+            padding: 45px 0 55px;
+        }
+        .about-section {
+            padding: 48px 0;
+        }
+        .about-box h2 {
+            font-size: 1.65rem !important;
+            margin-bottom: 16px;
+        }
+        .about-box p {
+            font-size: 0.9rem !important;
+            line-height: 1.65 !important;
+        }
+        .product-showcase {
+            padding: 48px 0 60px;
+        }
+        .product-showcase .section-title {
+            font-size: 1.65rem !important;
         }
         .swiper-button-next, .swiper-button-prev {
             display: none !important;
-        }
-        .hero-wrapper {
-            padding: 55px 0 70px;
-        }
-        .about-section {
-            padding: 55px 0;
-        }
-        .product-showcase {
-            padding: 55px 0 70px;
         }
     }
 </style>
@@ -372,16 +483,16 @@
                         pilihan berkualitas dari <strong>Elektronik, Fashion, Peralatan Rumah Tangga, hingga ATK</strong> 
                         dengan harga ramah kantong.
                     </p>
-                    <div class="d-flex gap-3 flex-wrap">
+                    <div class="d-flex gap-3 flex-wrap hero-cta-group">
                         <a href="{{ route('pelanggan.katalog') }}" class="btn-shop-now">
                             <i class="bi bi-bag-heart-fill"></i> Jelajahi Katalog
                         </a>
                         @auth
-                            <a href="{{ route('pelanggan.pesanan_aktif') }}" class="glass-btn" style="padding: 14px 26px; font-size: 0.95rem;">
+                            <a href="{{ route('pelanggan.pesanan_aktif') }}" class="glass-btn hero-sec-btn">
                                 <i class="bi bi-clock-history text-warning"></i> Cek Pesanan Aktif
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="glass-btn" style="padding: 14px 26px; font-size: 0.95rem;">
+                            <a href="{{ route('login') }}" class="glass-btn hero-sec-btn">
                                 <i class="bi bi-person-fill"></i> Masuk Akun
                             </a>
                         @endauth
@@ -395,33 +506,44 @@
             </div>
 
             <!-- 4 KATEGORI UTAMA PREVIEW -->
-            <div class="row g-3">
-                <div class="col-md-3 col-6">
-                    <a href="{{ route('pelanggan.katalog', ['jenis' => 'Elektronik']) }}" class="cat-card">
+            <div class="category-preview-header d-flex align-items-center justify-content-between mb-3 mt-4 pt-1">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill px-3 py-2" style="background: rgba(0, 184, 190, 0.18); color: #00B8BE; border: 1px solid rgba(0, 184, 190, 0.35); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.6px;">
+                        KATEGORI PILIHAN
+                    </span>
+                </div>
+                <a href="{{ route('pelanggan.katalog') }}" class="small text-decoration-none d-flex align-items-center gap-1" style="color: #00B8BE; font-weight: 600; font-size: 0.85rem;">
+                    <span>Lihat Semua</span> <i class="bi bi-chevron-right" style="font-size: 0.75rem;"></i>
+                </a>
+            </div>
+
+            <div class="row g-3 g-md-4">
+                <div class="col-md-3 col-6 d-flex">
+                    <a href="{{ route('pelanggan.katalog', ['jenis' => 'Elektronik']) }}" class="cat-card w-100">
                         <div class="cat-icon"><i class="bi bi-laptop"></i></div>
                         <h6 class="fw-bold mb-1">Elektronik</h6>
-                        <small class="text-white-50">Gadget & Audio</small>
+                        <small>Gadget & Audio</small>
                     </a>
                 </div>
-                <div class="col-md-3 col-6">
-                    <a href="{{ route('pelanggan.katalog', ['jenis' => 'Fashion']) }}" class="cat-card">
+                <div class="col-md-3 col-6 d-flex">
+                    <a href="{{ route('pelanggan.katalog', ['jenis' => 'Fashion']) }}" class="cat-card w-100">
                         <div class="cat-icon"><i class="bi bi-bag-heart"></i></div>
                         <h6 class="fw-bold mb-1">Fashion</h6>
-                        <small class="text-white-50">Vintage & Streetwear</small>
+                        <small>Vintage & Streetwear</small>
                     </a>
                 </div>
-                <div class="col-md-3 col-6">
-                    <a href="{{ route('pelanggan.katalog', ['jenis' => 'Peralatan Rumah Tangga']) }}" class="cat-card">
+                <div class="col-md-3 col-6 d-flex">
+                    <a href="{{ route('pelanggan.katalog', ['jenis' => 'Peralatan Rumah Tangga']) }}" class="cat-card w-100">
                         <div class="cat-icon"><i class="bi bi-house-door"></i></div>
                         <h6 class="fw-bold mb-1">Peralatan Rumah Tangga</h6>
-                        <small class="text-white-50">Estetik & Fungsional</small>
+                        <small>Estetik & Fungsional</small>
                     </a>
                 </div>
-                <div class="col-md-3 col-6">
-                    <a href="{{ route('pelanggan.katalog', ['jenis' => 'ATK']) }}" class="cat-card">
+                <div class="col-md-3 col-6 d-flex">
+                    <a href="{{ route('pelanggan.katalog', ['jenis' => 'ATK']) }}" class="cat-card w-100">
                         <div class="cat-icon"><i class="bi bi-pencil-square"></i></div>
                         <h6 class="fw-bold mb-1">ATK</h6>
-                        <small class="text-white-50">Alat Tulis & Kantor</small>
+                        <small>Alat Tulis & Kantor</small>
                     </a>
                 </div>
             </div>
@@ -432,18 +554,23 @@
     <section class="about-section">
         <div class="container">
             <div class="about-box">
+                <div class="mb-3">
+                    <span class="badge rounded-pill px-3 py-2" style="background: rgba(0, 184, 190, 0.15); color: #00B8BE; border: 1px solid rgba(0, 184, 190, 0.35); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.6px;">
+                        TENTANG KAMI
+                    </span>
+                </div>
                 <h2>Tentang SecondSpace</h2>
-                <p>
+                <p class="lead" style="color: #e2f1f4; font-size: 1.05rem; line-height: 1.8;">
                     Kami percaya bahwa barang pre-loved memiliki nilai dan cerita berharga.
                     Di SecondSpace, setiap barang telah melalui kurasi ketat untuk memastikan fungsi,
                     kebersihan, dan kelayakan pemakaian tetap terjaga secara optimal.
                 </p>
-                <p>
+                <p style="color: #b2d2d8; font-size: 0.95rem; line-height: 1.8;">
                     Mulai dari perangkat elektronik, pakaian thrift stylish, dekorasi dan peralatan dapur,
-                    hingga perlengkapan meja kerja dan ATK — SecondSpace adalah ruang kedua bagi barang-barang 
+                    hingga perlengkapan meja kerja dan ATK &mdash; SecondSpace adalah ruang kedua bagi barang-barang 
                     berkualitas untuk menemukan pemilik barunya.
                 </p>
-                <p>
+                <p class="mb-0" style="color: #00B8BE; font-weight: 600; font-size: 0.95rem;">
                     Nikmati kemudahan berbelanja pre-loved yang modern, aman, dan transparan.
                 </p>
             </div>

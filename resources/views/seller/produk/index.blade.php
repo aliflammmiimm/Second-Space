@@ -11,20 +11,56 @@
         </a>
     </div>
 
-    {{-- RINGKASAN --}}
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-4"><div class="seller-stat"><div class="label">Tersedia</div><div class="angka text-success">{{ $ringkasan['tersedia'] }}</div></div></div>
-        <div class="col-6 col-md-4"><div class="seller-stat"><div class="label">Sedang Dipesan</div><div class="angka text-warning">{{ $ringkasan['dipesan'] }}</div></div></div>
-        <div class="col-6 col-md-4"><div class="seller-stat"><div class="label">Terjual</div><div class="angka">{{ $ringkasan['terjual'] }}</div></div></div>
-        <div class="col-6 col-md-4"><div class="seller-stat"><div class="label">Disembunyikan</div><div class="angka text-secondary">{{ $ringkasan['disembunyikan'] }}</div></div></div>
-        <div class="col-6 col-md-4">
-            <a href="{{ route('seller.pesanan.index') }}" class="text-decoration-none text-reset">
-                <div class="seller-stat"><div class="label">Pesanan Aktif</div><div class="angka text-danger">{{ $pesananAktif }}</div></div>
+    {{-- RINGKASAN STATUS PRODUK --}}
+    <div class="row g-2 g-md-3 mb-3">
+        <div class="col-6 col-md-3 d-flex">
+            <div class="seller-stat w-100">
+                <div class="label">Tersedia</div>
+                <div class="angka text-success">{{ $ringkasan['tersedia'] }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 d-flex">
+            <div class="seller-stat w-100">
+                <div class="label">Dipesan</div>
+                <div class="angka text-warning">{{ $ringkasan['dipesan'] }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 d-flex">
+            <div class="seller-stat w-100">
+                <div class="label">Terjual</div>
+                <div class="angka">{{ $ringkasan['terjual'] }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 d-flex">
+            <a href="{{ route('seller.pesanan.index') }}" class="text-decoration-none text-reset w-100 d-flex">
+                <div class="seller-stat w-100">
+                    <div class="label">Pesanan Aktif</div>
+                    <div class="angka text-danger">{{ $pesananAktif }}</div>
+                </div>
             </a>
         </div>
-        <div class="col-6 col-md-4"><div class="seller-stat"><div class="label">Penjualan Kotor (Selesai)</div><div class="angka" style="font-size:1.25rem;">Rp {{ number_format($penjualanKotor, 0, ',', '.') }}</div></div></div>
-        <div class="col-6 col-md-4"><div class="seller-stat"><div class="label">Komisi Website ({{ config('santara.komisi_persen') }}%)</div><div class="angka text-danger" style="font-size:1.25rem;">- Rp {{ number_format($totalKomisi, 0, ',', '.') }}</div></div></div>
-        <div class="col-6 col-md-4"><div class="seller-stat"><div class="label">Pendapatan Bersih Anda</div><div class="angka text-success" style="font-size:1.25rem;">Rp {{ number_format($pendapatan, 0, ',', '.') }}</div></div></div>
+    </div>
+
+    {{-- KEUANGAN --}}
+    <div class="row g-2 g-md-3 mb-4">
+        <div class="col-12 col-md-4 d-flex">
+            <div class="seller-stat w-100">
+                <div class="label">Penjualan Kotor (Selesai)</div>
+                <div class="angka text-dark" style="font-size: 1.2rem;">Rp {{ number_format($penjualanKotor, 0, ',', '.') }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 d-flex">
+            <div class="seller-stat w-100">
+                <div class="label">Komisi ({{ config('santara.komisi_persen') }}%)</div>
+                <div class="angka text-danger" style="font-size: 1.1rem;">- Rp {{ number_format($totalKomisi, 0, ',', '.') }}</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 d-flex">
+            <div class="seller-stat w-100">
+                <div class="label">Pendapatan Bersih</div>
+                <div class="angka text-success" style="font-size: 1.1rem;">Rp {{ number_format($pendapatan, 0, ',', '.') }}</div>
+            </div>
+        </div>
     </div>
 
     {{-- DAFTAR PRODUK --}}

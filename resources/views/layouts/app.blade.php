@@ -441,6 +441,10 @@
         }
 
         @media (max-width: 576px) {
+            h1, .h1 { font-size: 1.75rem !important; }
+            h2, .h2 { font-size: 1.45rem !important; }
+            h3, .h3 { font-size: 1.25rem !important; }
+            h4, .h4 { font-size: 1.1rem !important; }
             .container {
                 padding-left: 14px;
                 padding-right: 14px;
@@ -455,8 +459,12 @@
                 width: 32px !important;
             }
             .card.custom-card {
-                padding: 18px 16px !important;
+                padding: 16px 14px !important;
                 border-radius: 16px !important;
+            }
+            .table-responsive {
+                margin-bottom: 0.75rem;
+                border-radius: 12px;
             }
         }
 

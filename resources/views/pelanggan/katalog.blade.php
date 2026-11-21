@@ -14,14 +14,47 @@
 
     @media (max-width: 576px) {
         .filter-wrapper {
-            padding: 12px 14px;
+            padding: 10px 12px;
+            border-radius: 14px;
+        }
+        .filter-categories-scroll {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            gap: 8px !important;
+            padding-bottom: 2px;
+        }
+        .filter-categories-scroll::-webkit-scrollbar {
+            display: none;
         }
         .category-pill {
-            padding: 6px 14px;
-            font-size: 0.82rem;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+            padding: 6px 14px !important;
+            font-size: 0.8rem !important;
         }
         .product-thumb-wrapper {
-            height: 200px;
+            height: 155px !important;
+        }
+        .product-box .p-3 {
+            padding: 10px 12px !important;
+        }
+        .product-title {
+            font-size: 0.88rem !important;
+            min-height: 2.6em !important;
+            margin-bottom: 4px !important;
+        }
+        .product-desc {
+            display: none !important;
+        }
+        .product-price {
+            font-size: 0.95rem !important;
+        }
+        .badge-stock {
+            font-size: 0.68rem !important;
+            padding: 3px 6px !important;
         }
     }
 
@@ -155,8 +188,8 @@
 
     <!-- FILTER KATEGORI -->
     <div class="filter-wrapper mb-4">
-        <div class="d-flex align-items-center gap-2 flex-wrap">
-            <span class="fw-bold text-muted me-2" style="font-size: 0.9rem;">
+        <div class="d-flex align-items-center gap-2 flex-wrap filter-categories-scroll">
+            <span class="fw-bold text-muted me-2 flex-shrink-0" style="font-size: 0.9rem;">
                 <i class="bi bi-funnel me-1"></i> Kategori:
             </span>
             
@@ -184,10 +217,10 @@
     </div>
 
     <!-- GRID PRODUK -->
-    <div class="row g-3 g-md-4 mb-5">
+    <div class="row g-2 g-md-4 mb-5">
         @forelse($produk as $p)
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="product-box">
+            <div class="col-6 col-md-4 col-xl-3 d-flex">
+                <div class="product-box w-100">
                     <div class="product-thumb-wrapper">
                         <img src="{{ $p->gambar_url }}" alt="{{ $p->NamaProduk }}" class="product-thumb" 
                              loading="lazy" onerror="this.onerror=null; this.src='{{ asset('upload/default.jpg') }}';">

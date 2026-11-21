@@ -416,8 +416,8 @@
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             }
             #navbarMenu .d-flex.flex-column .glass-btn,
-            #navbarMenu .d-flex.flex-column .dropdown,
-            #navbarMenu .d-flex.flex-column .dropdown > button {
+            #navbarMenu .d-flex.flex-column .dropdown:not(.notif-dropdown),
+            #navbarMenu .d-flex.flex-column .dropdown:not(.notif-dropdown) > button:not(.notif-bell-btn) {
                 width: 100% !important;
                 justify-content: flex-start !important;
                 text-align: left !important;
@@ -821,8 +821,8 @@
                                     </span>
                                 </a>
 
-                                <!-- Notification Bell Dropdown (Seller on Public Mode) -->
-                                <div class="dropdown notif-dropdown">
+                                <!-- Notification Bell Dropdown (Seller on Public Mode - Desktop) -->
+                                <div class="dropdown notif-dropdown d-none d-lg-block">
                                     <button class="notif-bell-btn border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Pusat Notifikasi">
                                         <i class="bi bi-bell fs-5"></i>
                                         <span class="notif-badge-pill notif-badge {{ $unreadNotifCount > 0 ? '' : 'd-none' }}">
@@ -848,6 +848,14 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Notification Link (Seller on Public Mode - Mobile) -->
+                                <a href="{{ route('seller.notifikasi') }}" class="glass-btn d-lg-none position-relative {{ request()->routeIs('seller.notifikasi*') ? 'active' : '' }}">
+                                    <i class="bi bi-bell"></i> Notifikasi Toko
+                                    <span class="badge rounded-pill bg-danger notif-badge ms-1 {{ $unreadNotifCount > 0 ? '' : 'd-none' }}" style="font-size: 0.72rem; padding: 0.25em 0.55em;">
+                                        {{ $unreadNotifCount > 99 ? '99+' : $unreadNotifCount }}
+                                    </span>
+                                </a>
 
                                 <!-- User Profile Dropdown Seller -->
                                 <div class="dropdown">
@@ -928,8 +936,8 @@
                                     <i class="bi bi-archive"></i> Riwayat Pesanan
                                 </a>
 
-                                <!-- Notification Bell Dropdown (Pelanggan) -->
-                                <div class="dropdown notif-dropdown">
+                                <!-- Notification Bell Dropdown (Pelanggan - Desktop) -->
+                                <div class="dropdown notif-dropdown d-none d-lg-block">
                                     <button class="notif-bell-btn border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="notifDropdownBtnBuyer" title="Pusat Notifikasi">
                                         <i class="bi bi-bell fs-5"></i>
                                         <span class="notif-badge-pill notif-badge {{ $unreadNotifCount > 0 ? '' : 'd-none' }}">
@@ -955,6 +963,14 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Notification Link (Pelanggan - Mobile) -->
+                                <a href="{{ route('pelanggan.notifikasi') }}" class="glass-btn d-lg-none position-relative {{ request()->routeIs('pelanggan.notifikasi*') ? 'active' : '' }}">
+                                    <i class="bi bi-bell"></i> Notifikasi
+                                    <span id="nav-notif-badge-buyer" class="badge rounded-pill bg-danger notif-badge ms-1 {{ $unreadNotifCount > 0 ? '' : 'd-none' }}" style="font-size: 0.72rem; padding: 0.25em 0.55em;">
+                                        {{ $unreadNotifCount > 99 ? '99+' : $unreadNotifCount }}
+                                    </span>
+                                </a>
 
                                 <!-- User Profile Dropdown Pelanggan -->
                                 <div class="dropdown">
